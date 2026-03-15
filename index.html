@@ -14,6 +14,8 @@
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
@@ -498,6 +500,7 @@ textarea.field{resize:none;line-height:1.6;}
 	</section>
 	<section id="pg-ops-reports" class="page-content">
 	  <div class="sec-hdr"><h2>Operations</h2><div class="line"></div><button onclick="loadReports()" style="background:var(--surface);border:1px solid var(--border2);padding:7px;border-radius:var(--r3);cursor:pointer;color:var(--text3);display:flex;box-shadow:0 1px 3px rgba(0,0,0,.05);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></button></div>
+
 	  <div id="reports-list"></div>
 	</section>
 	<section id="pg-ops-att" class="page-content">
@@ -639,13 +642,13 @@ textarea.field{resize:none;line-height:1.6;}
 	  <!-- Header band -->
 	  <div style="background:#1c1a16;padding:18px 20px 14px;">
 		<div style="display:flex;align-items:center;gap:12px;">
-		  <img src="https://raw.githubusercontent.com/MindBreakOps/MBO-HumanResourceSystem/main/mind.png" style="width:36px;height:36px;object-fit:contain;border-radius:9px;" onerror="this.style.display='none'">
+		  <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="width:40px;height:40px;object-fit:contain;border-radius:10px;background:rgba(255,255,255,.08);padding:4px;" onerror="this.style.display='none'">
 		  <div>
-			<div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:800;color:#fff;letter-spacing:.02em;">OPERIX</div>
-			<div id="anpr-inv-stamp-top" style="font-size:9px;color:rgba(255,255,255,.5);letter-spacing:.18em;text-transform:uppercase;margin-top:1px;"></div>
+			<div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;color:#fff;letter-spacing:.02em;">OPERIX</div>
+			<div style="font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.18em;text-transform:uppercase;margin-top:1px;">PARKING TICKET</div>
 		  </div>
 		  <div style="margin-left:auto;text-align:right;">
-			<div style="font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;">TICKET</div>
+			<div style="font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;">NO.</div>
 			<div id="anpr-inv-ticketnum" style="font-family:'Fira Code',monospace;font-size:13px;font-weight:700;color:#e8b96a;"></div>
 		  </div>
 		</div>
@@ -674,16 +677,14 @@ textarea.field{resize:none;line-height:1.6;}
 		  <div id="anpr-inv-fee" style="font-family:'Fira Code',monospace;font-size:18px;font-weight:800;color:#e8b96a;"></div>
 		</div>
 	  </div>
-	  <!-- Barcode -->
+	  <!-- QR Code -->
 	  <div style="padding:14px 20px;text-align:center;background:#fff;">
-		<div class="barcode-wrap" style="max-width:240px;margin:0 auto;">
-		  <svg id="anpr-barcode"></svg>
-		</div>
-		<div id="anpr-inv-barcode-num" style="font-family:'Fira Code',monospace;font-size:9px;color:#aaa;margin-top:4px;letter-spacing:.1em;"></div>
+		<div id="anpr-qr" style="display:inline-block;"></div>
+		<div id="anpr-inv-barcode-num" style="font-family:'Fira Code',monospace;font-size:9px;color:#aaa;margin-top:6px;letter-spacing:.1em;"></div>
 	  </div>
 	  <!-- Footer -->
-	  <div style="background:#f2f0eb;padding:8px 20px;text-align:center;border-top:1px solid #e5e3de;">
-		<div style="font-size:8px;color:#999;letter-spacing:.15em;font-weight:700;text-transform:uppercase;">OPERIX PLATFORM · MIND BREAK CAFÉ · 2026</div>
+	  <div style="background:#1c1a16;padding:8px 20px;text-align:center;">
+		<div style="font-size:8px;color:rgba(255,255,255,.35);letter-spacing:.15em;font-weight:700;text-transform:uppercase;">OPERIX PLATFORM · 2026</div>
 	  </div>
 	</div>
 	<div style="padding:11px 15px;background:var(--surface2);display:flex;gap:8px;">
@@ -694,32 +695,88 @@ textarea.field{resize:none;line-height:1.6;}
 </div>
 
 <!-- OPS RECEIPT (off-screen) -->
-<div id="ops-receipt-capture" style="position:fixed;left:-4000px;top:0;width:420px;background:#fff;">
-  <div style="background:#1c1a16;padding:22px 22px 16px;">
+<div id="ops-receipt-capture" style="position:fixed;left:-4000px;top:0;width:440px;background:#faf9f6;font-family:'Plus Jakarta Sans',sans-serif;">
+
+  <!-- Header: white bg, both logos -->
+  <div style="background:#ffffff;padding:20px 24px 16px;border-bottom:2px solid #e8e5de;display:flex;align-items:center;justify-content:space-between;">
 	<div style="display:flex;align-items:center;gap:12px;">
-	  <img src="https://raw.githubusercontent.com/MindBreakOps/MBO-HumanResourceSystem/main/mind.png" style="width:38px;height:38px;object-fit:contain;border-radius:9px;" onerror="this.style.display='none'">
-	  <div><div style="font-size:16px;font-weight:800;color:#fff;font-family:'Space Grotesk',sans-serif;">OPERIX</div><div style="font-size:9px;color:rgba(255,255,255,.45);letter-spacing:.15em;">VALET SERVICE RECEIPT</div></div>
-	  <div style="margin-left:auto;text-align:right;"><div style="font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.12em;">REF</div><div id="cap-ref" style="font-family:'Fira Code',monospace;font-size:11px;font-weight:700;color:#e8b96a;"></div></div>
+	  <img src="https://raw.githubusercontent.com/MindBreakOps/MBO-HumanResourceSystem/main/mind.png" style="width:44px;height:44px;object-fit:contain;border-radius:10px;border:1.5px solid #e8e5de;" onerror="this.style.display='none'">
+	  <div>
+		<div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:#1c1a16;letter-spacing:-.01em;">Mind Break</div>
+		<div style="font-size:9px;color:#8c877e;font-weight:600;letter-spacing:.18em;text-transform:uppercase;margin-top:1px;">Café · Valet Service</div>
+	  </div>
+	</div>
+	<div style="display:flex;align-items:center;gap:10px;">
+	  <div style="text-align:right;">
+		<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#1c1a16;">OPERIX</div>
+		<div style="font-size:8px;color:#8c877e;letter-spacing:.15em;text-transform:uppercase;">Operations</div>
+	  </div>
+	  <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="width:36px;height:36px;object-fit:contain;border-radius:8px;border:1.5px solid #e8e5de;" onerror="this.style.display='none'">
 	</div>
   </div>
-  <div style="padding:18px 22px;background:#f8f7f4;">
-	<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;">
-	  <div style="background:#fff;border:1px solid #e5e3de;border-radius:10px;padding:11px;"><div style="font-size:9px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Card No.</div><div id="cap-card" style="font-size:22px;font-weight:700;color:#1c1a16;font-family:'Fira Code',monospace;"></div></div>
-	  <div style="background:#fff;border:1px solid #e5e3de;border-radius:10px;padding:11px;"><div style="font-size:9px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Plate</div><div id="cap-plate" style="font-size:22px;font-weight:700;color:#1c1a16;font-family:'Fira Code',monospace;"></div></div>
-	</div>
-	<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;">
-	  <div style="background:#fff;border:1px solid #e5e3de;border-radius:10px;padding:11px;"><div style="font-size:9px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Valet Staff</div><div id="cap-staff" style="font-size:12px;font-weight:700;color:#1c1a16;"></div></div>
-	  <div style="background:#fff;border:1px solid #e5e3de;border-radius:10px;padding:11px;"><div style="font-size:9px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Mobile</div><div id="cap-mobile" style="font-size:12px;font-weight:700;color:#1c1a16;font-family:'Fira Code',monospace;"></div></div>
-	</div>
-	<div style="background:#fff;border:1px solid #e5e3de;border-radius:10px;padding:11px;margin-bottom:9px;"><div style="font-size:9px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Date & Time</div><div id="cap-time" style="font-size:12px;font-weight:700;color:#1c1a16;font-family:'Fira Code',monospace;"></div></div>
-	<div style="background:#1c1a16;border-radius:12px;padding:14px;text-align:center;margin-bottom:9px;"><div style="font-size:9px;color:rgba(255,255,255,.45);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:3px;">Total Amount</div><div style="font-size:36px;font-weight:700;color:#fff;font-family:'Fira Code',monospace;"><span id="cap-amount"></span> <span style="font-size:13px;opacity:.45;">SAR</span></div></div>
-	<!-- Barcode on receipt -->
-	<div style="background:#fff;border:1px solid #e5e3de;border-radius:10px;padding:10px;text-align:center;">
-	  <svg id="ops-receipt-barcode" style="width:260px;height:50px;"></svg>
-	  <div id="cap-barcode-num" style="font-family:'Fira Code',monospace;font-size:8px;color:#aaa;margin-top:3px;letter-spacing:.1em;"></div>
+
+  <!-- Title band -->
+  <div style="background:#f2f0eb;padding:8px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e5de;">
+	<div style="font-size:9px;color:#8c877e;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">Valet Service Receipt</div>
+	<div style="display:flex;align-items:center;gap:6px;">
+	  <span style="font-size:9px;color:#8c877e;font-weight:600;letter-spacing:.1em;">REF</span>
+	  <span id="cap-ref" style="font-family:'Fira Code',monospace;font-size:12px;font-weight:700;color:#9a7230;letter-spacing:.06em;"></span>
 	</div>
   </div>
-  <div style="padding:8px 22px;background:#eceae3;text-align:center;font-size:9px;color:#888;letter-spacing:.12em;font-weight:600;text-transform:uppercase;">OPERIX PLATFORM · MIND BREAK CAFÉ · 2026</div>
+
+  <!-- Info grid -->
+  <div style="padding:18px 24px;">
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+	  <!-- Card No -->
+	  <div style="background:#ffffff;border:1.5px solid #e8e5de;border-radius:12px;padding:13px;">
+		<div style="font-size:8px;color:#8c877e;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px;">Card No.</div>
+		<div id="cap-card" style="font-size:26px;font-weight:800;color:#1c1a16;font-family:'Fira Code',monospace;line-height:1;"></div>
+	  </div>
+	  <!-- Plate -->
+	  <div style="background:#1c1a16;border-radius:12px;padding:13px;">
+		<div style="font-size:8px;color:rgba(255,255,255,.45);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px;">Plate Number</div>
+		<div id="cap-plate" style="font-size:22px;font-weight:800;color:#e8b96a;font-family:'Fira Code',monospace;line-height:1;letter-spacing:.08em;"></div>
+	  </div>
+	</div>
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+	  <!-- Valet Staff -->
+	  <div style="background:#ffffff;border:1.5px solid #e8e5de;border-radius:12px;padding:13px;">
+		<div style="font-size:8px;color:#8c877e;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px;">Valet Staff</div>
+		<div id="cap-staff" style="font-size:13px;font-weight:700;color:#1c1a16;line-height:1.3;"></div>
+	  </div>
+	  <!-- Amount -->
+	  <div style="background:#ffffff;border:1.5px solid #e8e5de;border-radius:12px;padding:13px;">
+		<div style="font-size:8px;color:#8c877e;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px;">Amount</div>
+		<div style="display:flex;align-items:baseline;gap:4px;">
+		  <span id="cap-amount" style="font-size:22px;font-weight:800;color:#1c1a16;font-family:'Fira Code',monospace;line-height:1;"></span>
+		  <span style="font-size:11px;color:#8c877e;font-weight:600;">SAR</span>
+		</div>
+	  </div>
+	</div>
+	<!-- Date & Mobile full width -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+	  <div style="background:#ffffff;border:1.5px solid #e8e5de;border-radius:12px;padding:13px;">
+		<div style="font-size:8px;color:#8c877e;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px;">Date & Time</div>
+		<div id="cap-time" style="font-size:11px;font-weight:700;color:#1c1a16;font-family:'Fira Code',monospace;line-height:1.4;"></div>
+	  </div>
+	  <div style="background:#ffffff;border:1.5px solid #e8e5de;border-radius:12px;padding:13px;">
+		<div style="font-size:8px;color:#8c877e;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px;">Mobile</div>
+		<div id="cap-mobile" style="font-size:13px;font-weight:700;color:#1c1a16;font-family:'Fira Code',monospace;"></div>
+	  </div>
+	</div>
+
+	<!-- QR Code -->
+	<div style="background:#ffffff;border:1.5px solid #e8e5de;border-radius:12px;padding:16px;text-align:center;">
+	  <div id="ops-receipt-qr" style="display:inline-block;"></div>
+	  <div id="cap-barcode-num" style="font-family:'Fira Code',monospace;font-size:10px;color:#aaa;margin-top:8px;letter-spacing:.12em;"></div>
+	</div>
+  </div>
+
+  <!-- Footer -->
+  <div style="background:#f2f0eb;padding:10px 24px;text-align:center;border-top:1px solid #e8e5de;display:flex;align-items:center;justify-content:center;gap:8px;">
+	<img src="https://raw.githubusercontent.com/MindBreakOps/MBO-HumanResourceSystem/main/mind.png" style="width:16px;height:16px;object-fit:contain;border-radius:3px;opacity:.5;" onerror="this.style.display='none'">
+	<div style="font-size:8px;color:#aaa;letter-spacing:.15em;font-weight:700;text-transform:uppercase;">Mind Break Café · OPERIX Platform · 2026</div>
+  </div>
 </div>
 
 <!-- PHOTO UPLOAD MODAL -->
@@ -765,7 +822,7 @@ textarea.field{resize:none;line-height:1.6;}
 // ═══════════════════════════════
 // CONFIG
 // ═══════════════════════════════
-const OPS_API  = 'https://script.google.com/macros/s/AKfycbxtjv36YNpRPM_Q7eCQpooo0C4L1QWEhK8zV5KL8jKsA3c4bDKQ3M4ngOKL6coTcz0k/exec';
+const OPS_API  = 'https://script.google.com/macros/s/AKfycbywhi4ABCKljA30_86mnjkeJ-xqCn7m6nWsBSCGZMugsuKVCLjPXvikIEqWKFTBudgo/exec';
 
 const HR_API   = 'https://script.google.com/macros/s/AKfycbz34WWbbswac1O6vJaae-rNsRqQZLtObz6e3eFEmx5x3iij9GCz0Hp7fV6wONe-BMAx/exec';
 
@@ -773,7 +830,7 @@ const ANPR_API = 'https://script.google.com/macros/s/AKfycbwZC7gHUWdIrHp47L_muA2
 
 const ACC_API  = 'https://script.google.com/macros/s/AKfycbzVCr1tsIoTLdNRQr26i2gnOT7XnU6QlQwtu9DnuoSMD-_OucnIstBmReJGNc_xhXCGAA/exec';
 
-const EMP_API  = 'https://script.google.com/macros/s/AKfycbyozoyYEgPm3PbldTgrHUFar6unKEHUAzALhY7HLwAMimUSZ7K-eDCskWtyn0EOxQzwgg/exec';
+const EMP_API  = 'https://script.google.com/macros/s/AKfycbwsEKDvPzBgk_Kx5zjTSfdCVKDcw88T-5YRk8rOoeGU-Gb7nUjVyr5-GYh5t0XA24PEbg/exec';
 
 const CAFE_LAT = 24.7694973, CAFE_LNG = 46.7625231, GPS_RADIUS = 150;
 const ADMIN_PASSCODE = '0707';
@@ -788,6 +845,7 @@ let accCurrentType=null,accCurrentData={};
 let pcBuffer='',pcCallback=null;
 let adminModalType=null;
 let staffData=[];
+let reportsData=[];
 
 // Accounts still use localStorage (no dedicated sheet needed)
 const ACCOUNTS_KEY='operix_accounts_v1';
@@ -879,9 +937,27 @@ document.addEventListener('click',e=>{['ops-drop','hr-drop','anpr-drop'].forEach
 function fmtSAR(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return(n||0).toLocaleString();}
 function cssId(n){return(n||'').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9\u0600-\u06FF\-]/g,'');}
 function genRef(){return'OPX-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,5).toUpperCase();}
-function drawBarcode(svgId,value){
-  try{JsBarcode('#'+svgId,value,{format:'CODE128',width:2,height:46,displayValue:false,margin:0,background:'transparent',lineColor:'#1c1a16'});}
-  catch(e){console.warn('Barcode error',e);}
+function drawQR(divId, value, size=120){
+  try{
+	const el = document.getElementById(divId);
+	if(!el){ console.warn('QR: element not found:', divId); return; }
+	el.innerHTML = '';
+	// qrcode-generator: works off-screen, generates SVG
+	const qr = qrcode(0, 'H');
+	qr.addData(value);
+	qr.make();
+	const svg = qr.createSvgTag({scalable:true});
+	el.style.width  = size + 'px';
+	el.style.height = size + 'px';
+	el.style.display = 'inline-block';
+	el.innerHTML = svg;
+	// Make sure SVG fills container
+	const svgEl = el.querySelector('svg');
+	if(svgEl){
+	  svgEl.style.width  = size + 'px';
+	  svgEl.style.height = size + 'px';
+	}
+  } catch(e){ console.warn('QR error', e); }
 }
 
 // ═══════════════════════════════
@@ -927,7 +1003,8 @@ async function handleLogin(){
 	  userData = {
 		name:  d.name  || email.split('@')[0],
 		role:  d.role  || 'Staff',
-		phone: d.phone || ''
+		phone: d.phone || '',
+		photo: d.photo || ''
 	  };
 	}
   } catch(e){}
@@ -941,7 +1018,8 @@ async function handleLogin(){
 		userData = {
 		  name: d.name || email.split('@')[0],
 		  role: d.job  || d.role || 'Staff',
-		  phone: d.phone || ''
+		  phone: d.phone || '',
+		  photo: d.photo || ''
 		};
 	  }
 	} catch(e){}
@@ -1589,7 +1667,11 @@ function opsNav(id){
   document.querySelectorAll('#ops-app .nav-item').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const nb=document.getElementById('nav-'+id.replace('pg-ops-','ops-'));if(nb)nb.classList.add('active');
-  if(id==='pg-ops-reports')loadReports();
+  if(id==='pg-ops-reports'){
+	const s=document.getElementById('reports-search');
+	if(s) s.value='';
+	loadReports();
+  }
   if(id==='pg-ops-att'){if(!isAdmin()){alert('Admin access required');opsNav('pg-ops-dash');return;}loadAttendance();}
 }
 
@@ -1629,28 +1711,118 @@ async function captureReceipt(d){
   document.getElementById('cap-mobile').innerText=d.phone||'—';
   document.getElementById('cap-time').innerText=new Date().toLocaleString('en-GB').replace(',',' ·');
   document.getElementById('cap-amount').innerText=d.amount??'0';
-  const barcodeVal='OPX'+Date.now().toString().slice(-8)+d.cardNum;
+  const qrVal = JSON.stringify({plate:d.plateNum,card:d.cardNum,client:d.clientName,staff:d.staffName||d.valetName,amount:d.amount,date:d.date,ref:d.ref||''});
+  const barcodeVal='OPX'+String(d.cardNum||'').padStart(6,'0');
   document.getElementById('cap-barcode-num').innerText=barcodeVal;
   await new Promise(r=>setTimeout(r,60));
-  drawBarcode('ops-receipt-barcode',barcodeVal);
-  await new Promise(r=>setTimeout(r,120));
+  drawQR('ops-receipt-qr', qrVal, 120);
+  await new Promise(r=>setTimeout(r,600));
   const canvas=await html2canvas(document.getElementById('ops-receipt-capture'),{scale:3,backgroundColor:null,logging:false,useCORS:true});
   const a=document.createElement('a');a.download=`Receipt-${d.plateNum}-${d.cardNum}.png`;a.href=canvas.toDataURL('image/png');a.click();
+}
+
+function filterReports(){
+  const q = (document.getElementById('reports-search')?.value || '').replace(/\s/g,'').toUpperCase();
+  document.querySelectorAll('#reports-list .inv-card').forEach(card=>{
+	if(!q){ card.style.display=''; return; }
+	const plate = (card.getAttribute('data-plate') || '').toUpperCase();
+	const card_ = (card.getAttribute('data-card')  || '');
+	card.style.display = (plate.includes(q) || card_.includes(q)) ? '' : 'none';
+  });
 }
 
 async function loadReports(){
   const el=document.getElementById('reports-list');
   el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">Loading…</div>';
   try{
-	const res=await fetch(OPS_API,{method:'POST',body:JSON.stringify({action:'getReports'})});
-	const rows=await res.json();el.innerHTML='';
-	if(!rows.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">No records found</div>';return;}
-	rows.forEach(r=>{
-	  const ip=r.vehicleStatus==='Parked';
-	  el.innerHTML+=`<div class="inv-card"><div style="display:flex;"><div style="width:3px;background:${ip?'var(--amber)':'var(--green)'};flex-shrink:0;"></div><div style="padding:13px;flex:1;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span class="badge ${ip?'badge-parked':'badge-done'}">${ip?'Parked':'Returned'}</span><span style="font-family:'Fira Code',monospace;font-size:17px;font-weight:700;color:var(--text);">${r.plateNum}</span></div><div style="font-size:11px;color:var(--text3);margin-bottom:9px;line-height:1.8;"><div>${r.clientName} · ${r.serviceType==='Free'?'<span style="color:var(--green);font-weight:700;">Free</span>':'<span style="color:var(--gold);font-weight:700;">19 SAR</span>'}</div><div>Card <span style="font-family:\'Fira Code\',monospace;">#${r.cardNum}</span> · ${r.valet||r.valetName||''}</div></div><div style="display:flex;gap:6px;"><button onclick='reExport(${JSON.stringify(r)})' class="btn-ghost" style="flex:1;padding:7px;font-size:11px;justify-content:center;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>${ip?`<button onclick="updateVehicle('${r.plateNum}','${r.cardNum}','Returned')" style="flex:1;padding:7px;background:var(--green-bg);border:1.5px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:var(--r3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Confirm Return</button>`:''}</div></div></div></div>`;
-	});
-  }catch(e){el.innerHTML='<div style="color:var(--red);text-align:center;padding:20px;font-size:12px;">Failed to load</div>';}
+	// Direct fetch — same pattern that always worked for getReports
+	const res = await fetch(OPS_API, {method:'POST', body:JSON.stringify({action:'getReports'})});
+	const text = await res.text();
+	let rows;
+	try{ rows = JSON.parse(text); }
+	catch(e){ throw new Error('Parse error: ' + text.slice(0,100)); }
+	// GAS returns plain array
+	if(Array.isArray(rows)){
+	  reportsData = rows;
+	} else if(rows && rows.data){
+	  reportsData = rows.data;
+	} else {
+	  reportsData = [];
+	}
+	if(!reportsData.length){
+	  el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">No records yet</div>';
+	  return;
+	}
+	renderReports(reportsData);
+  }catch(err){
+	el.innerHTML='<div style="color:var(--red);text-align:center;padding:20px;font-size:12px;">Error: '+err.message+'</div>';
+  }
 }
+
+
+
+function renderReports(rows){
+  const el=document.getElementById('reports-list');
+  el.innerHTML='';
+  if(!rows.length){
+	el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">No records found</div>';
+	return;
+  }
+  rows.forEach((r,i)=>{
+	const ip       = String(r.vehicleStatus||'') === 'Parked';
+	const plateStr = String(r.plateNum  || '');
+	const cardStr  = String(r.cardNum   || '');
+	const clientStr= String(r.clientName|| '');
+	const valetStr = String(r.valet || r.valetName || '');
+	const svcStr   = String(r.serviceType || '');
+	const barcode  = 'OPX' + cardStr.replace(/[^0-9]/g,'').padStart(6,'0');
+	// Store row in a global map to avoid JSON.stringify in HTML
+	window._rptData = window._rptData || {};
+	window._rptData[i] = r;
+
+	const div = document.createElement('div');
+	div.className = 'inv-card';
+	div.setAttribute('data-plate', plateStr);
+	div.setAttribute('data-card',  cardStr);
+	div.innerHTML = `
+	  <div style="display:flex;">
+		<div style="width:4px;background:${ip?'var(--amber)':'var(--green)'};flex-shrink:0;border-radius:4px 0 0 4px;"></div>
+		<div style="padding:13px;flex:1;">
+		  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+			<span class="badge ${ip?'badge-parked':'badge-done'}">${ip?'Parked':'Returned'}</span>
+			<span style="font-family:'Fira Code',monospace;font-size:18px;font-weight:800;color:var(--text);">${plateStr||'—'}</span>
+		  </div>
+		  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Card</div>
+			  <div style="font-family:'Fira Code',monospace;font-size:14px;font-weight:700;color:var(--text);">#${cardStr||'—'}</div>
+			</div>
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Service</div>
+			  <div style="font-size:12px;font-weight:700;color:${svcStr==='Free'?'var(--green)':'var(--gold)'};">${svcStr==='Free'?'Free':'19 SAR'}</div>
+			</div>
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Client</div>
+			  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${clientStr||'—'}</div>
+			</div>
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Staff</div>
+			  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${valetStr||'—'}</div>
+			</div>
+		  </div>
+		  <div style="display:flex;gap:6px;">
+			<button onclick="reExport(window._rptData[${i}])" class="btn-ghost" style="flex:1;padding:7px;font-size:11px;justify-content:center;">
+			  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
+			</button>
+			${ip?`<button onclick="updateVehicle('${plateStr}','${cardStr}','Returned')" style="flex:1;padding:7px;background:var(--green-bg);border:1.5px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:var(--r3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">✓ Confirm Return</button>`:''}
+		  </div>
+		</div>
+	  </div>
+	`;
+	el.appendChild(div);
+  });
+}
+
 
 function reExport(r){captureReceipt({...r,staffName:r.valet||r.valetName,phone:r.phone||'—',amount:r.amount||0,ref:r.ref||genRef()});}
 async function updateVehicle(plate,card,status){
@@ -1784,17 +1956,96 @@ async function anprStartCamera(){
 async function anprScan(){
   const video=document.getElementById('anpr-video'),btn=document.getElementById('anpr-scan-btn');
   if(!video.srcObject)return alert('Start camera first');
-  btn.disabled=true;btn.innerText='Scanning…';
-  const canvas=document.createElement('canvas');canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+  btn.disabled=true;
+  btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Scanning…';
+
+  const canvas=document.createElement('canvas');
+  canvas.width=video.videoWidth;canvas.height=video.videoHeight;
   canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
+  const imageData=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
+  const msg=document.getElementById('anpr-entry-msg');
+
+  // Try QR code first (jsQR)
+  try{
+	const qr=jsQR(imageData.data,imageData.width,imageData.height);
+	if(qr && qr.data){
+	  let info;
+	  try{ info=JSON.parse(qr.data); }catch(e){ info=null; }
+
+	  if(info && info.plate){
+		// QR from our OPS receipt or ANPR ticket — show full car details
+		document.getElementById('anpr-plate-input').value=info.plate;
+		msg.style.color='var(--green)';
+		let details=`QR Scanned: ${info.plate}`;
+		if(info.card) details+=` · Card #${info.card}`;
+		if(info.client) details+=` · ${info.client}`;
+		if(info.staff) details+=` · ${info.staff}`;
+		if(info.amount!==undefined) details+=` · ${info.amount} SAR`;
+		if(info.entry) details+=` · In: ${info.entry}`;
+		if(info.fee) details+=` · Fee: ${info.fee}`;
+		msg.innerText=details;
+
+		// Show a detail popup
+		showQRResult(info);
+		btn.disabled=false;
+		btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Snap & Scan';
+		return;
+	  } else {
+		// QR has some text but not our format — use as plate
+		document.getElementById('anpr-plate-input').value=qr.data.toUpperCase();
+		msg.innerText=`QR: ${qr.data}`;
+		msg.style.color='var(--blue)';
+		btn.disabled=false;
+		btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Snap & Scan';
+		return;
+	  }
+	}
+  }catch(e){ console.warn('jsQR error',e); }
+
+  // Fallback: OCR plate
   try{
 	const{data:{text}}=await Tesseract.recognize(canvas,'eng',{logger:()=>{}});
 	const cleaned=text.replace(/[^A-Za-z0-9]/g,'').toUpperCase();
-	const msg=document.getElementById('anpr-entry-msg');
-	if(cleaned.length>2){document.getElementById('anpr-plate-input').value=cleaned;msg.innerText=`Detected: ${cleaned}`;msg.style.color='var(--green)';}
-	else{alert('Could not read plate clearly. Enter manually.');}
-  }catch(e){alert('OCR Error');}
-  btn.disabled=false;btn.innerText='Snap & Scan';
+	if(cleaned.length>2){
+	  document.getElementById('anpr-plate-input').value=cleaned;
+	  msg.innerText=`Plate detected: ${cleaned}`;
+	  msg.style.color='var(--green)';
+	} else {
+	  msg.innerText='Could not read. Enter manually.';
+	  msg.style.color='var(--red)';
+	}
+  }catch(e){
+	msg.innerText='Scan failed. Enter manually.';
+	msg.style.color='var(--red)';
+  }
+  btn.disabled=false;
+  btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Snap & Scan';
+}
+
+function showQRResult(info){
+  // Show a clean popup with car details from QR scan
+  const existing=document.getElementById('qr-result-popup');
+  if(existing)existing.remove();
+  const popup=document.createElement('div');
+  popup.id='qr-result-popup';
+  popup.style.cssText='position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);';
+  popup.innerHTML=`
+	<div style="width:100%;max-width:320px;background:var(--surface);border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.2);">
+	  <div style="background:#1c1a16;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;">
+		<div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:#fff;">QR Scan Result</div>
+		<button onclick="document.getElementById('qr-result-popup').remove()" style="background:transparent;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:18px;line-height:1;">×</button>
+	  </div>
+	  <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+		${info.plate?`<div style="background:var(--surface2);border-radius:10px;padding:11px;"><div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px;">Plate Number</div><div style="font-family:'Fira Code',monospace;font-size:22px;font-weight:800;color:var(--text);">${info.plate}</div></div>`:''}
+		${info.card?`<div style="background:var(--surface2);border-radius:10px;padding:11px;display:flex;justify-content:space-between;"><div><div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px;">Card No.</div><div style="font-family:'Fira Code',monospace;font-size:16px;font-weight:700;color:var(--text);">#${info.card}</div></div>${info.amount!==undefined?`<div style="text-align:right;"><div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px;">Amount</div><div style="font-family:'Fira Code',monospace;font-size:16px;font-weight:700;color:var(--gold);">${info.amount} SAR</div></div>`:''}</div>`:''}
+		${info.client?`<div style="background:var(--surface2);border-radius:10px;padding:11px;"><div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px;">Client</div><div style="font-size:13px;font-weight:600;color:var(--text);">${info.client}</div></div>`:''}
+		${info.staff?`<div style="background:var(--surface2);border-radius:10px;padding:11px;"><div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px;">Valet Staff</div><div style="font-size:13px;font-weight:600;color:var(--text);">${info.staff}</div></div>`:''}
+		${info.entry?`<div style="background:var(--surface2);border-radius:10px;padding:11px;display:flex;justify-content:space-between;"><div><div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px;">Entry</div><div style="font-size:12px;font-weight:600;color:var(--text);">${info.entry}</div></div>${info.exit?`<div style="text-align:right;"><div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px;">Exit</div><div style="font-size:12px;font-weight:600;color:var(--text);">${info.exit}</div></div>`:''}</div>`:''}
+		${info.fee?`<div style="background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:10px;padding:11px;text-align:center;"><div style="font-size:8px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:3px;">Parking Fee</div><div style="font-family:'Fira Code',monospace;font-size:20px;font-weight:800;color:var(--gold);">${info.fee}</div></div>`:''}
+		<button onclick="document.getElementById('qr-result-popup').remove()" class="btn-dark" style="width:100%;margin-top:4px;">Done</button>
+	  </div>
+	</div>`;
+  document.body.appendChild(popup);
 }
 
 async function anprProcessEntry(){
@@ -1826,13 +2077,23 @@ function anprRenderLogs(logs){
   if(!logs||!logs.length){el.innerHTML='<div style="text-align:center;padding:28px;color:var(--text3);font-size:12px;">No records</div>';return;}
   logs.forEach(log=>{
 	const isIN=log.status==='IN';const div=document.createElement('div');
-	div.className=`log-card ${isIN?'s-in':'s-out'}`;div.setAttribute('data-plate',(log.plate||'').toUpperCase());
+	div.className=`log-card \${isIN?'s-in':'s-out'}`;
+	div.setAttribute('data-plate',(log.plate||'').toUpperCase());
+	div.setAttribute('data-barcode','PKG'+(log.plate||'').replace(/[^A-Z0-9]/g,''));
 	div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-family:'Fira Code',monospace;font-size:15px;font-weight:700;color:var(--text);">${log.plate}</span><span class="badge ${isIN?'badge-in':'badge-out'}">${log.status}</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:11px;color:var(--text3);margin-bottom:9px;line-height:1.9;"><div><b style="color:var(--text2);">Entry:</b> ${log.entry||'—'}</div><div><b style="color:var(--text2);">Exit:</b> ${isIN?'—':log.exit||'—'}</div><div><b style="color:var(--text2);">Duration:</b> ${isIN?'Active':log.duration||'—'}</div><div><b style="color:var(--text2);">Fee:</b> ${isIN?'—':log.fee||'—'}</div></div><div style="display:flex;gap:7px;">${isIN?`<button onclick="anprCheckout('${log.plate}')" style="flex:1;padding:9px;background:var(--green-bg);color:var(--green);border:1.5px solid var(--green-border);border-radius:var(--r3);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Check Out & Bill</button>`:''}<button onclick='anprShowInvoice(${JSON.stringify(log).replace(/'/g,"&#39;")})' class="btn-ghost" style="flex:1;justify-content:center;font-size:12px;">${isIN?'Details':'Export Ticket'}</button></div>`;
 	el.appendChild(div);
   });
 }
 
-function anprFilterLogs(){const q=document.getElementById('anpr-search').value.toUpperCase();document.querySelectorAll('.log-card').forEach(c=>{c.style.display=(c.getAttribute('data-plate')||'').includes(q)?'block':'none';});}
+function anprFilterLogs(){
+  const raw=document.getElementById('anpr-search').value.toUpperCase();
+  const q=raw.replace(/[^A-Z0-9]/g,'');
+  document.querySelectorAll('.log-card').forEach(card=>{
+	const plate=(card.getAttribute('data-plate')||'').replace(/[^A-Z0-9]/g,'');
+	const barcode=card.getAttribute('data-barcode')||'';
+	card.style.display=(!q||plate.includes(q)||barcode.includes(q))?'block':'none';
+  });
+}
 
 async function anprCheckout(plate){
   if(!confirm(`Confirm checkout for ${plate}?`))return;
@@ -1842,7 +2103,7 @@ async function anprCheckout(plate){
 
 function anprShowInvoice(data){
   const stamp=document.getElementById('anpr-stamp')?.value||'OPERIX · Mind Break';
-  document.getElementById('anpr-inv-stamp-top').innerText=stamp;
+  // stamp field removed
   // Generate ticket number
   const ticketNum='TKT-'+Date.now().toString(36).toUpperCase().slice(-6);
   document.getElementById('anpr-inv-ticketnum').innerText=ticketNum;
