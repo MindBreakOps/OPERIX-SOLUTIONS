@@ -417,6 +417,9 @@ textarea.field{resize:none;line-height:1.6;}
 	<!-- ACCOUNTS PANEL -->
 	<div id="admin-panel-accounts" class="acc-panel active" style="padding-bottom:40px;">
 	  <div class="sec-hdr"><h2>System Accounts</h2><div class="line"></div>
+		<button onclick="syncAccountsToEmp()" style="padding:6px 10px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:var(--r3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:4px;margin-right:5px;">
+		  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>Sync→Staff
+		</button>
 		<button onclick="openAdminModal('account')" class="btn-dark" style="padding:6px 11px;font-size:11px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add</button>
 	  </div>
 	  <div id="admin-accounts-list"><div style="text-align:center;padding:28px;color:var(--text3);font-size:12px;">Loading accounts…</div></div>
@@ -822,7 +825,7 @@ textarea.field{resize:none;line-height:1.6;}
 // ═══════════════════════════════
 // CONFIG
 // ═══════════════════════════════
-const OPS_API  = 'https://script.google.com/macros/s/AKfycbywhi4ABCKljA30_86mnjkeJ-xqCn7m6nWsBSCGZMugsuKVCLjPXvikIEqWKFTBudgo/exec';
+const OPS_API  = 'https://script.google.com/macros/s/AKfycbzRocTg2dzUVJGnaoXjckhGh0HV8pf5iRF5xflISz6dGFNZJYBuKJDIaSV9v2nBJbaC/exec';
 
 const HR_API   = 'https://script.google.com/macros/s/AKfycbz34WWbbswac1O6vJaae-rNsRqQZLtObz6e3eFEmx5x3iij9GCz0Hp7fV6wONe-BMAx/exec';
 
@@ -1647,6 +1650,26 @@ function exportStaffXLSX(){
   XLSX.writeFile(wb,`OPERIX_Staff_${new Date().toISOString().split('T')[0]}.xlsx`);
 }
 
+// Sync accounts → emp-info (generates IDs automatically)
+async function syncAccountsToEmp(){
+  const btn = event.target.closest('button');
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '⟳ Syncing…';
+  const d = await gasCall(OPS_API, {action:'syncAccountsToEmp'});
+  btn.disabled = false;
+  btn.innerHTML = orig;
+  if(d && d.success){
+	const msg = d.added > 0
+	  ? `✓ Synced ${d.added} new employee${d.added>1?'s':''} to Staff Info`
+	  : 'All accounts already in Staff Info';
+	alert(msg);
+	if(d.added > 0) loadAdminStaff();
+  } else {
+	alert('Sync error: ' + (d?.error || 'unknown'));
+  }
+}
+
 // ═══════════════════════════════
 // OPS BOARD
 // ═══════════════════════════════
@@ -1695,10 +1718,19 @@ async function opsSave(){
   const data={action:'saveInvoice',plateNum:plate,cardNum:card,clientName:currentTab==='mb'?'Mind Break member':name,valetName:u.name,serviceType:currentTab==='mb'?'Free':'Paid',amount:currentTab==='mb'?0:19,phone,date,status:'Parked',ref};
   const btn=document.getElementById('ops-save-btn');btn.disabled=true;btn.innerText='Saving…';
   try{
-	await fetch(OPS_API,{method:'POST',mode:'no-cors',body:JSON.stringify(data)});
-	await captureReceipt({...data,staffName:u.name});
+	// Use regular POST to get opID back
+	const res = await fetch(OPS_API,{method:'POST',body:JSON.stringify(data)});
+	const saved = await res.json().catch(()=>({}));
+	const opID  = saved.opID || ref;
+	await captureReceipt({...data,staffName:u.name,opID});
+	alert('Operation saved! ID: '+opID);
+	switchTab(currentTab);
+  }catch(e){
+	// Fallback no-cors if above fails
+	await fetch(OPS_API,{method:'POST',mode:'no-cors',body:JSON.stringify(data)}).catch(()=>{});
+	await captureReceipt({...data,staffName:u.name,opID:ref});
 	alert('Operation saved!');switchTab(currentTab);
-  }catch(e){alert('Connection error');}
+  }
   btn.disabled=false;btn.innerText='Save & Submit';
 }
 
@@ -1711,9 +1743,9 @@ async function captureReceipt(d){
   document.getElementById('cap-mobile').innerText=d.phone||'—';
   document.getElementById('cap-time').innerText=new Date().toLocaleString('en-GB').replace(',',' ·');
   document.getElementById('cap-amount').innerText=d.amount??'0';
-  const qrVal = JSON.stringify({plate:d.plateNum,card:d.cardNum,client:d.clientName,staff:d.staffName||d.valetName,amount:d.amount,date:d.date,ref:d.ref||''});
-  const barcodeVal='OPX'+String(d.cardNum||'').padStart(6,'0');
-  document.getElementById('cap-barcode-num').innerText=barcodeVal;
+  const opIDVal = d.opID || d.ref || genRef();
+  const qrVal = JSON.stringify({opID:opIDVal,plate:d.plateNum,card:d.cardNum,client:d.clientName,staff:d.staffName||d.valetName,amount:d.amount});
+  document.getElementById('cap-barcode-num').innerText=opIDVal;
   await new Promise(r=>setTimeout(r,60));
   drawQR('ops-receipt-qr', qrVal, 120);
   await new Promise(r=>setTimeout(r,600));
@@ -1722,12 +1754,12 @@ async function captureReceipt(d){
 }
 
 function filterReports(){
-  const q = (document.getElementById('reports-search')?.value || '').replace(/\s/g,'').toUpperCase();
+  const q = (document.getElementById('reports-search')?.value || '').trim().toLowerCase();
   document.querySelectorAll('#reports-list .inv-card').forEach(card=>{
 	if(!q){ card.style.display=''; return; }
-	const plate = (card.getAttribute('data-plate') || '').toUpperCase();
-	const card_ = (card.getAttribute('data-card')  || '');
-	card.style.display = (plate.includes(q) || card_.includes(q)) ? '' : 'none';
+	const plate = (card.getAttribute('data-plate') || '').toLowerCase();
+	const valet = (card.getAttribute('data-valet') || '').toLowerCase();
+	card.style.display = (plate.includes(q) || valet.includes(q)) ? '' : 'none';
   });
 }
 
@@ -1775,6 +1807,7 @@ function renderReports(rows){
 	const clientStr= String(r.clientName|| '');
 	const valetStr = String(r.valet || r.valetName || '');
 	const svcStr   = String(r.serviceType || '');
+	const opIDStr  = String(r.opID || '');
 	const barcode  = 'OPX' + cardStr.replace(/[^0-9]/g,'').padStart(6,'0');
 	// Store row in a global map to avoid JSON.stringify in HTML
 	window._rptData = window._rptData || {};
@@ -1784,6 +1817,7 @@ function renderReports(rows){
 	div.className = 'inv-card';
 	div.setAttribute('data-plate', plateStr);
 	div.setAttribute('data-card',  cardStr);
+	div.setAttribute('data-valet', valetStr.toLowerCase());
 	div.innerHTML = `
 	  <div style="display:flex;">
 		<div style="width:4px;background:${ip?'var(--amber)':'var(--green)'};flex-shrink:0;border-radius:4px 0 0 4px;"></div>
@@ -1810,6 +1844,10 @@ function renderReports(rows){
 			  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${valetStr||'—'}</div>
 			</div>
 		  </div>
+		  ${opIDStr?`<div style="background:var(--surface2);border-radius:7px;padding:6px 9px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;">
+			<span style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Op ID</span>
+			<span style="font-family:'Fira Code',monospace;font-size:11px;font-weight:700;color:var(--text3);">${opIDStr}</span>
+		  </div>`:''}
 		  <div style="display:flex;gap:6px;">
 			<button onclick="reExport(window._rptData[${i}])" class="btn-ghost" style="flex:1;padding:7px;font-size:11px;justify-content:center;">
 			  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
