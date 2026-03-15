@@ -220,7 +220,13 @@ textarea.field{resize:none;line-height:1.6;}
   <div class="app-header">
 	<div><div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--text);">OPERIX</div><div style="font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.15em;text-transform:uppercase;">Workspaces</div></div>
 	<div style="display:flex;align-items:center;gap:9px;">
-	  <div style="text-align:right;"><div id="ws-username" style="font-size:13px;font-weight:600;color:var(--text);"></div><div id="ws-role-hint" style="font-size:9px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;"></div></div>
+	  <div style="display:flex;align-items:center;gap:10px;">
+		  <div style="text-align:right;">
+			<div id="ws-username" style="font-size:13px;font-weight:600;color:var(--text);"></div>
+			<div id="ws-role-hint" style="font-size:9px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;"></div>
+		  </div>
+		  <div id="ws-user-avatar" style="width:36px;height:36px;border-radius:10px;overflow:hidden;flex-shrink:0;border:2px solid var(--border2);background:var(--gold-bg);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--gold);"></div>
+		</dv></div>
 	  <button onclick="location.reload()" class="btn-danger"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
 	</div>
   </div>
@@ -470,9 +476,12 @@ textarea.field{resize:none;line-height:1.6;}
   </div>
   <div id="ops-drop" class="settings-drop">
 	<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;"><span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:800;">Settings</span><button onclick="toggleDrop('ops-drop')" style="background:none;border:none;cursor:pointer;color:var(--text3);display:flex;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-	<div style="padding:10px;background:var(--surface2);border-radius:var(--r3);margin-bottom:10px;border:1px solid var(--border);">
-	  <div id="ops-user-name" style="font-size:13px;font-weight:600;color:var(--text);"></div>
-	  <div id="ops-user-role" style="font-size:10px;color:var(--text3);margin-top:1px;text-transform:uppercase;letter-spacing:.1em;"></div>
+	<div style="padding:10px;background:var(--surface2);border-radius:var(--r3);margin-bottom:10px;border:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+	  <div id="ops-user-avatar-drop" style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;border:2px solid var(--border2);background:var(--gold-bg);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:800;color:var(--gold);"></div>
+	  <div>
+		<div id="ops-user-name" style="font-size:13px;font-weight:600;color:var(--text);"></div>
+		<div id="ops-user-role" style="font-size:10px;color:var(--text3);margin-top:1px;text-transform:uppercase;letter-spacing:.1em;"></div>
+	  </div>
 	</div>
 	<button onclick="showHub();toggleDrop('ops-drop')" class="btn-ghost" style="width:100%;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>Switch Board</button>
   </div>
@@ -517,9 +526,12 @@ textarea.field{resize:none;line-height:1.6;}
   </div>
   <div id="hr-drop" class="settings-drop">
 	<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;"><span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:800;">Settings</span><button onclick="toggleDrop('hr-drop')" style="background:none;border:none;cursor:pointer;color:var(--text3);display:flex;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-	<div style="padding:10px;background:var(--surface2);border-radius:var(--r3);margin-bottom:10px;border:1px solid var(--border);">
-	  <div id="hr-user-name" style="font-size:13px;font-weight:600;color:var(--text);"></div>
-	  <div id="hr-user-role" style="font-size:10px;color:var(--text3);margin-top:1px;text-transform:uppercase;letter-spacing:.1em;"></div>
+	<div style="padding:10px;background:var(--surface2);border-radius:var(--r3);margin-bottom:10px;border:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+	  <div id="hr-user-avatar-drop" style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;border:2px solid var(--border2);background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:800;color:var(--blue);"></div>
+	  <div>
+		<div id="hr-user-name" style="font-size:13px;font-weight:600;color:var(--text);"></div>
+		<div id="hr-user-role" style="font-size:10px;color:var(--text3);margin-top:1px;text-transform:uppercase;letter-spacing:.1em;"></div>
+	  </div>
 	</div>
 	<button onclick="showHub();toggleDrop('hr-drop')" class="btn-ghost" style="width:100%;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>Switch Board</button>
   </div>
@@ -612,7 +624,7 @@ textarea.field{resize:none;line-height:1.6;}
   </div>
   <div id="anpr-profile" style="display:none;padding:16px;max-width:520px;margin:0 auto;">
 	<div class="card" style="padding:24px;text-align:center;">
-	  <div style="width:60px;height:60px;border-radius:18px;background:var(--green-bg);border:1.5px solid var(--green-border);display:inline-flex;align-items:center;justify-content:center;margin-bottom:13px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+	  <div id="anpr-profile-avatar" style="width:72px;height:72px;border-radius:20px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;margin-bottom:13px;background:var(--green-bg);border:2px solid var(--green-border);font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:800;color:var(--green);"></div>
 	  <div style="font-size:10px;color:var(--text3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px;">System Operator</div>
 	  <div id="anpr-profile-name" style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:var(--text);"></div>
 	  <div id="anpr-profile-role" style="margin-top:8px;display:inline-block;" class="tag tag-green"></div>
@@ -709,16 +721,59 @@ textarea.field{resize:none;line-height:1.6;}
   </div>
   <div style="padding:8px 22px;background:#eceae3;text-align:center;font-size:9px;color:#888;letter-spacing:.12em;font-weight:600;text-transform:uppercase;">OPERIX PLATFORM · MIND BREAK CAFÉ · 2026</div>
 </div>
+
+<!-- PHOTO UPLOAD MODAL -->
+<div id="photo-upload-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);">
+  <div style="width:100%;max-width:320px;background:var(--surface);border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.18);">
+	<div style="padding:15px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+	  <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:800;color:var(--text);">Upload Photo</div>
+	  <button onclick="closePhotoModal()" style="background:transparent;border:none;cursor:pointer;color:var(--text3);display:flex;padding:4px;">
+		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+	  </button>
+	</div>
+	<div style="padding:18px;display:flex;flex-direction:column;gap:14px;">
+
+	  <!-- File picker — visible label wrapping the input -->
+	  <div>
+		<div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Choose Photo</div>
+		<label style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r2);cursor:pointer;transition:border-color .18s;" onmouseover="this.style.borderColor='var(--gold2)'" onmouseout="this.style.borderColor='var(--border2)'">
+		  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+		  <span id="photo-file-label" style="font-size:13px;font-weight:600;color:var(--text2);">Tap here to choose image</span>
+		  <input type="file" id="photo-file-input" accept="image/*" style="display:none;" onchange="handlePhotoSelect(this)">
+		</label>
+	  </div>
+
+	  <!-- Preview -->
+	  <div id="photo-preview-section" style="display:none;text-align:center;">
+		<img id="photo-preview-img" src="" style="width:96px;height:96px;object-fit:cover;border-radius:16px;border:2px solid var(--border2);display:block;margin:0 auto 8px;">
+		<div id="photo-upload-status" style="font-size:11px;color:var(--text3);"></div>
+	  </div>
+
+	  <!-- Upload button — always active -->
+	  <button onclick="uploadPhoto()" id="photo-upload-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;border:none;border-radius:var(--r2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 10px rgba(154,114,48,.25);">
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+		Upload & Save
+	  </button>
+	  <div id="photo-error-msg" style="font-size:11px;color:var(--red);text-align:center;min-height:14px;margin-top:-8px;"></div>
+
+	  <button onclick="closePhotoModal()" style="width:100%;padding:9px;background:transparent;border:1.5px solid var(--border2);color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;border-radius:var(--r3);cursor:pointer;">Cancel</button>
+	</div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════
 // CONFIG
 // ═══════════════════════════════
-const OPS_API  = 'https://script.google.com/macros/s/AKfycbym5olzrWMQJ6D6tfy1Lnoi22u77dKousynkxWkh3U_YtzScFLUL_LFS7tC8eY5oPiS/exec';
+const OPS_API  = 'https://script.google.com/macros/s/AKfycbxtjv36YNpRPM_Q7eCQpooo0C4L1QWEhK8zV5KL8jKsA3c4bDKQ3M4ngOKL6coTcz0k/exec';
+
 const HR_API   = 'https://script.google.com/macros/s/AKfycbz34WWbbswac1O6vJaae-rNsRqQZLtObz6e3eFEmx5x3iij9GCz0Hp7fV6wONe-BMAx/exec';
+
 const ANPR_API = 'https://script.google.com/macros/s/AKfycbwZC7gHUWdIrHp47L_muA2eYFkX2OR3TG1kKh9s9My1HE_MwvdYe1FKEwDulYx1TEyW9w/exec';
+
 const ACC_API  = 'https://script.google.com/macros/s/AKfycbzVCr1tsIoTLdNRQr26i2gnOT7XnU6QlQwtu9DnuoSMD-_OucnIstBmReJGNc_xhXCGAA/exec';
-// ▼▼▼ PASTE YOUR EMPLOYEE INFO GAS URL HERE ▼▼▼
-const EMP_API  = 'https://script.google.com/macros/s/AKfycbyIMPyViDJ8vdGsWovNkZVtLtjo3EqY1vyn6ihKpynuiv75mr326Gq9L83DRKtIl-SNdw/exec';
+
+const EMP_API  = 'https://script.google.com/macros/s/AKfycbyozoyYEgPm3PbldTgrHUFar6unKEHUAzALhY7HLwAMimUSZ7K-eDCskWtyn0EOxQzwgg/exec';
 
 const CAFE_LAT = 24.7694973, CAFE_LNG = 46.7625231, GPS_RADIUS = 150;
 const ADMIN_PASSCODE = '0707';
@@ -921,7 +976,8 @@ async function handleLogin(){
 	_anpr: userData,
 	name:  userData.name,
 	role:  userData.role,
-	phone: userData.phone,
+	phone: userData.phone  || '',
+	photo: userData.photo  || '',
 	email: email,
 	pass:  pass
   };
@@ -937,10 +993,11 @@ async function handleLogin(){
 function showWorkspaceSelector(){
   hideAllApps();
   document.getElementById('workspace-selector').classList.remove('hidden');
-  document.getElementById('ws-username').innerText=currentUser.name;
-  document.getElementById('ws-role-hint').innerText=currentUser.role;
-  document.getElementById('ws-accounting-card').style.display=isAdmin()?'block':'none';
-  document.getElementById('ws-admin-card').style.display=isAdmin()?'block':'none';
+  document.getElementById('ws-username').innerText  = currentUser.name;
+  document.getElementById('ws-role-hint').innerText = currentUser.role;
+  document.getElementById('ws-accounting-card').style.display = isAdmin()?'block':'none';
+  document.getElementById('ws-admin-card').style.display      = isAdmin()?'block':'none';
+  refreshAllUserAvatars();
 }
 
 function openWorkspace(ws){
@@ -1365,28 +1422,78 @@ function openAdminModal(type){
   document.getElementById('admin-modal').classList.remove('hidden');
 }
 
-function buildAccountFields(existing,editIdx){
-  const container=document.getElementById('admin-modal-fields');container.innerHTML='';
-  if(editIdx!==undefined)container.setAttribute('data-edit-idx',editIdx);else container.removeAttribute('data-edit-idx');
-  ACCOUNT_FIELDS.forEach(f=>{
-	const w=document.createElement('div');
-	const val=existing?.[f.id]||'';
-	let inp=f.type==='select'?`<select id="adm-${f.id}" class="field">${f.opts.map(o=>`<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select>`:`<input type="${f.type}" id="adm-${f.id}" class="field" placeholder="${f.ph||''}" value="${val}">`;
-	w.innerHTML=`<label class="field-label">${f.label}</label>${inp}`;container.appendChild(w);
+function buildAccountFields(existing, editIdx){
+  const container = document.getElementById('admin-modal-fields');
+  container.innerHTML = '';
+  if(editIdx !== undefined) container.setAttribute('data-edit-idx', editIdx);
+  else container.removeAttribute('data-edit-idx');
+
+  ACCOUNT_FIELDS.forEach(f => {
+	const w   = document.createElement('div');
+	const val = existing?.[f.id] || '';
+
+	if(f.id === 'photo'){
+	  const photoVal  = val || '';
+	  const initials  = (existing?.name || '?').charAt(0).toUpperCase();
+	  w.innerHTML = `
+		<label class="field-label">Profile Photo</label>
+		<div style="display:flex;align-items:center;gap:12px;padding:11px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r2);">
+		  <div id="acc-photo-thumb" style="width:54px;height:54px;border-radius:13px;overflow:hidden;flex-shrink:0;border:2px solid var(--border2);background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:var(--blue);">
+			${photoVal ? `<img src="${photoVal}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : initials}
+		  </div>
+		  <div style="flex:1;">
+			<input type="url" id="adm-photo" class="field" placeholder="Paste image URL or upload below" value="${photoVal}" style="margin-bottom:8px;font-size:12px;" oninput="updateAccPhotoThumb(this.value)">
+			<button type="button" onclick="openPhotoModal('account')" style="width:100%;padding:8px;background:var(--gold-bg);border:1.5px solid var(--gold-border);color:var(--gold);font-size:12px;font-weight:700;border-radius:var(--r3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;">
+			  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+			  Upload Photo from Device
+			</button>
+		  </div>
+		</div>`;
+	} else {
+	  let inp = f.type === 'select'
+		? `<select id="adm-${f.id}" class="field">${f.opts.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select>`
+		: `<input type="${f.type}" id="adm-${f.id}" class="field" placeholder="${f.ph||''}" value="${val}">`;
+	  w.innerHTML = `<label class="field-label">${f.label}</label>${inp}`;
+	}
+	container.appendChild(w);
   });
 }
+function buildStaffFields(existing, editIdx){
+  const container = document.getElementById('admin-modal-fields');
+  container.innerHTML = '';
+  if(editIdx !== undefined) container.setAttribute('data-edit-idx', editIdx);
+  else container.removeAttribute('data-edit-idx');
 
-function buildStaffFields(existing,editIdx){
-  const container=document.getElementById('admin-modal-fields');container.innerHTML='';
-  if(editIdx!==undefined)container.setAttribute('data-edit-idx',editIdx);else container.removeAttribute('data-edit-idx');
-  STAFF_FIELDS.forEach(f=>{
-	const w=document.createElement('div');
-	const val=existing?.[f.id]||'';
-	let inp=f.type==='select'?`<select id="adm-${f.id}" class="field">${f.opts.map(o=>`<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select>`:`<input type="${f.type}" id="adm-${f.id}" class="field" placeholder="${f.ph||''}" value="${val}">`;
-	w.innerHTML=`<label class="field-label">${f.label}</label>${inp}`;container.appendChild(w);
+  STAFF_FIELDS.forEach(f => {
+	const w   = document.createElement('div');
+	const val = existing?.[f.id] || existing?.[f.id==='photo'?'Photo URL':f.id] || '';
+
+	if(f.id === 'photo'){
+	  const photoVal = val || '';
+	  const initials = (existing?.name || existing?.['Full Name'] || '?').charAt(0).toUpperCase();
+	  w.innerHTML = `
+		<label class="field-label">Profile Photo</label>
+		<div style="display:flex;align-items:center;gap:12px;padding:11px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r2);">
+		  <div id="staff-photo-thumb" style="width:54px;height:54px;border-radius:13px;overflow:hidden;flex-shrink:0;border:2px solid var(--border2);background:var(--green-bg);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:var(--green);">
+			${photoVal ? `<img src="${photoVal}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : initials}
+		  </div>
+		  <div style="flex:1;">
+			<input type="url" id="adm-photo" class="field" placeholder="Paste image URL or upload below" value="${photoVal}" style="margin-bottom:8px;font-size:12px;" oninput="updateStaffPhotoThumb(this.value)">
+			<button type="button" onclick="openPhotoModal('staff')" style="width:100%;padding:8px;background:var(--gold-bg);border:1.5px solid var(--gold-border);color:var(--gold);font-size:12px;font-weight:700;border-radius:var(--r3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;">
+			  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+			  Upload Photo from Device
+			</button>
+		  </div>
+		</div>`;
+	} else {
+	  let inp = f.type === 'select'
+		? `<select id="adm-${f.id}" class="field">${f.opts.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select>`
+		: `<input type="${f.type}" id="adm-${f.id}" class="field" placeholder="${f.ph||''}" value="${val}">`;
+	  w.innerHTML = `<label class="field-label">${f.label}</label>${inp}`;
+	}
+	container.appendChild(w);
   });
 }
-
 function closeAdminModal(){document.getElementById('admin-modal').classList.add('hidden');}
 
 async function submitAdminModal(){
@@ -1470,6 +1577,7 @@ function initOps(){
   document.getElementById('ops-app').classList.remove('hidden');
   document.getElementById('ops-user-name').innerText=u.name||'';
   document.getElementById('ops-user-role').innerText=u.role||'Staff';
+  setUserAvatarEl('ops-user-avatar-drop', currentUser.name, currentUser.photo||'', 40, 10);
   document.getElementById('ops-proj-label').innerText=currentProject?.name||'Mind Break Café';
   const attNav=document.getElementById('nav-ops-att');
   if(isAdmin())attNav.classList.remove('hidden');else attNav.classList.add('hidden');
@@ -1590,6 +1698,7 @@ function initHR(){
   document.getElementById('hr-app').classList.remove('hidden');
   document.getElementById('hr-user-name').innerText=u.name||'';
   document.getElementById('hr-user-role').innerText=u.job||u.role||'Staff';
+  setUserAvatarEl('hr-user-avatar-drop', currentUser.name, currentUser.photo||'', 40, 10);
   if(isAdmin()){document.getElementById('admin-panel').classList.remove('hidden');loadAdminReqs();}
   startGPS();
 }
@@ -1656,6 +1765,7 @@ function initANPR(){
   document.getElementById('anpr-app').classList.remove('hidden');
   document.getElementById('anpr-profile-name').innerText=u.name||'Operator';
   document.getElementById('anpr-profile-role').innerText=u.role||'Operator';
+  setUserAvatarEl('anpr-profile-avatar', currentUser.name, currentUser.photo||'', 72, 20);
   anprTab('gate',document.getElementById('anpr-nav-gate'));
 }
 
@@ -1754,9 +1864,171 @@ async function anprExportTicket(){
 }
 
 // ═══════════════════════════════
+// ═══════════════════════════
+// PHOTO UPLOAD SYSTEM
+// ═══════════════════════════
+let photoModalTarget = null; // 'account' | 'staff'
+let photoFileData    = null; // { base64, mimeType, fileName }
+
+function openPhotoModal(target){
+  photoModalTarget = target;
+  photoFileData    = null;
+  // Reset everything
+  document.getElementById('photo-file-input').value   = '';
+  document.getElementById('photo-file-label').innerText = 'Tap to choose image…';
+  document.getElementById('photo-preview-section').style.display = 'none';
+  document.getElementById('photo-preview-img').src    = '';
+  document.getElementById('photo-upload-status').innerText = '';
+  document.getElementById('photo-error-msg').innerText    = '';
+  const btn = document.getElementById('photo-upload-btn');
+  btn.disabled  = false;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload & Save Photo';
+  const m=document.getElementById('photo-upload-modal');
+  m.style.display='flex';
+}
+
+function closePhotoModal(){
+  document.getElementById('photo-upload-modal').style.display='none';
+  photoFileData = null;
+}
+
+function handlePhotoSelect(input){
+  const file = input.files[0];
+  if(!file) return;
+
+  // Validate size max 4MB
+  if(file.size > 4 * 1024 * 1024){
+	document.getElementById('photo-error-msg').innerText = 'File too large — max 4MB';
+	return;
+  }
+  document.getElementById('photo-error-msg').innerText = '';
+
+  const reader = new FileReader();
+  reader.onload = e => {
+	photoFileData = {
+	  base64:   e.target.result,
+	  mimeType: file.type || 'image/jpeg',
+	  fileName: file.name
+	};
+	// Show preview
+	document.getElementById('photo-preview-img').src            = e.target.result;
+	document.getElementById('photo-preview-section').style.display = 'block';
+	document.getElementById('photo-upload-status').innerText
+	  = file.name + ' · ' + (file.size / 1024).toFixed(0) + ' KB';
+	document.getElementById('photo-file-label').innerText = '✓ ' + file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadPhoto(){
+  const btn = document.getElementById('photo-upload-btn');
+  const err = document.getElementById('photo-error-msg');
+
+  if(!photoFileData){
+	// No file chosen yet — prompt the file picker
+	document.getElementById('photo-file-input').click();
+	err.innerText = 'Please choose a photo first, then tap Upload again.';
+	err.style.color = 'var(--amber)';
+	return;
+  }
+
+  btn.disabled  = true;
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Uploading…';
+  err.innerText = '';
+  document.getElementById('photo-upload-status').innerText = 'Uploading to Google Drive…';
+  document.getElementById('photo-upload-status').style.color = 'var(--gold)';
+
+  const apiUrl = (photoModalTarget === 'staff') ? EMP_API : OPS_API;
+
+  try{
+	const d = await gasCall(apiUrl, {
+	  action:   'uploadPhoto',
+	  base64:   photoFileData.base64,
+	  mimeType: photoFileData.mimeType,
+	  fileName: photoFileData.fileName
+	});
+
+	if(d && d.success){
+	  const thumbUrl = d.thumbnailUrl;
+	  // Put URL into the form field
+	  const inp = document.getElementById('adm-photo');
+	  if(inp) inp.value = thumbUrl;
+	  // Update the inline thumbnail
+	  if(photoModalTarget === 'account') updateAccPhotoThumb(thumbUrl);
+	  else updateStaffPhotoThumb(thumbUrl);
+
+	  document.getElementById('photo-upload-status').innerText = '✓ Uploaded successfully!';
+	  document.getElementById('photo-upload-status').style.color = 'var(--green)';
+	  setTimeout(closePhotoModal, 1000);
+	} else {
+	  throw new Error(d?.error || 'Upload failed — check GAS has uploadPhoto action');
+	}
+  } catch(e){
+	err.innerText = 'Error: ' + e.message;
+	err.style.color = 'var(--red)';
+	btn.disabled  = false;
+	btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload & Save Photo';
+  }
+}
+
+function updateAccPhotoThumb(url){
+  const t = document.getElementById('acc-photo-thumb');
+  if(!t || !url) return;
+  let src = url;
+  const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if(m) src = 'https://lh3.googleusercontent.com/d/' + m[1];
+  t.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`;
+}
+
+function updateStaffPhotoThumb(url){
+  const t = document.getElementById('staff-photo-thumb');
+  if(!t || !url) return;
+  let src = url;
+  const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if(m) src = 'https://lh3.googleusercontent.com/d/' + m[1];
+  t.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`;
+}
+
+// ═══════════════════════════
 // INIT
-// ═══════════════════════════════
+// ═══════════════════════════
 document.addEventListener('DOMContentLoaded',()=>switchTab('mb'));
+
+// ── Set logged-in user avatar everywhere ──
+function setUserAvatarEl(elId, name, photo, size=36, radius=10){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  const initial = (name||'?').charAt(0).toUpperCase();
+  const colors  = ['var(--gold)','var(--blue)','var(--green)','var(--purple)','var(--red)'];
+  const color   = colors[(name||'').charCodeAt(0) % colors.length];
+  if(photo && photo.startsWith('http')){
+	let src = photo;
+	const m = photo.match(/\/d\/([a-zA-Z0-9_-]+)/);
+	if(m) src = 'https://lh3.googleusercontent.com/d/' + m[1];
+	el.style.background = 'transparent';
+	el.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:${radius}px;" onerror="this.parentElement.style.background='${color}20';this.parentElement.innerHTML='${initial}'">`;
+  } else {
+	el.style.background  = color + '20';
+	el.style.borderColor = color + '50';
+	el.style.color       = color;
+	el.innerText         = initial;
+  }
+}
+
+function refreshAllUserAvatars(){
+  if(!currentUser) return;
+  const name  = currentUser.name  || '';
+  const photo = currentUser.photo || '';
+  // Workspace selector top-right
+  setUserAvatarEl('ws-user-avatar',        name, photo, 36, 10);
+  // OPS settings drop
+  setUserAvatarEl('ops-user-avatar-drop',  name, photo, 40, 10);
+  // HR settings drop
+  setUserAvatarEl('hr-user-avatar-drop',   name, photo, 40, 10);
+  // ANPR profile page
+  setUserAvatarEl('anpr-profile-avatar',   name, photo, 72, 20);
+}
+
 </script>
 </body>
 </html>
