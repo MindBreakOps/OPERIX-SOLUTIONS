@@ -1864,28 +1864,28 @@ async function sbGetAttendance(){
 async function sbGetMyAttendance(name){
   // Try exact match first
   try {
-    var rows = await sbFetch(
-      'operix_attendance?employee=eq.' + encodeURIComponent(name) + '&order=submitted_at.asc',
-      {method:'GET'}
-    );
-    if(Array.isArray(rows) && rows.length > 0) return rows.map(normAttRow);
+	var rows = await sbFetch(
+	  'operix_attendance?employee=eq.' + encodeURIComponent(name) + '&order=submitted_at.asc',
+	  {method:'GET'}
+	);
+	if(Array.isArray(rows) && rows.length > 0) return rows.map(normAttRow);
   } catch(e) { console.warn('sbGetMyAttendance exact match failed:', e); }
 
   // Fallback: load all and filter client-side (handles apostrophes, encoding issues)
   try {
-    var all = await sbFetch('operix_attendance?order=submitted_at.asc', {method:'GET'});
-    if(!Array.isArray(all)) return [];
-    var nameLower = (name||'').toLowerCase().trim();
-    // Match by full name OR by first name (handles "Asim Aljma'an" vs "Asim Aljmaan" etc.)
-    var firstName = nameLower.split(/[\s']/)[0];
-    var filtered = all.filter(function(r){
-      var emp = (r.employee||'').toLowerCase().trim();
-      return emp === nameLower || emp.split(/[\s']/)[0] === firstName;
-    });
-    return filtered.map(normAttRow);
+	var all = await sbFetch('operix_attendance?order=submitted_at.asc', {method:'GET'});
+	if(!Array.isArray(all)) return [];
+	var nameLower = (name||'').toLowerCase().trim();
+	// Match by full name OR by first name (handles "Asim Aljma'an" vs "Asim Aljmaan" etc.)
+	var firstName = nameLower.split(/[\s']/)[0];
+	var filtered = all.filter(function(r){
+	  var emp = (r.employee||'').toLowerCase().trim();
+	  return emp === nameLower || emp.split(/[\s']/)[0] === firstName;
+	});
+	return filtered.map(normAttRow);
   } catch(e) {
-    console.warn('sbGetMyAttendance fallback failed:', e);
-    return [];
+	console.warn('sbGetMyAttendance fallback failed:', e);
+	return [];
   }
 }
 
@@ -2244,20 +2244,20 @@ async function loadAccProjects() {
   if (!sel) return;
   sel.innerHTML = '<option value="">Loading...</option>';
   try {
-    var rows = await sbFetch('operix_shifts?select=project&order=project.asc', { method: 'GET' });
-    var projects = [];
-    var seen = {};
-    (rows || []).forEach(function(r) {
-      var p = (r.project || '').trim();
-      if (p && !seen[p]) { seen[p] = true; projects.push(p); }
-    });
-    projects.sort();
-    sel.innerHTML = projects.length
-      ? projects.map(function(p) { return '<option value="' + p + '">' + p + '</option>'; }).join('')
-      : '<option value="Mind Break Cafe">Mind Break Cafe</option>';
+	var rows = await sbFetch('operix_shifts?select=project&order=project.asc', { method: 'GET' });
+	var projects = [];
+	var seen = {};
+	(rows || []).forEach(function(r) {
+	  var p = (r.project || '').trim();
+	  if (p && !seen[p]) { seen[p] = true; projects.push(p); }
+	});
+	projects.sort();
+	sel.innerHTML = projects.length
+	  ? projects.map(function(p) { return '<option value="' + p + '">' + p + '</option>'; }).join('')
+	  : '<option value="Mind Break Cafe">Mind Break Cafe</option>';
   } catch(e) {
-    sel.innerHTML = '<option value="Mind Break Cafe">Mind Break Cafe</option>';
-    console.warn('loadAccProjects:', e);
+	sel.innerHTML = '<option value="Mind Break Cafe">Mind Break Cafe</option>';
+	console.warn('loadAccProjects:', e);
   }
 }
 
@@ -2267,29 +2267,29 @@ async function loadAccSummary() {
   var pf = project ? ('&project=eq.' + encodeURIComponent(project)) : '';
 
   ['kpi-salaries','kpi-expenses','kpi-assets','kpi-net'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.innerText = '...';
+	var el = document.getElementById(id);
+	if (el) el.innerText = '...';
   });
 
   try {
-    var results = await Promise.all([
-      sbFetch('operix_salaries?select=amount' + pf, { method: 'GET' }).catch(function() { return []; }),
-      sbFetch('operix_expenses?select=amount' + pf, { method: 'GET' }).catch(function() { return []; }),
-      sbFetch('operix_assets?select=value_sar' + pf, { method: 'GET' }).catch(function() { return []; }),
-      sbFetch('operix_clearance?select=amount' + pf, { method: 'GET' }).catch(function() { return []; })
-    ]);
+	var results = await Promise.all([
+	  sbFetch('operix_salaries?select=amount' + pf, { method: 'GET' }).catch(function() { return []; }),
+	  sbFetch('operix_expenses?select=amount' + pf, { method: 'GET' }).catch(function() { return []; }),
+	  sbFetch('operix_assets?select=value_sar' + pf, { method: 'GET' }).catch(function() { return []; }),
+	  sbFetch('operix_clearance?select=amount' + pf, { method: 'GET' }).catch(function() { return []; })
+	]);
 
-    var sal = (results[0] || []).reduce(function(s, r) { return s + parseFloat(r.amount || 0); }, 0);
-    var exp = (results[1] || []).reduce(function(s, r) { return s + parseFloat(r.amount || 0); }, 0);
-    var ast = (results[2] || []).reduce(function(s, r) { return s + parseFloat(r.value_sar || 0); }, 0);
-    var net = ast - sal - exp;
+	var sal = (results[0] || []).reduce(function(s, r) { return s + parseFloat(r.amount || 0); }, 0);
+	var exp = (results[1] || []).reduce(function(s, r) { return s + parseFloat(r.amount || 0); }, 0);
+	var ast = (results[2] || []).reduce(function(s, r) { return s + parseFloat(r.value_sar || 0); }, 0);
+	var net = ast - sal - exp;
 
-    document.getElementById('kpi-salaries').innerText = fmtSAR(sal);
-    document.getElementById('kpi-expenses').innerText = fmtSAR(exp);
-    document.getElementById('kpi-assets').innerText   = fmtSAR(ast);
-    var netEl = document.getElementById('kpi-net');
-    netEl.innerText   = fmtSAR(Math.abs(net));
-    netEl.style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
+	document.getElementById('kpi-salaries').innerText = fmtSAR(sal);
+	document.getElementById('kpi-expenses').innerText = fmtSAR(exp);
+	document.getElementById('kpi-assets').innerText   = fmtSAR(ast);
+	var netEl = document.getElementById('kpi-net');
+	netEl.innerText   = fmtSAR(Math.abs(net));
+	netEl.style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
   } catch(e) { console.error('loadAccSummary:', e); }
 }
 
@@ -2305,31 +2305,31 @@ function accTab(id, btn) {
 // ── Map raw Supabase rows to display objects ──
 function mapAccRows(type, raw) {
   if (type === 'salaries') {
-    return (raw || []).map(function(r) {
-      return { 'ID': r.id, 'Employee Name': r.employee_name || '', 'Position': r.position || '',
-               'Amount (SAR)': parseFloat(r.amount || 0), 'Month': r.month || '',
-               'Payment Type': r.payment_type || '', 'Status': r.status || 'Pending', 'Notes': r.notes || '' };
-    });
+	return (raw || []).map(function(r) {
+	  return { 'ID': r.id, 'Employee Name': r.employee_name || '', 'Position': r.position || '',
+			   'Amount (SAR)': parseFloat(r.amount || 0), 'Month': r.month || '',
+			   'Payment Type': r.payment_type || '', 'Status': r.status || 'Pending', 'Notes': r.notes || '' };
+	});
   }
   if (type === 'expenses') {
-    return (raw || []).map(function(r) {
-      return { 'ID': r.id, 'Description': r.description || '', 'Category': r.category || '',
-               'Amount (SAR)': parseFloat(r.amount || 0), 'Date': r.date || '', 'Notes': r.notes || '' };
-    });
+	return (raw || []).map(function(r) {
+	  return { 'ID': r.id, 'Description': r.description || '', 'Category': r.category || '',
+			   'Amount (SAR)': parseFloat(r.amount || 0), 'Date': r.date || '', 'Notes': r.notes || '' };
+	});
   }
   if (type === 'assets') {
-    return (raw || []).map(function(r) {
-      return { 'ID': r.id, 'Asset Name': r.asset_name || '', 'Category': r.category || '',
-               'Value (SAR)': parseFloat(r.value_sar || 0), 'Acquired Date': r.acquired_date || '',
-               'Condition': r.condition || '', 'Notes': r.notes || '' };
-    });
+	return (raw || []).map(function(r) {
+	  return { 'ID': r.id, 'Asset Name': r.asset_name || '', 'Category': r.category || '',
+			   'Value (SAR)': parseFloat(r.value_sar || 0), 'Acquired Date': r.acquired_date || '',
+			   'Condition': r.condition || '', 'Notes': r.notes || '' };
+	});
   }
   if (type === 'clearance') {
-    return (raw || []).map(function(r) {
-      return { 'ID': r.id, 'Description': r.description || '', 'Party': r.party || '',
-               'Amount (SAR)': parseFloat(r.amount || 0), 'Type': r.type || '',
-               'Date': r.date || '', 'Status': r.status || 'Pending', 'Notes': r.notes || '' };
-    });
+	return (raw || []).map(function(r) {
+	  return { 'ID': r.id, 'Description': r.description || '', 'Party': r.party || '',
+			   'Amount (SAR)': parseFloat(r.amount || 0), 'Type': r.type || '',
+			   'Date': r.date || '', 'Status': r.status || 'Pending', 'Notes': r.notes || '' };
+	});
   }
   return [];
 }
@@ -2344,18 +2344,18 @@ async function loadAccList(type) {
   var tbl = ACC_TABLE[type];
   if (!tbl) return;
   try {
-    var raw  = await sbFetch(tbl + pf, { method: 'GET' });
-    var rows = mapAccRows(type, raw || []);
-    accCurrentData[type] = rows;
-    if (!rows.length) {
-      el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:12px;">No records yet for this project</div>';
-      return;
-    }
-    el.innerHTML = '';
-    rows.forEach(function(row) { el.appendChild(buildAccRow(type, row)); });
+	var raw  = await sbFetch(tbl + pf, { method: 'GET' });
+	var rows = mapAccRows(type, raw || []);
+	accCurrentData[type] = rows;
+	if (!rows.length) {
+	  el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:12px;">No records yet for this project</div>';
+	  return;
+	}
+	el.innerHTML = '';
+	rows.forEach(function(row) { el.appendChild(buildAccRow(type, row)); });
   } catch(e) {
-    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--red);font-size:12px;">Error: ' + e.message + '</div>';
-    console.error('loadAccList:', e);
+	el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--red);font-size:12px;">Error: ' + e.message + '</div>';
+	console.error('loadAccList:', e);
   }
 }
 
@@ -2367,79 +2367,79 @@ function buildAccRow(type, row) {
 
   // Build delete button safely via DOM
   var mkDel = function(t, i) {
-    var b = document.createElement('button');
-    b.style.cssText = 'padding:4px 8px;border-radius:6px;background:var(--red-bg);border:1px solid var(--red-border);color:var(--red);font-size:10px;cursor:pointer;display:flex;align-items:center;';
-    b.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>';
-    b.onclick = function() { accDelete(t, i); };
-    return b;
+	var b = document.createElement('button');
+	b.style.cssText = 'padding:4px 8px;border-radius:6px;background:var(--red-bg);border:1px solid var(--red-border);color:var(--red);font-size:10px;cursor:pointer;display:flex;align-items:center;';
+	b.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>';
+	b.onclick = function() { accDelete(t, i); };
+	return b;
   };
 
   var mkBtn = function(label, onclick, style) {
-    var b = document.createElement('button');
-    b.style.cssText = style;
-    b.innerText = label;
-    b.onclick = onclick;
-    return b;
+	var b = document.createElement('button');
+	b.style.cssText = style;
+	b.innerText = label;
+	b.onclick = onclick;
+	return b;
   };
 
   var actionStyle = 'padding:5px 10px;border-radius:6px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);font-size:10px;font-weight:700;cursor:pointer;';
 
   if (type === 'salaries') {
-    var isPaid = (row['Status'] || '').toLowerCase() === 'paid';
-    div.innerHTML =
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
-        '<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Employee Name'] || '') + '</div>' +
-        '<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Position'] || '') + ' - ' + (row['Month'] || '') + '</div></div>' +
-        '<div style="text-align:right;"><div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--blue);">' + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
-        '<span class="badge ' + (isPaid ? 'badge-done' : 'badge-pending') + '" style="margin-top:3px;">' + (row['Status'] || 'Pending') + '</span></div></div>' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-        '<span style="font-size:10px;color:var(--text4);">' + (row['Payment Type'] || '-') + (row['Notes'] ? ' - ' + row['Notes'] : '') + '</span>' +
-        '<div id="sal-btns-' + id + '" style="display:flex;gap:5px;"></div></div>';
-    var btnWrap = div.querySelector('#sal-btns-' + id);
-    if (!isPaid) btnWrap.appendChild(mkBtn('Mark Paid', function() { accUpdateField('salaries', id, 'status', 'Paid'); }, actionStyle));
-    btnWrap.appendChild(mkDel('salaries', id));
+	var isPaid = (row['Status'] || '').toLowerCase() === 'paid';
+	div.innerHTML =
+	  '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+		'<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Employee Name'] || '') + '</div>' +
+		'<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Position'] || '') + ' - ' + (row['Month'] || '') + '</div></div>' +
+		'<div style="text-align:right;"><div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--blue);">' + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
+		'<span class="badge ' + (isPaid ? 'badge-done' : 'badge-pending') + '" style="margin-top:3px;">' + (row['Status'] || 'Pending') + '</span></div></div>' +
+	  '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+		'<span style="font-size:10px;color:var(--text4);">' + (row['Payment Type'] || '-') + (row['Notes'] ? ' - ' + row['Notes'] : '') + '</span>' +
+		'<div id="sal-btns-' + id + '" style="display:flex;gap:5px;"></div></div>';
+	var btnWrap = div.querySelector('#sal-btns-' + id);
+	if (!isPaid) btnWrap.appendChild(mkBtn('Mark Paid', function() { accUpdateField('salaries', id, 'status', 'Paid'); }, actionStyle));
+	btnWrap.appendChild(mkDel('salaries', id));
 
   } else if (type === 'expenses') {
-    div.innerHTML =
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
-        '<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Description'] || '') + '</div>' +
-        '<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Category'] || '') + ' - ' + (row['Date'] || '') + '</div>' +
-        (row['Notes'] ? '<div style="font-size:10px;color:var(--text4);margin-top:2px;">' + row['Notes'] + '</div>' : '') + '</div>' +
-        '<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">' +
-          '<div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--red);">' + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
-          '<div id="exp-btns-' + id + '"></div></div></div>';
-    div.querySelector('#exp-btns-' + id).appendChild(mkDel('expenses', id));
+	div.innerHTML =
+	  '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+		'<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Description'] || '') + '</div>' +
+		'<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Category'] || '') + ' - ' + (row['Date'] || '') + '</div>' +
+		(row['Notes'] ? '<div style="font-size:10px;color:var(--text4);margin-top:2px;">' + row['Notes'] + '</div>' : '') + '</div>' +
+		'<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">' +
+		  '<div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--red);">' + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
+		  '<div id="exp-btns-' + id + '"></div></div></div>';
+	div.querySelector('#exp-btns-' + id).appendChild(mkDel('expenses', id));
 
   } else if (type === 'assets') {
-    var condClr = { 'Good': 'var(--green)', 'Fair': 'var(--amber)', 'Poor': 'var(--red)' }[row['Condition']] || 'var(--text3)';
-    div.innerHTML =
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
-        '<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Asset Name'] || '') + '</div>' +
-        '<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Category'] || '') + ' - Since ' + (row['Acquired Date'] || '-') + '</div>' +
-        '<div style="margin-top:4px;display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(0,0,0,.04);border:1px solid var(--border);">' +
-          '<span style="width:6px;height:6px;border-radius:50%;background:' + condClr + ';display:inline-block;"></span>' +
-          '<span style="font-size:9px;font-weight:700;color:' + condClr + ';">' + (row['Condition'] || '-') + '</span></div></div>' +
-        '<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">' +
-          '<div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--green);">' + Number(row['Value (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
-          '<div id="ast-btns-' + id + '"></div></div></div>';
-    div.querySelector('#ast-btns-' + id).appendChild(mkDel('assets', id));
+	var condClr = { 'Good': 'var(--green)', 'Fair': 'var(--amber)', 'Poor': 'var(--red)' }[row['Condition']] || 'var(--text3)';
+	div.innerHTML =
+	  '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+		'<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Asset Name'] || '') + '</div>' +
+		'<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Category'] || '') + ' - Since ' + (row['Acquired Date'] || '-') + '</div>' +
+		'<div style="margin-top:4px;display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(0,0,0,.04);border:1px solid var(--border);">' +
+		  '<span style="width:6px;height:6px;border-radius:50%;background:' + condClr + ';display:inline-block;"></span>' +
+		  '<span style="font-size:9px;font-weight:700;color:' + condClr + ';">' + (row['Condition'] || '-') + '</span></div></div>' +
+		'<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">' +
+		  '<div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--green);">' + Number(row['Value (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
+		  '<div id="ast-btns-' + id + '"></div></div></div>';
+	div.querySelector('#ast-btns-' + id).appendChild(mkDel('assets', id));
 
   } else if (type === 'clearance') {
-    var isCredit  = (row['Type'] || '') === 'Credit';
-    var isSettled = ['settled','paid'].includes((row['Status'] || '').toLowerCase());
-    div.innerHTML =
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
-        '<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Description'] || '') + '</div>' +
-        '<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Party'] || '') + ' - ' + (row['Date'] || '') + '</div></div>' +
-        '<div style="text-align:right;"><div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:' + (isCredit ? 'var(--green)' : 'var(--red)') + ';">' +
-          (isCredit ? '+' : '-') + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
-          '<span class="badge ' + (isSettled ? 'badge-done' : 'badge-pending') + '" style="margin-top:3px;">' + (row['Status'] || 'Pending') + '</span></div></div>' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-        '<span class="badge ' + (isCredit ? 'badge-free' : 'badge-paid') + '">' + (row['Type'] || '-') + '</span>' +
-        '<div id="clr-btns-' + id + '" style="display:flex;gap:5px;"></div></div>';
-    var clrWrap = div.querySelector('#clr-btns-' + id);
-    if (!isSettled) clrWrap.appendChild(mkBtn('Settle', function() { accUpdateField('clearance', id, 'status', 'Settled'); }, actionStyle));
-    clrWrap.appendChild(mkDel('clearance', id));
+	var isCredit  = (row['Type'] || '') === 'Credit';
+	var isSettled = ['settled','paid'].includes((row['Status'] || '').toLowerCase());
+	div.innerHTML =
+	  '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+		'<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Description'] || '') + '</div>' +
+		'<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Party'] || '') + ' - ' + (row['Date'] || '') + '</div></div>' +
+		'<div style="text-align:right;"><div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:' + (isCredit ? 'var(--green)' : 'var(--red)') + ';">' +
+		  (isCredit ? '+' : '-') + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
+		  '<span class="badge ' + (isSettled ? 'badge-done' : 'badge-pending') + '" style="margin-top:3px;">' + (row['Status'] || 'Pending') + '</span></div></div>' +
+	  '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+		'<span class="badge ' + (isCredit ? 'badge-free' : 'badge-paid') + '">' + (row['Type'] || '-') + '</span>' +
+		'<div id="clr-btns-' + id + '" style="display:flex;gap:5px;"></div></div>';
+	var clrWrap = div.querySelector('#clr-btns-' + id);
+	if (!isSettled) clrWrap.appendChild(mkBtn('Settle', function() { accUpdateField('clearance', id, 'status', 'Settled'); }, actionStyle));
+	clrWrap.appendChild(mkDel('clearance', id));
   }
   return div;
 }
@@ -2450,9 +2450,9 @@ async function accDelete(type, id) {
   var tbl = ACC_TABLE[type];
   if (!tbl) return;
   try {
-    await sbFetch(tbl + '?id=eq.' + id, { method: 'DELETE', headers: { 'Prefer': 'return=minimal' } });
-    loadAccList(type);
-    loadAccSummary();
+	await sbFetch(tbl + '?id=eq.' + id, { method: 'DELETE', headers: { 'Prefer': 'return=minimal' } });
+	loadAccList(type);
+	loadAccSummary();
   } catch(e) { alert('Delete error: ' + e.message); }
 }
 
@@ -2463,46 +2463,46 @@ async function accUpdateField(type, id, field, value) {
   var body = {};
   body[field] = value;
   try {
-    await sbFetch(tbl + '?id=eq.' + id, { method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify(body) });
-    loadAccList(type);
-    loadAccSummary();
+	await sbFetch(tbl + '?id=eq.' + id, { method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify(body) });
+	loadAccList(type);
+	loadAccSummary();
   } catch(e) { alert('Update error: ' + e.message); }
 }
 
 // ── Modal field definitions ──
 var ACC_MODAL_DEFS = {
   salary: [
-    { id: 'employee_name', label: 'Employee Name',  type: 'text',   ph: 'Full name', col: 'employee_name' },
-    { id: 'position',      label: 'Position',        type: 'text',   ph: 'e.g. Valet Staff', col: 'position' },
-    { id: 'amount',        label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
-    { id: 'month',         label: 'Month',            type: 'text',   ph: 'e.g. March 2026', col: 'month' },
-    { id: 'payment_type',  label: 'Payment Type',     type: 'select', opts: ['Bank Transfer','Cash','Cheque'], col: 'payment_type' },
-    { id: 'status',        label: 'Status',           type: 'select', opts: ['Pending','Paid'], col: 'status' },
-    { id: 'notes',         label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
+	{ id: 'employee_name', label: 'Employee Name',  type: 'text',   ph: 'Full name', col: 'employee_name' },
+	{ id: 'position',      label: 'Position',        type: 'text',   ph: 'e.g. Valet Staff', col: 'position' },
+	{ id: 'amount',        label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
+	{ id: 'month',         label: 'Month',            type: 'text',   ph: 'e.g. March 2026', col: 'month' },
+	{ id: 'payment_type',  label: 'Payment Type',     type: 'select', opts: ['Bank Transfer','Cash','Cheque'], col: 'payment_type' },
+	{ id: 'status',        label: 'Status',           type: 'select', opts: ['Pending','Paid'], col: 'status' },
+	{ id: 'notes',         label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
   ],
   expense: [
-    { id: 'description', label: 'Description',     type: 'text',   ph: 'What was purchased?', col: 'description' },
-    { id: 'amount',      label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
-    { id: 'category',    label: 'Category',         type: 'select', opts: ['Operations','Equipment','Maintenance','Transport','Utilities','Other'], col: 'category' },
-    { id: 'date',        label: 'Date',             type: 'date',   ph: '', col: 'date' },
-    { id: 'notes',       label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
+	{ id: 'description', label: 'Description',     type: 'text',   ph: 'What was purchased?', col: 'description' },
+	{ id: 'amount',      label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
+	{ id: 'category',    label: 'Category',         type: 'select', opts: ['Operations','Equipment','Maintenance','Transport','Utilities','Other'], col: 'category' },
+	{ id: 'date',        label: 'Date',             type: 'date',   ph: '', col: 'date' },
+	{ id: 'notes',       label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
   ],
   asset: [
-    { id: 'asset_name',    label: 'Asset Name',      type: 'text',   ph: 'e.g. Valet Cart', col: 'asset_name' },
-    { id: 'value_sar',     label: 'Value (SAR)',      type: 'number', ph: '0', col: 'value_sar' },
-    { id: 'category',      label: 'Category',         type: 'select', opts: ['Vehicle','Equipment','Furniture','Electronics','Other'], col: 'category' },
-    { id: 'acquired_date', label: 'Acquired Date',    type: 'date',   ph: '', col: 'acquired_date' },
-    { id: 'condition',     label: 'Condition',        type: 'select', opts: ['Good','Fair','Poor'], col: 'condition' },
-    { id: 'notes',         label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
+	{ id: 'asset_name',    label: 'Asset Name',      type: 'text',   ph: 'e.g. Valet Cart', col: 'asset_name' },
+	{ id: 'value_sar',     label: 'Value (SAR)',      type: 'number', ph: '0', col: 'value_sar' },
+	{ id: 'category',      label: 'Category',         type: 'select', opts: ['Vehicle','Equipment','Furniture','Electronics','Other'], col: 'category' },
+	{ id: 'acquired_date', label: 'Acquired Date',    type: 'date',   ph: '', col: 'acquired_date' },
+	{ id: 'condition',     label: 'Condition',        type: 'select', opts: ['Good','Fair','Poor'], col: 'condition' },
+	{ id: 'notes',         label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
   ],
   clearance: [
-    { id: 'description', label: 'Description',     type: 'text',   ph: 'Details', col: 'description' },
-    { id: 'amount',      label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
-    { id: 'type',        label: 'Type',             type: 'select', opts: ['Credit','Debit'], col: 'type' },
-    { id: 'party',       label: 'Party',            type: 'text',   ph: 'Client / Supplier name', col: 'party' },
-    { id: 'date',        label: 'Date',             type: 'date',   ph: '', col: 'date' },
-    { id: 'status',      label: 'Status',           type: 'select', opts: ['Pending','Settled'], col: 'status' },
-    { id: 'notes',       label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
+	{ id: 'description', label: 'Description',     type: 'text',   ph: 'Details', col: 'description' },
+	{ id: 'amount',      label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
+	{ id: 'type',        label: 'Type',             type: 'select', opts: ['Credit','Debit'], col: 'type' },
+	{ id: 'party',       label: 'Party',            type: 'text',   ph: 'Client / Supplier name', col: 'party' },
+	{ id: 'date',        label: 'Date',             type: 'date',   ph: '', col: 'date' },
+	{ id: 'status',      label: 'Status',           type: 'select', opts: ['Pending','Settled'], col: 'status' },
+	{ id: 'notes',       label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
   ]
 };
 
@@ -2514,15 +2514,15 @@ function openAccModal(type) {
   var container = document.getElementById('acc-modal-fields');
   container.innerHTML = '';
   defs.forEach(function(f) {
-    var w = document.createElement('div');
-    var inp;
-    if (f.type === 'select') {
-      inp = '<select id="am-' + f.id + '" class="field">' + (f.opts || []).map(function(o) { return '<option value="' + o + '">' + o + '</option>'; }).join('') + '</select>';
-    } else {
-      inp = '<input type="' + f.type + '" id="am-' + f.id + '" class="field" placeholder="' + (f.ph || '') + '">';
-    }
-    w.innerHTML = '<label class="field-label">' + f.label + '</label>' + inp;
-    container.appendChild(w);
+	var w = document.createElement('div');
+	var inp;
+	if (f.type === 'select') {
+	  inp = '<select id="am-' + f.id + '" class="field">' + (f.opts || []).map(function(o) { return '<option value="' + o + '">' + o + '</option>'; }).join('') + '</select>';
+	} else {
+	  inp = '<input type="' + f.type + '" id="am-' + f.id + '" class="field" placeholder="' + (f.ph || '') + '">';
+	}
+	w.innerHTML = '<label class="field-label">' + f.label + '</label>' + inp;
+	container.appendChild(w);
   });
   document.getElementById('acc-modal').classList.remove('hidden');
 }
@@ -2537,18 +2537,18 @@ async function submitAccModal() {
 
   var payload = { project: project };
   for (var i = 0; i < defs.length; i++) {
-    var f  = defs[i];
-    var el = document.getElementById('am-' + f.id);
-    if (!el) continue;
-    var v = el.value.trim();
-    if (!v && !f.label.includes('optional')) {
-      el.focus();
-      el.style.borderColor = 'var(--red)';
-      (function(e){ setTimeout(function(){ e.style.borderColor = ''; }, 2000); })(el);
-      alert('Please fill in: ' + f.label);
-      return;
-    }
-    payload[f.col || f.id] = (f.type === 'number') ? (parseFloat(v) || 0) : v;
+	var f  = defs[i];
+	var el = document.getElementById('am-' + f.id);
+	if (!el) continue;
+	var v = el.value.trim();
+	if (!v && !f.label.includes('optional')) {
+	  el.focus();
+	  el.style.borderColor = 'var(--red)';
+	  (function(e){ setTimeout(function(){ e.style.borderColor = ''; }, 2000); })(el);
+	  alert('Please fill in: ' + f.label);
+	  return;
+	}
+	payload[f.col || f.id] = (f.type === 'number') ? (parseFloat(v) || 0) : v;
   }
 
   // Map modal type to table key
@@ -2560,10 +2560,10 @@ async function submitAccModal() {
   var btn = document.getElementById('acc-modal-submit');
   btn.disabled = true; btn.innerText = 'Saving...';
   try {
-    await sbFetch(tbl, { method: 'POST', body: JSON.stringify(payload) });
-    closeAccModal();
-    loadAccList(listKey);
-    loadAccSummary();
+	await sbFetch(tbl, { method: 'POST', body: JSON.stringify(payload) });
+	closeAccModal();
+	loadAccList(listKey);
+	loadAccSummary();
   } catch(e) { alert('Save error: ' + e.message); }
   btn.disabled = false; btn.innerText = 'Save Record';
 }
@@ -2575,8 +2575,8 @@ async function fetchAccData(type) {
   var tbl = ACC_TABLE[type];
   if (!tbl) return [];
   try {
-    var raw = await sbFetch(tbl + pf, { method: 'GET' });
-    return mapAccRows(type, raw || []);
+	var raw = await sbFetch(tbl + pf, { method: 'GET' });
+	return mapAccRows(type, raw || []);
   } catch(e) { console.error('fetchAccData:', e); return []; }
 }
 
@@ -2590,51 +2590,51 @@ async function exportFullReport(fmt) {
   if (xlsxBtn) { xlsxBtn.disabled = true; xlsxBtn.innerText = 'Loading...'; }
   if (csvBtn)  { csvBtn.disabled  = true; csvBtn.innerText  = 'Loading...'; }
   try {
-    var results = await Promise.all(types.map(function(t) { return fetchAccData(t); }));
-    var allData = {};
-    types.forEach(function(t, i) { allData[t] = results[i]; });
+	var results = await Promise.all(types.map(function(t) { return fetchAccData(t); }));
+	var allData = {};
+	types.forEach(function(t, i) { allData[t] = results[i]; });
 
-    if (fmt === 'xlsx') {
-      var wb = XLSX.utils.book_new();
-      types.forEach(function(t) {
-        var rows = allData[t];
-        if (!rows.length) return;
-        var ws = XLSX.utils.json_to_sheet(rows);
-        ws['!cols'] = Object.keys(rows[0]).map(function(k) { return { wch: Math.max(k.length, 14) }; });
-        XLSX.utils.book_append_sheet(wb, ws, t.charAt(0).toUpperCase() + t.slice(1));
-      });
-      var sal = allData.salaries.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
-      var exp = allData.expenses.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
-      var ast = allData.assets.reduce(function(s,r){ return s + parseFloat(r['Value (SAR)']||0); }, 0);
-      var clr = allData.clearance.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
-      var net = ast - sal - exp;
-      var sumWs = XLSX.utils.json_to_sheet([
-        { 'Category': 'Salaries',         'Total (SAR)': sal, 'Records': allData.salaries.length  },
-        { 'Category': 'Expenses',          'Total (SAR)': exp, 'Records': allData.expenses.length  },
-        { 'Category': 'Assets',            'Total (SAR)': ast, 'Records': allData.assets.length    },
-        { 'Category': 'Clearance',         'Total (SAR)': clr, 'Records': allData.clearance.length },
-        { 'Category': 'NET (Assets-Sal-Exp)', 'Total (SAR)': net, 'Records': ''                   }
-      ]);
-      sumWs['!cols'] = [{ wch: 28 }, { wch: 16 }, { wch: 10 }];
-      XLSX.utils.book_append_sheet(wb, sumWs, 'Summary');
-      XLSX.writeFile(wb, 'OPERIX_Report_' + project.replace(/\s+/g, '_') + '_' + dateStr + '.xlsx');
-    } else {
-      var parts = [];
-      types.forEach(function(t) {
-        var rows = allData[t];
-        if (!rows.length) return;
-        var h = Object.keys(rows[0]);
-        var section = '=== ' + t.toUpperCase() + ' ===' + '\n' +
-          [h.join(',')].concat(rows.map(function(r) {
-            return h.map(function(k) { return '"' + String(r[k] != null ? r[k] : '') + '"'; }).join(',');
-          })).join('\n');
-        parts.push(section);
-      });
-      var a = document.createElement('a');
-      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(parts.join('\n\n'));
-      a.download = 'OPERIX_Report_' + project.replace(/\s+/g, '_') + '_' + dateStr + '.csv';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    }
+	if (fmt === 'xlsx') {
+	  var wb = XLSX.utils.book_new();
+	  types.forEach(function(t) {
+		var rows = allData[t];
+		if (!rows.length) return;
+		var ws = XLSX.utils.json_to_sheet(rows);
+		ws['!cols'] = Object.keys(rows[0]).map(function(k) { return { wch: Math.max(k.length, 14) }; });
+		XLSX.utils.book_append_sheet(wb, ws, t.charAt(0).toUpperCase() + t.slice(1));
+	  });
+	  var sal = allData.salaries.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
+	  var exp = allData.expenses.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
+	  var ast = allData.assets.reduce(function(s,r){ return s + parseFloat(r['Value (SAR)']||0); }, 0);
+	  var clr = allData.clearance.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
+	  var net = ast - sal - exp;
+	  var sumWs = XLSX.utils.json_to_sheet([
+		{ 'Category': 'Salaries',         'Total (SAR)': sal, 'Records': allData.salaries.length  },
+		{ 'Category': 'Expenses',          'Total (SAR)': exp, 'Records': allData.expenses.length  },
+		{ 'Category': 'Assets',            'Total (SAR)': ast, 'Records': allData.assets.length    },
+		{ 'Category': 'Clearance',         'Total (SAR)': clr, 'Records': allData.clearance.length },
+		{ 'Category': 'NET (Assets-Sal-Exp)', 'Total (SAR)': net, 'Records': ''                   }
+	  ]);
+	  sumWs['!cols'] = [{ wch: 28 }, { wch: 16 }, { wch: 10 }];
+	  XLSX.utils.book_append_sheet(wb, sumWs, 'Summary');
+	  XLSX.writeFile(wb, 'OPERIX_Report_' + project.replace(/\s+/g, '_') + '_' + dateStr + '.xlsx');
+	} else {
+	  var parts = [];
+	  types.forEach(function(t) {
+		var rows = allData[t];
+		if (!rows.length) return;
+		var h = Object.keys(rows[0]);
+		var section = '=== ' + t.toUpperCase() + ' ===' + '\n' +
+		  [h.join(',')].concat(rows.map(function(r) {
+			return h.map(function(k) { return '"' + String(r[k] != null ? r[k] : '') + '"'; }).join(',');
+		  })).join('\n');
+		parts.push(section);
+	  });
+	  var a = document.createElement('a');
+	  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(parts.join('\n\n'));
+	  a.download = 'OPERIX_Report_' + project.replace(/\s+/g, '_') + '_' + dateStr + '.csv';
+	  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+	}
   } catch(e) { alert('Export failed: ' + e.message); }
   if (xlsxBtn) { xlsxBtn.disabled = false; xlsxBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Excel'; }
   if (csvBtn)  { csvBtn.disabled  = false; csvBtn.innerHTML  = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>CSV'; }
@@ -2657,7 +2657,7 @@ async function exportAccCSV(type) {
   if (!rows.length) return alert('No data to export');
   var h   = Object.keys(rows[0]);
   var csv = [h.join(',')].concat(rows.map(function(r) {
-    return h.map(function(k) { return '"' + String(r[k] != null ? r[k] : '') + '"'; }).join(',');
+	return h.map(function(k) { return '"' + String(r[k] != null ? r[k] : '') + '"'; }).join(',');
   })).join('\n');
   var a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
@@ -3768,13 +3768,13 @@ async function loadMyKPIs(){
 
   // ── Salary from operix_salaries (Supabase) ──
   try{
-    var firstName1 = name.split(/[\s']+/)[0];
-    var salRows1   = await sbFetch('operix_salaries?select=employee_name,amount&order=created_at.desc', {method:'GET'}).catch(function(){return[];});
-    var mySal1 = (salRows1||[]).find(function(r){ return (r.employee_name||'').toLowerCase().includes(firstName1); });
-    if(mySal1){
-      var salEl = document.getElementById('hr-kpi-salary');
-      if(salEl) salEl.innerText = Number(mySal1.amount||0).toLocaleString();
-    }
+	var firstName1 = name.split(/[\s']+/)[0];
+	var salRows1   = await sbFetch('operix_salaries?select=employee_name,amount&order=created_at.desc', {method:'GET'}).catch(function(){return[];});
+	var mySal1 = (salRows1||[]).find(function(r){ return (r.employee_name||'').toLowerCase().includes(firstName1); });
+	if(mySal1){
+	  var salEl = document.getElementById('hr-kpi-salary');
+	  if(salEl) salEl.innerText = Number(mySal1.amount||0).toLocaleString();
+	}
   } catch(e){}
 }
 
@@ -5509,36 +5509,36 @@ async function anprExportTicket(){
   const btn = document.querySelector('[onclick="anprExportTicket()"]');
   if(btn){ btn.disabled = true; btn.innerText = 'Saving…'; }
   try{
-    const el = document.getElementById('anpr-inv-capture');
-    if(!el){ alert('Ticket element not found'); return; }
+	const el = document.getElementById('anpr-inv-capture');
+	if(!el){ alert('Ticket element not found'); return; }
 
-    // Clone element into body at fixed position to avoid overlay clipping
-    const clone = el.cloneNode(true);
-    clone.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;background:#fff;width:380px;';
-    document.body.appendChild(clone);
+	// Clone element into body at fixed position to avoid overlay clipping
+	const clone = el.cloneNode(true);
+	clone.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;background:#fff;width:380px;';
+	document.body.appendChild(clone);
 
-    const canvas = await html2canvas(clone, {
-      scale: 3,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff',
-      logging: false,
-      width: clone.offsetWidth,
-      height: clone.offsetHeight
-    });
-    document.body.removeChild(clone);
+	const canvas = await html2canvas(clone, {
+	  scale: 3,
+	  useCORS: true,
+	  allowTaint: true,
+	  backgroundColor: '#ffffff',
+	  logging: false,
+	  width: clone.offsetWidth,
+	  height: clone.offsetHeight
+	});
+	document.body.removeChild(clone);
 
-    const plate    = document.getElementById('anpr-inv-plate').innerText.trim() || 'ticket';
-    const ticketNo = document.getElementById('anpr-inv-ticketnum').innerText.trim() || Date.now();
-    const a = document.createElement('a');
-    a.download = 'Ticket_' + plate.replace(/\s+/g,'_') + '_' + ticketNo + '.png';
-    a.href = canvas.toDataURL('image/png');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+	const plate    = document.getElementById('anpr-inv-plate').innerText.trim() || 'ticket';
+	const ticketNo = document.getElementById('anpr-inv-ticketnum').innerText.trim() || Date.now();
+	const a = document.createElement('a');
+	a.download = 'Ticket_' + plate.replace(/\s+/g,'_') + '_' + ticketNo + '.png';
+	a.href = canvas.toDataURL('image/png');
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
   } catch(e){
-    console.error('Export error:', e);
-    alert('Export failed: ' + e.message);
+	console.error('Export error:', e);
+	alert('Export failed: ' + e.message);
   }
   if(btn){ btn.disabled = false; btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Save PNG'; }
 }
@@ -5965,21 +5965,21 @@ async function studioShareByEmail() {
   let attachmentObj = null;
   const pdfFileName = (docType + '_' + (refNo || 'OPX') + '.pdf').replace(/\s+/g, '_');
   if (pdfB64) {
-    try {
-      if (btn) btn.innerText = 'Uploading PDF…';
-      // pdfB64 is already raw base64 (no data-URI prefix) — pass directly
-      const up = await gasCall(STUDIO_API, {
-        action:   'uploadMailAttachment',
-        base64:   pdfB64,
-        mimeType: 'application/pdf',
-        fileName: pdfFileName
-      });
-      if (up && up.success) {
-        attachmentObj = { name: pdfFileName, url: up.url, downloadUrl: up.downloadUrl || up.url, driveId: up.fileId, size: 0 };
-      } else {
-        console.warn('PDF Drive upload failed:', up?.error);
-      }
-    } catch(e) { console.warn('PDF upload failed:', e.message); }
+	try {
+	  if (btn) btn.innerText = 'Uploading PDF…';
+	  // pdfB64 is already raw base64 (no data-URI prefix) — pass directly
+	  const up = await gasCall(STUDIO_API, {
+		action:   'uploadMailAttachment',
+		base64:   pdfB64,
+		mimeType: 'application/pdf',
+		fileName: pdfFileName
+	  });
+	  if (up && up.success && up.data) {
+		attachmentObj = { name: pdfFileName, url: up.data.url, downloadUrl: up.data.downloadUrl || up.data.url, driveId: up.data.fileId, size: 0 };
+	  } else {
+		console.warn('PDF Drive upload failed:', up?.error);
+	  }
+	} catch(e) { console.warn('PDF upload failed:', e.message); }
   }
 
   // Build HTML email body with real logo <img>
@@ -6271,25 +6271,60 @@ async function openEmail(em, cardEl) {
 	</div>
 	<div style="padding:20px 18px;line-height:1.75;font-size:14px;color:var(--text);">
 	  ${em.body ? em.body.replace(/\n/g,'<br>') : '<span style="color:var(--text4);">(No content)</span>'}
-	  ${atts.length ? `<div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border2);">
-		<div style="font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Attachments (${atts.length})</div>
-		<div style="display:flex;gap:7px;flex-wrap:wrap;">
-		  ${atts.map(a=>{
-            const openUrl = a.downloadUrl || a.url || '';
-            const viewUrl = a.url || '';
-            return `<div style="display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;">
-              <button onclick="window.open('${openUrl}','_blank','noopener,noreferrer')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 11px;font-size:11px;font-weight:600;color:var(--purple);background:transparent;border:none;cursor:pointer;" onmouseover="this.style.background='var(--purple-bg)'" onmouseout="this.style.background=''">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                ${a.name||'Attachment'}
-              </button>
-              ${viewUrl ? `<button onclick="window.open('${viewUrl}','_blank','noopener,noreferrer')" style="display:inline-flex;align-items:center;padding:7px 9px;border:none;border-left:1px solid var(--border2);font-size:10px;font-weight:700;color:var(--text3);background:transparent;cursor:pointer;" title="View in Drive" onmouseover="this.style.color='var(--purple)'" onmouseout="this.style.color='var(--text3)'">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              </button>` : ''}
-            </div>`;
-          }).join('')}
-		</div>
-	  </div>` : ''}
+	  <div id="mail-read-atts-${em.id}" style="margin-top:${atts.length?'20px':'0'};"></div>
 	</div>`;
+
+  // ── Render attachments safely via DOM (avoids template literal nesting issues) ──
+  if (atts.length) {
+	const attsDiv = document.getElementById('mail-read-atts-' + em.id);
+	if (attsDiv) {
+	  attsDiv.style.cssText = 'margin-top:20px;padding-top:14px;border-top:1px solid var(--border2);';
+	  const hdr = document.createElement('div');
+	  hdr.style.cssText = 'font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;';
+	  hdr.innerText = 'Attachments (' + atts.length + ')';
+	  attsDiv.appendChild(hdr);
+	  const row = document.createElement('div');
+	  row.style.cssText = 'display:flex;gap:7px;flex-wrap:wrap;';
+	  atts.forEach(function(a) {
+		// Build URLs — fall back to constructing from driveId if fields were saved empty
+		const driveId = a.driveId || a.fileId || '';
+		const dlUrl   = a.downloadUrl || (driveId ? 'https://drive.google.com/uc?export=download&id=' + driveId : '') || a.url || '';
+		const viewUrl = a.url || (driveId ? 'https://drive.google.com/file/d/' + driveId + '/view' : '') || a.downloadUrl || '';
+		const wrap = document.createElement('div');
+		wrap.style.cssText = 'display:inline-flex;align-items:center;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;';
+
+		// Download / open button
+		const dlBtn = document.createElement('button');
+		dlBtn.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:7px 11px;font-size:11px;font-weight:600;color:var(--purple);background:transparent;border:none;cursor:pointer;';
+		dlBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+		dlBtn.appendChild(document.createTextNode(a.name || 'Attachment'));
+		dlBtn.onmouseenter = function() { this.style.background = 'var(--purple-bg)'; };
+		dlBtn.onmouseleave = function() { this.style.background = 'transparent'; };
+		dlBtn.onclick = function() {
+		  if (dlUrl) window.open(dlUrl, '_blank', 'noopener,noreferrer');
+		  else alert('No download URL available for this attachment.');
+		};
+		wrap.appendChild(dlBtn);
+
+		// View in Drive button
+		if (viewUrl && viewUrl !== dlUrl) {
+		  const sep = document.createElement('div');
+		  sep.style.cssText = 'width:1px;background:var(--border2);align-self:stretch;';
+		  wrap.appendChild(sep);
+		  const viewBtn = document.createElement('button');
+		  viewBtn.title = 'View in Google Drive';
+		  viewBtn.style.cssText = 'display:inline-flex;align-items:center;padding:7px 9px;border:none;font-size:10px;color:var(--text3);background:transparent;cursor:pointer;';
+		  viewBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+		  viewBtn.onmouseenter = function() { this.style.color = 'var(--purple)'; };
+		  viewBtn.onmouseleave = function() { this.style.color = 'var(--text3)'; };
+		  viewBtn.onclick = function() { window.open(viewUrl, '_blank', 'noopener,noreferrer'); };
+		  wrap.appendChild(viewBtn);
+		}
+		row.appendChild(wrap);
+	  });
+	  attsDiv.appendChild(row);
+	}
+  }
 }
 
 // Close the read panel and restore the list (especially on mobile)
@@ -6413,19 +6448,20 @@ function renderToSuggestions() {
 // ── Upload helper: any file → Google Drive via STUDIO_API GAS ──
 async function uploadFileToDrive(file) {
   const base64 = await new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload  = () => res((r.result || '').split(',')[1] || '');
-    r.onerror = rej;
-    r.readAsDataURL(file);
+	const r = new FileReader();
+	r.onload  = () => res((r.result || '').split(',')[1] || '');
+	r.onerror = rej;
+	r.readAsDataURL(file);
   });
   const d = await gasCall(STUDIO_API, {
-    action:   'uploadMailAttachment',
-    base64:   base64,
-    mimeType: file.type || 'application/octet-stream',
-    fileName: file.name
+	action:   'uploadMailAttachment',
+	base64:   base64,
+	mimeType: file.type || 'application/octet-stream',
+	fileName: file.name
   });
   if (!d || !d.success) throw new Error(d?.error || 'Upload failed');
-  return { name: file.name, url: d.url, downloadUrl: d.downloadUrl || d.url, driveId: d.fileId, size: file.size };
+  const r = d.data || d; // GAS wraps result in .data
+  return { name: file.name, url: r.url, downloadUrl: r.downloadUrl || r.url, driveId: r.fileId, size: file.size };
 }
 
 async function mailAttachFile() {
@@ -6433,19 +6469,19 @@ async function mailAttachFile() {
   input.type = 'file';
   input.multiple = true;
   input.onchange = async (e) => {
-    const files = Array.from(e.target.files);
-    for (const file of files) {
-      const btn = document.getElementById('mail-attach-btn');
-      if (btn) { btn.innerText = 'Uploading…'; btn.disabled = true; }
-      try {
-        const att = await uploadFileToDrive(file);
-        mailComposeAttachments.push(att);
-        renderComposeAttachments();
-      } catch(err) {
-        alert('Upload error: ' + err.message);
-      }
-      if (btn) { btn.innerText = '📎 Attach'; btn.disabled = false; }
-    }
+	const files = Array.from(e.target.files);
+	for (const file of files) {
+	  const btn = document.getElementById('mail-attach-btn');
+	  if (btn) { btn.innerText = 'Uploading…'; btn.disabled = true; }
+	  try {
+		const att = await uploadFileToDrive(file);
+		mailComposeAttachments.push(att);
+		renderComposeAttachments();
+	  } catch(err) {
+		alert('Upload error: ' + err.message);
+	  }
+	  if (btn) { btn.innerText = '📎 Attach'; btn.disabled = false; }
+	}
   };
   input.click();
 }
