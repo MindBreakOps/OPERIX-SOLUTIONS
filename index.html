@@ -79,6 +79,8 @@ textarea.field{resize:none;line-height:1.6;}
 .page-content{display:none;padding-bottom:100px;}
 .page-content.active{display:block;animation:fadeUp .24s ease-out;}
 @keyframes fadeUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes otpShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.otp-digit:focus{border-color:var(--gold2)!important;box-shadow:0 0 0 3px rgba(196,148,64,.15);}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.04em;}
 .badge-free{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
 .badge-paid{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-border);}
@@ -449,6 +451,84 @@ textarea.field{resize:none;line-height:1.6;}
 	  <button onclick="showSignUp()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;margin-left:5px;font-family:'Plus Jakarta Sans',sans-serif;">Request Access</button>
 	</div>
 	<p style="text-align:center;font-size:9px;color:var(--text4);margin-top:12px;letter-spacing:.1em;text-transform:uppercase;">OPERIX · 2026</p>
+  </div>
+</section>
+
+<!-- OTP VERIFICATION PAGE -->
+<section id="otp-page" class="screen hidden" style="display:flex;align-items:center;justify-content:center;padding:28px;min-height:100vh;">
+  <div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 60% 15%,rgba(154,114,48,.06),transparent 55%),radial-gradient(ellipse at 15% 80%,rgba(28,110,66,.04),transparent 55%);"></div>
+  <div style="width:100%;max-width:320px;position:relative;z-index:1;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:76px;height:76px;border-radius:22px;background:var(--surface);border:1.5px solid var(--border2);box-shadow:var(--shadow-lg);margin-bottom:15px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1" fill="var(--gold)"/></svg>
+      </div>
+      <h1 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:var(--text);">Verify Your Identity</h1>
+      <p id="otp-subtitle" style="font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5;">A 6-digit code was sent to your verified email</p>
+    </div>
+    <div class="card" style="padding:22px;">
+      <!-- OTP digit inputs -->
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:20px;" id="otp-inputs">
+        <input type="tel" maxlength="1" class="otp-digit" id="otp-0" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;" oninput="otpInput(this,0)" onkeydown="otpKey(event,0)">
+        <input type="tel" maxlength="1" class="otp-digit" id="otp-1" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;" oninput="otpInput(this,1)" onkeydown="otpKey(event,1)">
+        <input type="tel" maxlength="1" class="otp-digit" id="otp-2" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;" oninput="otpInput(this,2)" onkeydown="otpKey(event,2)">
+        <input type="tel" maxlength="1" class="otp-digit" id="otp-3" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;" oninput="otpInput(this,3)" onkeydown="otpKey(event,3)">
+        <input type="tel" maxlength="1" class="otp-digit" id="otp-4" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;" oninput="otpInput(this,4)" onkeydown="otpKey(event,4)">
+        <input type="tel" maxlength="1" class="otp-digit" id="otp-5" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;" oninput="otpInput(this,5)" onkeydown="otpKey(event,5)">
+      </div>
+      <!-- Timer -->
+      <div style="text-align:center;margin-bottom:16px;">
+        <span id="otp-timer" style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--gold);">05:00</span>
+        <span style="font-size:11px;color:var(--text3);"> remaining</span>
+      </div>
+      <!-- Error msg -->
+      <div id="otp-error" style="display:none;background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--red);text-align:center;margin-bottom:12px;"></div>
+      <!-- Verify button -->
+      <button onclick="verifyOTP()" id="otp-btn" class="btn-gold" style="width:100%;font-size:14px;padding:13px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Verify Code
+      </button>
+      <!-- Resend -->
+      <div style="text-align:center;margin-top:14px;">
+        <span style="font-size:11px;color:var(--text3);">Didn't receive it?</span>
+        <button id="otp-resend-btn" onclick="resendOTP()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;margin-left:5px;font-family:'Plus Jakarta Sans',sans-serif;">Resend Code</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button onclick="backToLogin()" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:5px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Sign In
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- OTP EMAIL SETUP PAGE (first-time) -->
+<section id="otp-setup-page" class="screen hidden" style="display:flex;align-items:center;justify-content:center;padding:28px;min-height:100vh;">
+  <div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 70% 20%,rgba(35,86,160,.05),transparent 55%);"></div>
+  <div style="width:100%;max-width:340px;position:relative;z-index:1;">
+    <div style="text-align:center;margin-bottom:22px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:76px;height:76px;border-radius:22px;background:var(--surface);border:1.5px solid var(--border2);box-shadow:var(--shadow-lg);margin-bottom:15px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <h1 style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:800;color:var(--text);">Set Up 2-Step Verification</h1>
+      <p style="font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5;max-width:260px;margin-left:auto;margin-right:auto;">Add a verified email address to receive login codes. This is separate from your login email.</p>
+    </div>
+    <div class="card" style="padding:22px;">
+      <div style="background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:9px;padding:10px 13px;margin-bottom:16px;display:flex;gap:9px;align-items:flex-start;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div style="font-size:11px;color:var(--gold);line-height:1.5;">Use a personal email you always have access to — not the same as your login email.</div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label class="field-label">Verified Email Address</label>
+        <input type="email" id="otp-setup-email" class="field" placeholder="your.personal@gmail.com" onkeydown="if(event.key==='Enter')saveOTPEmail()">
+      </div>
+      <div id="otp-setup-error" style="display:none;background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--red);margin-bottom:12px;"></div>
+      <button onclick="saveOTPEmail()" id="otp-setup-btn" class="btn-dark" style="width:100%;font-size:14px;padding:13px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Save & Continue
+      </button>
+    </div>
+    <p style="text-align:center;font-size:9px;color:var(--text4);margin-top:14px;line-height:1.6;">This email will only be used for security verification codes. It is never shared or used for other purposes.</p>
   </div>
 </section>
 
@@ -1793,7 +1873,7 @@ textarea.field{resize:none;line-height:1.6;}
 // ═══════════════════════════════
 // CONFIG
 // ═══════════════════════════════
-const OPS_API    = 'https://script.google.com/macros/s/AKfycbxQCZM9LF_8Ngx1O1dJOQ2bWcska1X0rZ2BBzpOik_ZCxVgYiTCBmY-sXJE4SrBS1sj/exec';
+const OPS_API    = 'https://script.google.com/macros/s/AKfycbwaQRC2Tkji_kTZU_Rch4OC5e6MeBoH6l6G5DC2PqNHnNDfQrDSvvx0Rgr2UiLL1q8W/exec';
 const STUDIO_API = 'https://script.google.com/macros/s/AKfycbxJO6wprIYvwzptZBn-5aKa-GrUxFATODEfVWDTTJFkHN8HWs6dVALPgW2H2F0GPVqE/exec';
 
 const HR_API = 'https://script.google.com/macros/s/AKfycbxlPHGa8UAv-xSf9Oc1yFfs30tUiP-RJ4MllHsMkvMuhMmF98rYbedU_UE2ko_GHbSE/exec';
@@ -1864,28 +1944,28 @@ async function sbGetAttendance(){
 async function sbGetMyAttendance(name){
   // Try exact match first
   try {
-	var rows = await sbFetch(
-	  'operix_attendance?employee=eq.' + encodeURIComponent(name) + '&order=submitted_at.asc',
-	  {method:'GET'}
-	);
-	if(Array.isArray(rows) && rows.length > 0) return rows.map(normAttRow);
+    var rows = await sbFetch(
+      'operix_attendance?employee=eq.' + encodeURIComponent(name) + '&order=submitted_at.asc',
+      {method:'GET'}
+    );
+    if(Array.isArray(rows) && rows.length > 0) return rows.map(normAttRow);
   } catch(e) { console.warn('sbGetMyAttendance exact match failed:', e); }
 
   // Fallback: load all and filter client-side (handles apostrophes, encoding issues)
   try {
-	var all = await sbFetch('operix_attendance?order=submitted_at.asc', {method:'GET'});
-	if(!Array.isArray(all)) return [];
-	var nameLower = (name||'').toLowerCase().trim();
-	// Match by full name OR by first name (handles "Asim Aljma'an" vs "Asim Aljmaan" etc.)
-	var firstName = nameLower.split(/[\s']/)[0];
-	var filtered = all.filter(function(r){
-	  var emp = (r.employee||'').toLowerCase().trim();
-	  return emp === nameLower || emp.split(/[\s']/)[0] === firstName;
-	});
-	return filtered.map(normAttRow);
+    var all = await sbFetch('operix_attendance?order=submitted_at.asc', {method:'GET'});
+    if(!Array.isArray(all)) return [];
+    var nameLower = (name||'').toLowerCase().trim();
+    // Match by full name OR by first name (handles "Asim Aljma'an" vs "Asim Aljmaan" etc.)
+    var firstName = nameLower.split(/[\s']/)[0];
+    var filtered = all.filter(function(r){
+      var emp = (r.employee||'').toLowerCase().trim();
+      return emp === nameLower || emp.split(/[\s']/)[0] === firstName;
+    });
+    return filtered.map(normAttRow);
   } catch(e) {
-	console.warn('sbGetMyAttendance fallback failed:', e);
-	return [];
+    console.warn('sbGetMyAttendance fallback failed:', e);
+    return [];
   }
 }
 
@@ -2083,6 +2163,10 @@ async function handleSignUp(){
   btn.innerText = 'Create Account';
 }
 
+// ── 2FA state ──────────────────────────────────────────────────
+var _pendingLoginData = null;   // holds verified account data between steps
+var _otpTimerInterval = null;
+
 async function handleLogin(){
   const email = document.getElementById('login-user').value.trim().toLowerCase();
   const pass  = document.getElementById('login-pass').value;
@@ -2090,59 +2174,359 @@ async function handleLogin(){
 
   const btn = document.getElementById('login-btn');
   btn.disabled = true;
-  btn.innerText = 'Signing in…';
+  btn.innerText = 'Checking credentials…';
 
   try {
-	const rows = await sbFetch(
-	  'accounts?email=eq.' + encodeURIComponent(email) + '&password=eq.' + encodeURIComponent(pass) + '&select=id,name,email,role,job,phone,photo&limit=1',
-	  { method: 'GET' }
-	);
+    const rows = await sbFetch(
+      'accounts?email=eq.' + encodeURIComponent(email) + '&password=eq.' + encodeURIComponent(pass) + '&select=id,name,email,role,job,phone,photo,otp_email&limit=1',
+      { method: 'GET' }
+    );
 
-	if(!Array.isArray(rows) || rows.length === 0){
-	  alert('Wrong email or password.');
-	  btn.disabled = false; btn.innerText = 'Sign In';
-	  return;
-	}
+    if(!Array.isArray(rows) || rows.length === 0){
+      alert('Wrong email or password.');
+      btn.disabled = false; btn.innerText = 'Sign In';
+      return;
+    }
 
-	const acc = rows[0];
+    const acc = rows[0];
 
-	if((acc.role||'').toLowerCase() === 'pending'){
-	  alert('Your account is pending admin approval.\nPlease contact your administrator to activate your account.');
-	  btn.disabled = false; btn.innerText = 'Sign In';
-	  return;
-	}
+    if((acc.role||'').toLowerCase() === 'pending'){
+      alert('Your account is pending admin approval.\nPlease contact your administrator to activate your account.');
+      btn.disabled = false; btn.innerText = 'Sign In';
+      return;
+    }
 
-	const userData = {
-	  name:  acc.name  || email.split('@')[0],
-	  role:  acc.role  || 'Staff',
-	  job:   acc.job   || '',
-	  phone: acc.phone || '',
-	  photo: acc.photo || ''
-	};
+    // Store pending login data
+    _pendingLoginData = acc;
 
-	currentUser = {
-	  _ops:  userData,
-	  _hr:   userData,
-	  _anpr: userData,
-	  name:  userData.name,
-	  role:  userData.role,
-	  job:   userData.job,
-	  phone: userData.phone,
-	  photo: userData.photo,
-	  email: email,
-	  pass:  pass
-	};
+    // Check if user has a verified OTP email set up
+    if(!acc.otp_email || !acc.otp_email.trim()){
+      // First time — show setup page
+      btn.disabled = false; btn.innerText = 'Sign In';
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('otp-setup-page').classList.remove('hidden');
+      return;
+    }
 
-	document.getElementById('login-page').classList.add('hidden');
-	showWorkspaceSelector();
+    // Send OTP
+    btn.innerText = 'Sending code…';
+    const sent = await sendOTPCode(acc.email, acc.otp_email, acc.name);
+    if(!sent){
+      btn.disabled = false; btn.innerText = 'Sign In';
+      return;
+    }
+
+    // Show OTP page
+    btn.disabled = false; btn.innerText = 'Sign In';
+    const masked = maskEmail(acc.otp_email);
+    document.getElementById('otp-subtitle').innerText = 'A 6-digit code was sent to ' + masked;
+    document.getElementById('login-page').classList.add('hidden');
+    showOTPPage();
 
   } catch(e){
-	alert('Connection error. Please check your internet and try again.');
-	console.error('Login error:', e);
+    alert('Connection error. Please check your internet and try again.');
+    console.error('Login error:', e);
+    btn.disabled = false; btn.innerText = 'Sign In';
+  }
+}
+
+function maskEmail(email) {
+  if(!email || !email.includes('@')) return email;
+  var parts = email.split('@');
+  var user = parts[0];
+  var masked = user.charAt(0) + '***' + (user.length > 2 ? user.slice(-1) : '');
+  return masked + '@' + parts[1];
+}
+
+async function sendOTPCode(accountEmail, otpEmail, name) {
+  try {
+    // Generate 6-digit code client-side, store in Supabase, then send via GAS MailApp
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+
+    // Invalidate any existing unused OTPs for this account
+    await sbFetch(
+      'operix_otp?email=eq.' + encodeURIComponent(accountEmail) + '&used=eq.false',
+      { method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ used: true }) }
+    ).catch(function(){});
+
+    // Store new OTP in Supabase
+    await sbFetch('operix_otp', {
+      method: 'POST',
+      body: JSON.stringify({ email: accountEmail, code: code, expires_at: expiresAt, used: false })
+    });
+
+    // Send email via GAS (free — uses Gmail quota)
+    const gasRes = await gasCall(OPS_API, {
+      action:    'sendOTPEmail',
+      otpEmail:  otpEmail,
+      name:      name || 'User',
+      code:      code,
+      expiresIn: '5 minutes'
+    });
+
+    if(!gasRes || !gasRes.success){
+      alert('Failed to send verification code: ' + (gasRes?.error || 'Please try again.'));
+      return false;
+    }
+    return true;
+  } catch(e){
+    alert('Could not send verification code. Check your connection.');
+    console.error('sendOTP error:', e);
+    return false;
+  }
+}
+
+function showOTPPage() {
+  // Clear previous inputs
+  for(var i = 0; i < 6; i++){
+    var el = document.getElementById('otp-' + i);
+    if(el){ el.value = ''; el.style.borderColor = 'var(--border2)'; }
+  }
+  document.getElementById('otp-error').style.display = 'none';
+  document.getElementById('otp-btn').disabled = false;
+  document.getElementById('otp-btn').innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Verify Code';
+  document.getElementById('otp-page').classList.remove('hidden');
+  // Focus first input
+  setTimeout(function(){ document.getElementById('otp-0').focus(); }, 100);
+  // Start countdown timer — 5 minutes
+  startOTPTimer(300);
+}
+
+function startOTPTimer(seconds) {
+  if(_otpTimerInterval) clearInterval(_otpTimerInterval);
+  var remaining = seconds;
+  var timerEl = document.getElementById('otp-timer');
+  var resendBtn = document.getElementById('otp-resend-btn');
+  if(resendBtn) resendBtn.disabled = true;
+
+  function tick() {
+    if(!timerEl) return;
+    var m = Math.floor(remaining / 60);
+    var s = remaining % 60;
+    timerEl.innerText = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    timerEl.style.color = remaining <= 30 ? 'var(--red)' : 'var(--gold)';
+    if(remaining <= 0){
+      clearInterval(_otpTimerInterval);
+      timerEl.innerText = 'Expired';
+      timerEl.style.color = 'var(--red)';
+      if(resendBtn) resendBtn.disabled = false;
+    }
+    remaining--;
+  }
+  tick();
+  _otpTimerInterval = setInterval(tick, 1000);
+}
+
+function otpInput(el, idx) {
+  // Only allow digits
+  el.value = el.value.replace(/[^0-9]/g, '');
+  el.style.borderColor = el.value ? 'var(--gold2)' : 'var(--border2)';
+  // Auto-advance
+  if(el.value && idx < 5){
+    document.getElementById('otp-' + (idx + 1)).focus();
+  }
+  // Auto-submit when all filled
+  var code = '';
+  for(var i = 0; i < 6; i++){
+    var v = document.getElementById('otp-' + i).value;
+    code += v;
+  }
+  if(code.length === 6) setTimeout(verifyOTP, 120);
+}
+
+function otpKey(event, idx) {
+  if(event.key === 'Backspace'){
+    var el = document.getElementById('otp-' + idx);
+    if(!el.value && idx > 0){
+      var prev = document.getElementById('otp-' + (idx - 1));
+      prev.value = '';
+      prev.style.borderColor = 'var(--border2)';
+      prev.focus();
+    }
+  }
+  if(event.key === 'Enter') verifyOTP();
+  // Handle paste on any digit
+  if(event.ctrlKey && event.key === 'v') return;
+}
+
+// Handle paste on OTP inputs
+document.addEventListener('paste', function(e) {
+  var active = document.activeElement;
+  if(!active || !active.classList.contains('otp-digit')) return;
+  var pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g,'').slice(0,6);
+  if(pasted.length > 0){
+    e.preventDefault();
+    for(var i = 0; i < 6 && i < pasted.length; i++){
+      var inp = document.getElementById('otp-' + i);
+      if(inp){ inp.value = pasted[i]; inp.style.borderColor = 'var(--gold2)'; }
+    }
+    if(pasted.length === 6) setTimeout(verifyOTP, 120);
+    else document.getElementById('otp-' + Math.min(pasted.length, 5)).focus();
+  }
+});
+
+async function verifyOTP() {
+  var code = '';
+  for(var i = 0; i < 6; i++){
+    var v = (document.getElementById('otp-' + i)||{}).value || '';
+    code += v;
+  }
+  if(code.length < 6){
+    showOTPError('Please enter all 6 digits.');
+    return;
   }
 
-  btn.disabled = false;
-  btn.innerText = 'Sign In';
+  var btn = document.getElementById('otp-btn');
+  btn.disabled = true;
+  btn.innerText = 'Verifying…';
+  document.getElementById('otp-error').style.display = 'none';
+
+  try {
+    var acc = _pendingLoginData;
+    if(!acc){ showOTPError('Session expired. Please sign in again.'); backToLogin(); return; }
+
+    // Verify OTP in Supabase
+    var now = new Date().toISOString();
+    var rows = await sbFetch(
+      'operix_otp?email=eq.' + encodeURIComponent(acc.email) +
+      '&code=eq.' + encodeURIComponent(code) +
+      '&used=eq.false&expires_at=gt.' + encodeURIComponent(now) +
+      '&order=created_at.desc&limit=1',
+      { method: 'GET' }
+    );
+
+    if(!Array.isArray(rows) || !rows.length){
+      showOTPError('Invalid or expired code. Please try again.');
+      // Shake inputs
+      var inputs = document.getElementById('otp-inputs');
+      if(inputs){ inputs.style.animation = 'none'; inputs.offsetHeight; inputs.style.animation = 'otpShake .4s ease'; }
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Verify Code';
+      return;
+    }
+
+    // Mark OTP as used
+    await sbFetch('operix_otp?id=eq.' + rows[0].id, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ used: true })
+    });
+
+    // Clear timer
+    if(_otpTimerInterval) clearInterval(_otpTimerInterval);
+
+    // Complete login
+    var userData = {
+      name:  acc.name  || acc.email.split('@')[0],
+      role:  acc.role  || 'Staff',
+      job:   acc.job   || '',
+      phone: acc.phone || '',
+      photo: acc.photo || ''
+    };
+    currentUser = {
+      _ops: userData, _hr: userData, _anpr: userData,
+      name: userData.name, role: userData.role,
+      job: userData.job, phone: userData.phone,
+      photo: userData.photo, email: acc.email, pass: ''
+    };
+    _pendingLoginData = null;
+    document.getElementById('otp-page').classList.add('hidden');
+    showWorkspaceSelector();
+
+  } catch(e){
+    showOTPError('Verification failed. Please try again.');
+    console.error('verifyOTP error:', e);
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Verify Code';
+  }
+}
+
+function showOTPError(msg) {
+  var el = document.getElementById('otp-error');
+  if(el){ el.innerText = msg; el.style.display = 'block'; }
+}
+
+async function resendOTP() {
+  var acc = _pendingLoginData;
+  if(!acc) { backToLogin(); return; }
+  var btn = document.getElementById('otp-resend-btn');
+  if(btn){ btn.disabled = true; btn.innerText = 'Sending…'; }
+  var sent = await sendOTPCode(acc.email, acc.otp_email, acc.name);
+  if(sent){
+    document.getElementById('otp-error').style.display = 'none';
+    for(var i = 0; i < 6; i++){
+      var el = document.getElementById('otp-' + i);
+      if(el){ el.value = ''; el.style.borderColor = 'var(--border2)'; }
+    }
+    startOTPTimer(300);
+    document.getElementById('otp-0').focus();
+  } else {
+    if(btn){ btn.disabled = false; btn.innerText = 'Resend Code'; }
+  }
+}
+
+function backToLogin() {
+  if(_otpTimerInterval) clearInterval(_otpTimerInterval);
+  _pendingLoginData = null;
+  document.getElementById('otp-page').classList.add('hidden');
+  document.getElementById('otp-setup-page').classList.add('hidden');
+  document.getElementById('login-page').classList.remove('hidden');
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-btn').innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Sign In';
+}
+
+async function saveOTPEmail() {
+  var otpEmail = (document.getElementById('otp-setup-email')?.value || '').trim().toLowerCase();
+  var errEl = document.getElementById('otp-setup-error');
+  var btn = document.getElementById('otp-setup-btn');
+
+  if(!otpEmail || !otpEmail.includes('@')){
+    errEl.innerText = 'Please enter a valid email address.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if(!_pendingLoginData){
+    errEl.innerText = 'Session expired. Please sign in again.';
+    errEl.style.display = 'block';
+    setTimeout(backToLogin, 1500);
+    return;
+  }
+  if(otpEmail === _pendingLoginData.email){
+    errEl.innerText = 'Please use a different email from your login email.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true; btn.innerText = 'Saving…';
+  errEl.style.display = 'none';
+
+  try {
+    // Save otp_email to accounts
+    await sbFetch('accounts?email=eq.' + encodeURIComponent(_pendingLoginData.email), {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ otp_email: otpEmail })
+    });
+    _pendingLoginData.otp_email = otpEmail;
+
+    // Send first OTP
+    btn.innerText = 'Sending code…';
+    var sent = await sendOTPCode(_pendingLoginData.email, otpEmail, _pendingLoginData.name);
+    if(!sent){ btn.disabled = false; btn.innerText = 'Save & Continue'; return; }
+
+    // Go to OTP page
+    var masked = maskEmail(otpEmail);
+    document.getElementById('otp-subtitle').innerText = 'A 6-digit code was sent to ' + masked;
+    document.getElementById('otp-setup-page').classList.add('hidden');
+    showOTPPage();
+
+  } catch(e){
+    errEl.innerText = 'Failed to save. Please try again.';
+    errEl.style.display = 'block';
+    console.error('saveOTPEmail error:', e);
+  }
+  btn.disabled = false; btn.innerText = 'Save & Continue';
 }
 
 
@@ -2244,20 +2628,20 @@ async function loadAccProjects() {
   if (!sel) return;
   sel.innerHTML = '<option value="">Loading...</option>';
   try {
-	var rows = await sbFetch('operix_shifts?select=project&order=project.asc', { method: 'GET' });
-	var projects = [];
-	var seen = {};
-	(rows || []).forEach(function(r) {
-	  var p = (r.project || '').trim();
-	  if (p && !seen[p]) { seen[p] = true; projects.push(p); }
-	});
-	projects.sort();
-	sel.innerHTML = projects.length
-	  ? projects.map(function(p) { return '<option value="' + p + '">' + p + '</option>'; }).join('')
-	  : '<option value="Mind Break Cafe">Mind Break Cafe</option>';
+    var rows = await sbFetch('operix_shifts?select=project&order=project.asc', { method: 'GET' });
+    var projects = [];
+    var seen = {};
+    (rows || []).forEach(function(r) {
+      var p = (r.project || '').trim();
+      if (p && !seen[p]) { seen[p] = true; projects.push(p); }
+    });
+    projects.sort();
+    sel.innerHTML = projects.length
+      ? projects.map(function(p) { return '<option value="' + p + '">' + p + '</option>'; }).join('')
+      : '<option value="Mind Break Cafe">Mind Break Cafe</option>';
   } catch(e) {
-	sel.innerHTML = '<option value="Mind Break Cafe">Mind Break Cafe</option>';
-	console.warn('loadAccProjects:', e);
+    sel.innerHTML = '<option value="Mind Break Cafe">Mind Break Cafe</option>';
+    console.warn('loadAccProjects:', e);
   }
 }
 
@@ -2267,29 +2651,29 @@ async function loadAccSummary() {
   var pf = project ? ('&project=eq.' + encodeURIComponent(project)) : '';
 
   ['kpi-salaries','kpi-expenses','kpi-assets','kpi-net'].forEach(function(id) {
-	var el = document.getElementById(id);
-	if (el) el.innerText = '...';
+    var el = document.getElementById(id);
+    if (el) el.innerText = '...';
   });
 
   try {
-	var results = await Promise.all([
-	  sbFetch('operix_salaries?select=amount' + pf, { method: 'GET' }).catch(function() { return []; }),
-	  sbFetch('operix_expenses?select=amount' + pf, { method: 'GET' }).catch(function() { return []; }),
-	  sbFetch('operix_assets?select=value_sar' + pf, { method: 'GET' }).catch(function() { return []; }),
-	  sbFetch('operix_clearance?select=amount' + pf, { method: 'GET' }).catch(function() { return []; })
-	]);
+    var results = await Promise.all([
+      sbFetch('operix_salaries?select=amount' + pf, { method: 'GET' }).catch(function() { return []; }),
+      sbFetch('operix_expenses?select=amount' + pf, { method: 'GET' }).catch(function() { return []; }),
+      sbFetch('operix_assets?select=value_sar' + pf, { method: 'GET' }).catch(function() { return []; }),
+      sbFetch('operix_clearance?select=amount' + pf, { method: 'GET' }).catch(function() { return []; })
+    ]);
 
-	var sal = (results[0] || []).reduce(function(s, r) { return s + parseFloat(r.amount || 0); }, 0);
-	var exp = (results[1] || []).reduce(function(s, r) { return s + parseFloat(r.amount || 0); }, 0);
-	var ast = (results[2] || []).reduce(function(s, r) { return s + parseFloat(r.value_sar || 0); }, 0);
-	var net = ast - sal - exp;
+    var sal = (results[0] || []).reduce(function(s, r) { return s + parseFloat(r.amount || 0); }, 0);
+    var exp = (results[1] || []).reduce(function(s, r) { return s + parseFloat(r.amount || 0); }, 0);
+    var ast = (results[2] || []).reduce(function(s, r) { return s + parseFloat(r.value_sar || 0); }, 0);
+    var net = ast - sal - exp;
 
-	document.getElementById('kpi-salaries').innerText = fmtSAR(sal);
-	document.getElementById('kpi-expenses').innerText = fmtSAR(exp);
-	document.getElementById('kpi-assets').innerText   = fmtSAR(ast);
-	var netEl = document.getElementById('kpi-net');
-	netEl.innerText   = fmtSAR(Math.abs(net));
-	netEl.style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
+    document.getElementById('kpi-salaries').innerText = fmtSAR(sal);
+    document.getElementById('kpi-expenses').innerText = fmtSAR(exp);
+    document.getElementById('kpi-assets').innerText   = fmtSAR(ast);
+    var netEl = document.getElementById('kpi-net');
+    netEl.innerText   = fmtSAR(Math.abs(net));
+    netEl.style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
   } catch(e) { console.error('loadAccSummary:', e); }
 }
 
@@ -2305,31 +2689,31 @@ function accTab(id, btn) {
 // ── Map raw Supabase rows to display objects ──
 function mapAccRows(type, raw) {
   if (type === 'salaries') {
-	return (raw || []).map(function(r) {
-	  return { 'ID': r.id, 'Employee Name': r.employee_name || '', 'Position': r.position || '',
-			   'Amount (SAR)': parseFloat(r.amount || 0), 'Month': r.month || '',
-			   'Payment Type': r.payment_type || '', 'Status': r.status || 'Pending', 'Notes': r.notes || '' };
-	});
+    return (raw || []).map(function(r) {
+      return { 'ID': r.id, 'Employee Name': r.employee_name || '', 'Position': r.position || '',
+               'Amount (SAR)': parseFloat(r.amount || 0), 'Month': r.month || '',
+               'Payment Type': r.payment_type || '', 'Status': r.status || 'Pending', 'Notes': r.notes || '' };
+    });
   }
   if (type === 'expenses') {
-	return (raw || []).map(function(r) {
-	  return { 'ID': r.id, 'Description': r.description || '', 'Category': r.category || '',
-			   'Amount (SAR)': parseFloat(r.amount || 0), 'Date': r.date || '', 'Notes': r.notes || '' };
-	});
+    return (raw || []).map(function(r) {
+      return { 'ID': r.id, 'Description': r.description || '', 'Category': r.category || '',
+               'Amount (SAR)': parseFloat(r.amount || 0), 'Date': r.date || '', 'Notes': r.notes || '' };
+    });
   }
   if (type === 'assets') {
-	return (raw || []).map(function(r) {
-	  return { 'ID': r.id, 'Asset Name': r.asset_name || '', 'Category': r.category || '',
-			   'Value (SAR)': parseFloat(r.value_sar || 0), 'Acquired Date': r.acquired_date || '',
-			   'Condition': r.condition || '', 'Notes': r.notes || '' };
-	});
+    return (raw || []).map(function(r) {
+      return { 'ID': r.id, 'Asset Name': r.asset_name || '', 'Category': r.category || '',
+               'Value (SAR)': parseFloat(r.value_sar || 0), 'Acquired Date': r.acquired_date || '',
+               'Condition': r.condition || '', 'Notes': r.notes || '' };
+    });
   }
   if (type === 'clearance') {
-	return (raw || []).map(function(r) {
-	  return { 'ID': r.id, 'Description': r.description || '', 'Party': r.party || '',
-			   'Amount (SAR)': parseFloat(r.amount || 0), 'Type': r.type || '',
-			   'Date': r.date || '', 'Status': r.status || 'Pending', 'Notes': r.notes || '' };
-	});
+    return (raw || []).map(function(r) {
+      return { 'ID': r.id, 'Description': r.description || '', 'Party': r.party || '',
+               'Amount (SAR)': parseFloat(r.amount || 0), 'Type': r.type || '',
+               'Date': r.date || '', 'Status': r.status || 'Pending', 'Notes': r.notes || '' };
+    });
   }
   return [];
 }
@@ -2344,18 +2728,18 @@ async function loadAccList(type) {
   var tbl = ACC_TABLE[type];
   if (!tbl) return;
   try {
-	var raw  = await sbFetch(tbl + pf, { method: 'GET' });
-	var rows = mapAccRows(type, raw || []);
-	accCurrentData[type] = rows;
-	if (!rows.length) {
-	  el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:12px;">No records yet for this project</div>';
-	  return;
-	}
-	el.innerHTML = '';
-	rows.forEach(function(row) { el.appendChild(buildAccRow(type, row)); });
+    var raw  = await sbFetch(tbl + pf, { method: 'GET' });
+    var rows = mapAccRows(type, raw || []);
+    accCurrentData[type] = rows;
+    if (!rows.length) {
+      el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:12px;">No records yet for this project</div>';
+      return;
+    }
+    el.innerHTML = '';
+    rows.forEach(function(row) { el.appendChild(buildAccRow(type, row)); });
   } catch(e) {
-	el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--red);font-size:12px;">Error: ' + e.message + '</div>';
-	console.error('loadAccList:', e);
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--red);font-size:12px;">Error: ' + e.message + '</div>';
+    console.error('loadAccList:', e);
   }
 }
 
@@ -2367,79 +2751,79 @@ function buildAccRow(type, row) {
 
   // Build delete button safely via DOM
   var mkDel = function(t, i) {
-	var b = document.createElement('button');
-	b.style.cssText = 'padding:4px 8px;border-radius:6px;background:var(--red-bg);border:1px solid var(--red-border);color:var(--red);font-size:10px;cursor:pointer;display:flex;align-items:center;';
-	b.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>';
-	b.onclick = function() { accDelete(t, i); };
-	return b;
+    var b = document.createElement('button');
+    b.style.cssText = 'padding:4px 8px;border-radius:6px;background:var(--red-bg);border:1px solid var(--red-border);color:var(--red);font-size:10px;cursor:pointer;display:flex;align-items:center;';
+    b.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>';
+    b.onclick = function() { accDelete(t, i); };
+    return b;
   };
 
   var mkBtn = function(label, onclick, style) {
-	var b = document.createElement('button');
-	b.style.cssText = style;
-	b.innerText = label;
-	b.onclick = onclick;
-	return b;
+    var b = document.createElement('button');
+    b.style.cssText = style;
+    b.innerText = label;
+    b.onclick = onclick;
+    return b;
   };
 
   var actionStyle = 'padding:5px 10px;border-radius:6px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);font-size:10px;font-weight:700;cursor:pointer;';
 
   if (type === 'salaries') {
-	var isPaid = (row['Status'] || '').toLowerCase() === 'paid';
-	div.innerHTML =
-	  '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
-		'<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Employee Name'] || '') + '</div>' +
-		'<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Position'] || '') + ' - ' + (row['Month'] || '') + '</div></div>' +
-		'<div style="text-align:right;"><div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--blue);">' + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
-		'<span class="badge ' + (isPaid ? 'badge-done' : 'badge-pending') + '" style="margin-top:3px;">' + (row['Status'] || 'Pending') + '</span></div></div>' +
-	  '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-		'<span style="font-size:10px;color:var(--text4);">' + (row['Payment Type'] || '-') + (row['Notes'] ? ' - ' + row['Notes'] : '') + '</span>' +
-		'<div id="sal-btns-' + id + '" style="display:flex;gap:5px;"></div></div>';
-	var btnWrap = div.querySelector('#sal-btns-' + id);
-	if (!isPaid) btnWrap.appendChild(mkBtn('Mark Paid', function() { accUpdateField('salaries', id, 'status', 'Paid'); }, actionStyle));
-	btnWrap.appendChild(mkDel('salaries', id));
+    var isPaid = (row['Status'] || '').toLowerCase() === 'paid';
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+        '<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Employee Name'] || '') + '</div>' +
+        '<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Position'] || '') + ' - ' + (row['Month'] || '') + '</div></div>' +
+        '<div style="text-align:right;"><div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--blue);">' + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
+        '<span class="badge ' + (isPaid ? 'badge-done' : 'badge-pending') + '" style="margin-top:3px;">' + (row['Status'] || 'Pending') + '</span></div></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+        '<span style="font-size:10px;color:var(--text4);">' + (row['Payment Type'] || '-') + (row['Notes'] ? ' - ' + row['Notes'] : '') + '</span>' +
+        '<div id="sal-btns-' + id + '" style="display:flex;gap:5px;"></div></div>';
+    var btnWrap = div.querySelector('#sal-btns-' + id);
+    if (!isPaid) btnWrap.appendChild(mkBtn('Mark Paid', function() { accUpdateField('salaries', id, 'status', 'Paid'); }, actionStyle));
+    btnWrap.appendChild(mkDel('salaries', id));
 
   } else if (type === 'expenses') {
-	div.innerHTML =
-	  '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
-		'<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Description'] || '') + '</div>' +
-		'<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Category'] || '') + ' - ' + (row['Date'] || '') + '</div>' +
-		(row['Notes'] ? '<div style="font-size:10px;color:var(--text4);margin-top:2px;">' + row['Notes'] + '</div>' : '') + '</div>' +
-		'<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">' +
-		  '<div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--red);">' + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
-		  '<div id="exp-btns-' + id + '"></div></div></div>';
-	div.querySelector('#exp-btns-' + id).appendChild(mkDel('expenses', id));
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+        '<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Description'] || '') + '</div>' +
+        '<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Category'] || '') + ' - ' + (row['Date'] || '') + '</div>' +
+        (row['Notes'] ? '<div style="font-size:10px;color:var(--text4);margin-top:2px;">' + row['Notes'] + '</div>' : '') + '</div>' +
+        '<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">' +
+          '<div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--red);">' + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
+          '<div id="exp-btns-' + id + '"></div></div></div>';
+    div.querySelector('#exp-btns-' + id).appendChild(mkDel('expenses', id));
 
   } else if (type === 'assets') {
-	var condClr = { 'Good': 'var(--green)', 'Fair': 'var(--amber)', 'Poor': 'var(--red)' }[row['Condition']] || 'var(--text3)';
-	div.innerHTML =
-	  '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
-		'<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Asset Name'] || '') + '</div>' +
-		'<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Category'] || '') + ' - Since ' + (row['Acquired Date'] || '-') + '</div>' +
-		'<div style="margin-top:4px;display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(0,0,0,.04);border:1px solid var(--border);">' +
-		  '<span style="width:6px;height:6px;border-radius:50%;background:' + condClr + ';display:inline-block;"></span>' +
-		  '<span style="font-size:9px;font-weight:700;color:' + condClr + ';">' + (row['Condition'] || '-') + '</span></div></div>' +
-		'<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">' +
-		  '<div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--green);">' + Number(row['Value (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
-		  '<div id="ast-btns-' + id + '"></div></div></div>';
-	div.querySelector('#ast-btns-' + id).appendChild(mkDel('assets', id));
+    var condClr = { 'Good': 'var(--green)', 'Fair': 'var(--amber)', 'Poor': 'var(--red)' }[row['Condition']] || 'var(--text3)';
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+        '<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Asset Name'] || '') + '</div>' +
+        '<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Category'] || '') + ' - Since ' + (row['Acquired Date'] || '-') + '</div>' +
+        '<div style="margin-top:4px;display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(0,0,0,.04);border:1px solid var(--border);">' +
+          '<span style="width:6px;height:6px;border-radius:50%;background:' + condClr + ';display:inline-block;"></span>' +
+          '<span style="font-size:9px;font-weight:700;color:' + condClr + ';">' + (row['Condition'] || '-') + '</span></div></div>' +
+        '<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">' +
+          '<div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:var(--green);">' + Number(row['Value (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
+          '<div id="ast-btns-' + id + '"></div></div></div>';
+    div.querySelector('#ast-btns-' + id).appendChild(mkDel('assets', id));
 
   } else if (type === 'clearance') {
-	var isCredit  = (row['Type'] || '') === 'Credit';
-	var isSettled = ['settled','paid'].includes((row['Status'] || '').toLowerCase());
-	div.innerHTML =
-	  '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
-		'<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Description'] || '') + '</div>' +
-		'<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Party'] || '') + ' - ' + (row['Date'] || '') + '</div></div>' +
-		'<div style="text-align:right;"><div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:' + (isCredit ? 'var(--green)' : 'var(--red)') + ';">' +
-		  (isCredit ? '+' : '-') + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
-		  '<span class="badge ' + (isSettled ? 'badge-done' : 'badge-pending') + '" style="margin-top:3px;">' + (row['Status'] || 'Pending') + '</span></div></div>' +
-	  '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-		'<span class="badge ' + (isCredit ? 'badge-free' : 'badge-paid') + '">' + (row['Type'] || '-') + '</span>' +
-		'<div id="clr-btns-' + id + '" style="display:flex;gap:5px;"></div></div>';
-	var clrWrap = div.querySelector('#clr-btns-' + id);
-	if (!isSettled) clrWrap.appendChild(mkBtn('Settle', function() { accUpdateField('clearance', id, 'status', 'Settled'); }, actionStyle));
-	clrWrap.appendChild(mkDel('clearance', id));
+    var isCredit  = (row['Type'] || '') === 'Credit';
+    var isSettled = ['settled','paid'].includes((row['Status'] || '').toLowerCase());
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+        '<div><div style="font-weight:700;font-size:14px;color:var(--text);">' + (row['Description'] || '') + '</div>' +
+        '<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + (row['Party'] || '') + ' - ' + (row['Date'] || '') + '</div></div>' +
+        '<div style="text-align:right;"><div style="font-family:Fira Code,monospace;font-size:15px;font-weight:700;color:' + (isCredit ? 'var(--green)' : 'var(--red)') + ';">' +
+          (isCredit ? '+' : '-') + Number(row['Amount (SAR)'] || 0).toLocaleString() + ' SAR</div>' +
+          '<span class="badge ' + (isSettled ? 'badge-done' : 'badge-pending') + '" style="margin-top:3px;">' + (row['Status'] || 'Pending') + '</span></div></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+        '<span class="badge ' + (isCredit ? 'badge-free' : 'badge-paid') + '">' + (row['Type'] || '-') + '</span>' +
+        '<div id="clr-btns-' + id + '" style="display:flex;gap:5px;"></div></div>';
+    var clrWrap = div.querySelector('#clr-btns-' + id);
+    if (!isSettled) clrWrap.appendChild(mkBtn('Settle', function() { accUpdateField('clearance', id, 'status', 'Settled'); }, actionStyle));
+    clrWrap.appendChild(mkDel('clearance', id));
   }
   return div;
 }
@@ -2450,9 +2834,9 @@ async function accDelete(type, id) {
   var tbl = ACC_TABLE[type];
   if (!tbl) return;
   try {
-	await sbFetch(tbl + '?id=eq.' + id, { method: 'DELETE', headers: { 'Prefer': 'return=minimal' } });
-	loadAccList(type);
-	loadAccSummary();
+    await sbFetch(tbl + '?id=eq.' + id, { method: 'DELETE', headers: { 'Prefer': 'return=minimal' } });
+    loadAccList(type);
+    loadAccSummary();
   } catch(e) { alert('Delete error: ' + e.message); }
 }
 
@@ -2463,46 +2847,46 @@ async function accUpdateField(type, id, field, value) {
   var body = {};
   body[field] = value;
   try {
-	await sbFetch(tbl + '?id=eq.' + id, { method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify(body) });
-	loadAccList(type);
-	loadAccSummary();
+    await sbFetch(tbl + '?id=eq.' + id, { method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify(body) });
+    loadAccList(type);
+    loadAccSummary();
   } catch(e) { alert('Update error: ' + e.message); }
 }
 
 // ── Modal field definitions ──
 var ACC_MODAL_DEFS = {
   salary: [
-	{ id: 'employee_name', label: 'Employee Name',  type: 'text',   ph: 'Full name', col: 'employee_name' },
-	{ id: 'position',      label: 'Position',        type: 'text',   ph: 'e.g. Valet Staff', col: 'position' },
-	{ id: 'amount',        label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
-	{ id: 'month',         label: 'Month',            type: 'text',   ph: 'e.g. March 2026', col: 'month' },
-	{ id: 'payment_type',  label: 'Payment Type',     type: 'select', opts: ['Bank Transfer','Cash','Cheque'], col: 'payment_type' },
-	{ id: 'status',        label: 'Status',           type: 'select', opts: ['Pending','Paid'], col: 'status' },
-	{ id: 'notes',         label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
+    { id: 'employee_name', label: 'Employee Name',  type: 'text',   ph: 'Full name', col: 'employee_name' },
+    { id: 'position',      label: 'Position',        type: 'text',   ph: 'e.g. Valet Staff', col: 'position' },
+    { id: 'amount',        label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
+    { id: 'month',         label: 'Month',            type: 'text',   ph: 'e.g. March 2026', col: 'month' },
+    { id: 'payment_type',  label: 'Payment Type',     type: 'select', opts: ['Bank Transfer','Cash','Cheque'], col: 'payment_type' },
+    { id: 'status',        label: 'Status',           type: 'select', opts: ['Pending','Paid'], col: 'status' },
+    { id: 'notes',         label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
   ],
   expense: [
-	{ id: 'description', label: 'Description',     type: 'text',   ph: 'What was purchased?', col: 'description' },
-	{ id: 'amount',      label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
-	{ id: 'category',    label: 'Category',         type: 'select', opts: ['Operations','Equipment','Maintenance','Transport','Utilities','Other'], col: 'category' },
-	{ id: 'date',        label: 'Date',             type: 'date',   ph: '', col: 'date' },
-	{ id: 'notes',       label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
+    { id: 'description', label: 'Description',     type: 'text',   ph: 'What was purchased?', col: 'description' },
+    { id: 'amount',      label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
+    { id: 'category',    label: 'Category',         type: 'select', opts: ['Operations','Equipment','Maintenance','Transport','Utilities','Other'], col: 'category' },
+    { id: 'date',        label: 'Date',             type: 'date',   ph: '', col: 'date' },
+    { id: 'notes',       label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
   ],
   asset: [
-	{ id: 'asset_name',    label: 'Asset Name',      type: 'text',   ph: 'e.g. Valet Cart', col: 'asset_name' },
-	{ id: 'value_sar',     label: 'Value (SAR)',      type: 'number', ph: '0', col: 'value_sar' },
-	{ id: 'category',      label: 'Category',         type: 'select', opts: ['Vehicle','Equipment','Furniture','Electronics','Other'], col: 'category' },
-	{ id: 'acquired_date', label: 'Acquired Date',    type: 'date',   ph: '', col: 'acquired_date' },
-	{ id: 'condition',     label: 'Condition',        type: 'select', opts: ['Good','Fair','Poor'], col: 'condition' },
-	{ id: 'notes',         label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
+    { id: 'asset_name',    label: 'Asset Name',      type: 'text',   ph: 'e.g. Valet Cart', col: 'asset_name' },
+    { id: 'value_sar',     label: 'Value (SAR)',      type: 'number', ph: '0', col: 'value_sar' },
+    { id: 'category',      label: 'Category',         type: 'select', opts: ['Vehicle','Equipment','Furniture','Electronics','Other'], col: 'category' },
+    { id: 'acquired_date', label: 'Acquired Date',    type: 'date',   ph: '', col: 'acquired_date' },
+    { id: 'condition',     label: 'Condition',        type: 'select', opts: ['Good','Fair','Poor'], col: 'condition' },
+    { id: 'notes',         label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
   ],
   clearance: [
-	{ id: 'description', label: 'Description',     type: 'text',   ph: 'Details', col: 'description' },
-	{ id: 'amount',      label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
-	{ id: 'type',        label: 'Type',             type: 'select', opts: ['Credit','Debit'], col: 'type' },
-	{ id: 'party',       label: 'Party',            type: 'text',   ph: 'Client / Supplier name', col: 'party' },
-	{ id: 'date',        label: 'Date',             type: 'date',   ph: '', col: 'date' },
-	{ id: 'status',      label: 'Status',           type: 'select', opts: ['Pending','Settled'], col: 'status' },
-	{ id: 'notes',       label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
+    { id: 'description', label: 'Description',     type: 'text',   ph: 'Details', col: 'description' },
+    { id: 'amount',      label: 'Amount (SAR)',     type: 'number', ph: '0', col: 'amount' },
+    { id: 'type',        label: 'Type',             type: 'select', opts: ['Credit','Debit'], col: 'type' },
+    { id: 'party',       label: 'Party',            type: 'text',   ph: 'Client / Supplier name', col: 'party' },
+    { id: 'date',        label: 'Date',             type: 'date',   ph: '', col: 'date' },
+    { id: 'status',      label: 'Status',           type: 'select', opts: ['Pending','Settled'], col: 'status' },
+    { id: 'notes',       label: 'Notes (optional)', type: 'text',   ph: '', col: 'notes' }
   ]
 };
 
@@ -2514,15 +2898,15 @@ function openAccModal(type) {
   var container = document.getElementById('acc-modal-fields');
   container.innerHTML = '';
   defs.forEach(function(f) {
-	var w = document.createElement('div');
-	var inp;
-	if (f.type === 'select') {
-	  inp = '<select id="am-' + f.id + '" class="field">' + (f.opts || []).map(function(o) { return '<option value="' + o + '">' + o + '</option>'; }).join('') + '</select>';
-	} else {
-	  inp = '<input type="' + f.type + '" id="am-' + f.id + '" class="field" placeholder="' + (f.ph || '') + '">';
-	}
-	w.innerHTML = '<label class="field-label">' + f.label + '</label>' + inp;
-	container.appendChild(w);
+    var w = document.createElement('div');
+    var inp;
+    if (f.type === 'select') {
+      inp = '<select id="am-' + f.id + '" class="field">' + (f.opts || []).map(function(o) { return '<option value="' + o + '">' + o + '</option>'; }).join('') + '</select>';
+    } else {
+      inp = '<input type="' + f.type + '" id="am-' + f.id + '" class="field" placeholder="' + (f.ph || '') + '">';
+    }
+    w.innerHTML = '<label class="field-label">' + f.label + '</label>' + inp;
+    container.appendChild(w);
   });
   document.getElementById('acc-modal').classList.remove('hidden');
 }
@@ -2537,18 +2921,18 @@ async function submitAccModal() {
 
   var payload = { project: project };
   for (var i = 0; i < defs.length; i++) {
-	var f  = defs[i];
-	var el = document.getElementById('am-' + f.id);
-	if (!el) continue;
-	var v = el.value.trim();
-	if (!v && !f.label.includes('optional')) {
-	  el.focus();
-	  el.style.borderColor = 'var(--red)';
-	  (function(e){ setTimeout(function(){ e.style.borderColor = ''; }, 2000); })(el);
-	  alert('Please fill in: ' + f.label);
-	  return;
-	}
-	payload[f.col || f.id] = (f.type === 'number') ? (parseFloat(v) || 0) : v;
+    var f  = defs[i];
+    var el = document.getElementById('am-' + f.id);
+    if (!el) continue;
+    var v = el.value.trim();
+    if (!v && !f.label.includes('optional')) {
+      el.focus();
+      el.style.borderColor = 'var(--red)';
+      (function(e){ setTimeout(function(){ e.style.borderColor = ''; }, 2000); })(el);
+      alert('Please fill in: ' + f.label);
+      return;
+    }
+    payload[f.col || f.id] = (f.type === 'number') ? (parseFloat(v) || 0) : v;
   }
 
   // Map modal type to table key
@@ -2560,10 +2944,10 @@ async function submitAccModal() {
   var btn = document.getElementById('acc-modal-submit');
   btn.disabled = true; btn.innerText = 'Saving...';
   try {
-	await sbFetch(tbl, { method: 'POST', body: JSON.stringify(payload) });
-	closeAccModal();
-	loadAccList(listKey);
-	loadAccSummary();
+    await sbFetch(tbl, { method: 'POST', body: JSON.stringify(payload) });
+    closeAccModal();
+    loadAccList(listKey);
+    loadAccSummary();
   } catch(e) { alert('Save error: ' + e.message); }
   btn.disabled = false; btn.innerText = 'Save Record';
 }
@@ -2575,8 +2959,8 @@ async function fetchAccData(type) {
   var tbl = ACC_TABLE[type];
   if (!tbl) return [];
   try {
-	var raw = await sbFetch(tbl + pf, { method: 'GET' });
-	return mapAccRows(type, raw || []);
+    var raw = await sbFetch(tbl + pf, { method: 'GET' });
+    return mapAccRows(type, raw || []);
   } catch(e) { console.error('fetchAccData:', e); return []; }
 }
 
@@ -2590,51 +2974,51 @@ async function exportFullReport(fmt) {
   if (xlsxBtn) { xlsxBtn.disabled = true; xlsxBtn.innerText = 'Loading...'; }
   if (csvBtn)  { csvBtn.disabled  = true; csvBtn.innerText  = 'Loading...'; }
   try {
-	var results = await Promise.all(types.map(function(t) { return fetchAccData(t); }));
-	var allData = {};
-	types.forEach(function(t, i) { allData[t] = results[i]; });
+    var results = await Promise.all(types.map(function(t) { return fetchAccData(t); }));
+    var allData = {};
+    types.forEach(function(t, i) { allData[t] = results[i]; });
 
-	if (fmt === 'xlsx') {
-	  var wb = XLSX.utils.book_new();
-	  types.forEach(function(t) {
-		var rows = allData[t];
-		if (!rows.length) return;
-		var ws = XLSX.utils.json_to_sheet(rows);
-		ws['!cols'] = Object.keys(rows[0]).map(function(k) { return { wch: Math.max(k.length, 14) }; });
-		XLSX.utils.book_append_sheet(wb, ws, t.charAt(0).toUpperCase() + t.slice(1));
-	  });
-	  var sal = allData.salaries.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
-	  var exp = allData.expenses.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
-	  var ast = allData.assets.reduce(function(s,r){ return s + parseFloat(r['Value (SAR)']||0); }, 0);
-	  var clr = allData.clearance.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
-	  var net = ast - sal - exp;
-	  var sumWs = XLSX.utils.json_to_sheet([
-		{ 'Category': 'Salaries',         'Total (SAR)': sal, 'Records': allData.salaries.length  },
-		{ 'Category': 'Expenses',          'Total (SAR)': exp, 'Records': allData.expenses.length  },
-		{ 'Category': 'Assets',            'Total (SAR)': ast, 'Records': allData.assets.length    },
-		{ 'Category': 'Clearance',         'Total (SAR)': clr, 'Records': allData.clearance.length },
-		{ 'Category': 'NET (Assets-Sal-Exp)', 'Total (SAR)': net, 'Records': ''                   }
-	  ]);
-	  sumWs['!cols'] = [{ wch: 28 }, { wch: 16 }, { wch: 10 }];
-	  XLSX.utils.book_append_sheet(wb, sumWs, 'Summary');
-	  XLSX.writeFile(wb, 'OPERIX_Report_' + project.replace(/\s+/g, '_') + '_' + dateStr + '.xlsx');
-	} else {
-	  var parts = [];
-	  types.forEach(function(t) {
-		var rows = allData[t];
-		if (!rows.length) return;
-		var h = Object.keys(rows[0]);
-		var section = '=== ' + t.toUpperCase() + ' ===' + '\n' +
-		  [h.join(',')].concat(rows.map(function(r) {
-			return h.map(function(k) { return '"' + String(r[k] != null ? r[k] : '') + '"'; }).join(',');
-		  })).join('\n');
-		parts.push(section);
-	  });
-	  var a = document.createElement('a');
-	  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(parts.join('\n\n'));
-	  a.download = 'OPERIX_Report_' + project.replace(/\s+/g, '_') + '_' + dateStr + '.csv';
-	  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-	}
+    if (fmt === 'xlsx') {
+      var wb = XLSX.utils.book_new();
+      types.forEach(function(t) {
+        var rows = allData[t];
+        if (!rows.length) return;
+        var ws = XLSX.utils.json_to_sheet(rows);
+        ws['!cols'] = Object.keys(rows[0]).map(function(k) { return { wch: Math.max(k.length, 14) }; });
+        XLSX.utils.book_append_sheet(wb, ws, t.charAt(0).toUpperCase() + t.slice(1));
+      });
+      var sal = allData.salaries.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
+      var exp = allData.expenses.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
+      var ast = allData.assets.reduce(function(s,r){ return s + parseFloat(r['Value (SAR)']||0); }, 0);
+      var clr = allData.clearance.reduce(function(s,r){ return s + parseFloat(r['Amount (SAR)']||0); }, 0);
+      var net = ast - sal - exp;
+      var sumWs = XLSX.utils.json_to_sheet([
+        { 'Category': 'Salaries',         'Total (SAR)': sal, 'Records': allData.salaries.length  },
+        { 'Category': 'Expenses',          'Total (SAR)': exp, 'Records': allData.expenses.length  },
+        { 'Category': 'Assets',            'Total (SAR)': ast, 'Records': allData.assets.length    },
+        { 'Category': 'Clearance',         'Total (SAR)': clr, 'Records': allData.clearance.length },
+        { 'Category': 'NET (Assets-Sal-Exp)', 'Total (SAR)': net, 'Records': ''                   }
+      ]);
+      sumWs['!cols'] = [{ wch: 28 }, { wch: 16 }, { wch: 10 }];
+      XLSX.utils.book_append_sheet(wb, sumWs, 'Summary');
+      XLSX.writeFile(wb, 'OPERIX_Report_' + project.replace(/\s+/g, '_') + '_' + dateStr + '.xlsx');
+    } else {
+      var parts = [];
+      types.forEach(function(t) {
+        var rows = allData[t];
+        if (!rows.length) return;
+        var h = Object.keys(rows[0]);
+        var section = '=== ' + t.toUpperCase() + ' ===' + '\n' +
+          [h.join(',')].concat(rows.map(function(r) {
+            return h.map(function(k) { return '"' + String(r[k] != null ? r[k] : '') + '"'; }).join(',');
+          })).join('\n');
+        parts.push(section);
+      });
+      var a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(parts.join('\n\n'));
+      a.download = 'OPERIX_Report_' + project.replace(/\s+/g, '_') + '_' + dateStr + '.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
   } catch(e) { alert('Export failed: ' + e.message); }
   if (xlsxBtn) { xlsxBtn.disabled = false; xlsxBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Excel'; }
   if (csvBtn)  { csvBtn.disabled  = false; csvBtn.innerHTML  = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>CSV'; }
@@ -2657,7 +3041,7 @@ async function exportAccCSV(type) {
   if (!rows.length) return alert('No data to export');
   var h   = Object.keys(rows[0]);
   var csv = [h.join(',')].concat(rows.map(function(r) {
-	return h.map(function(k) { return '"' + String(r[k] != null ? r[k] : '') + '"'; }).join(',');
+    return h.map(function(k) { return '"' + String(r[k] != null ? r[k] : '') + '"'; }).join(',');
   })).join('\n');
   var a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
@@ -3768,13 +4152,13 @@ async function loadMyKPIs(){
 
   // ── Salary from operix_salaries (Supabase) ──
   try{
-	var firstName1 = name.split(/[\s']+/)[0];
-	var salRows1   = await sbFetch('operix_salaries?select=employee_name,amount&order=created_at.desc', {method:'GET'}).catch(function(){return[];});
-	var mySal1 = (salRows1||[]).find(function(r){ return (r.employee_name||'').toLowerCase().includes(firstName1); });
-	if(mySal1){
-	  var salEl = document.getElementById('hr-kpi-salary');
-	  if(salEl) salEl.innerText = Number(mySal1.amount||0).toLocaleString();
-	}
+    var firstName1 = name.split(/[\s']+/)[0];
+    var salRows1   = await sbFetch('operix_salaries?select=employee_name,amount&order=created_at.desc', {method:'GET'}).catch(function(){return[];});
+    var mySal1 = (salRows1||[]).find(function(r){ return (r.employee_name||'').toLowerCase().includes(firstName1); });
+    if(mySal1){
+      var salEl = document.getElementById('hr-kpi-salary');
+      if(salEl) salEl.innerText = Number(mySal1.amount||0).toLocaleString();
+    }
   } catch(e){}
 }
 
@@ -5509,36 +5893,36 @@ async function anprExportTicket(){
   const btn = document.querySelector('[onclick="anprExportTicket()"]');
   if(btn){ btn.disabled = true; btn.innerText = 'Saving…'; }
   try{
-	const el = document.getElementById('anpr-inv-capture');
-	if(!el){ alert('Ticket element not found'); return; }
+    const el = document.getElementById('anpr-inv-capture');
+    if(!el){ alert('Ticket element not found'); return; }
 
-	// Clone element into body at fixed position to avoid overlay clipping
-	const clone = el.cloneNode(true);
-	clone.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;background:#fff;width:380px;';
-	document.body.appendChild(clone);
+    // Clone element into body at fixed position to avoid overlay clipping
+    const clone = el.cloneNode(true);
+    clone.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;background:#fff;width:380px;';
+    document.body.appendChild(clone);
 
-	const canvas = await html2canvas(clone, {
-	  scale: 3,
-	  useCORS: true,
-	  allowTaint: true,
-	  backgroundColor: '#ffffff',
-	  logging: false,
-	  width: clone.offsetWidth,
-	  height: clone.offsetHeight
-	});
-	document.body.removeChild(clone);
+    const canvas = await html2canvas(clone, {
+      scale: 3,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      width: clone.offsetWidth,
+      height: clone.offsetHeight
+    });
+    document.body.removeChild(clone);
 
-	const plate    = document.getElementById('anpr-inv-plate').innerText.trim() || 'ticket';
-	const ticketNo = document.getElementById('anpr-inv-ticketnum').innerText.trim() || Date.now();
-	const a = document.createElement('a');
-	a.download = 'Ticket_' + plate.replace(/\s+/g,'_') + '_' + ticketNo + '.png';
-	a.href = canvas.toDataURL('image/png');
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
+    const plate    = document.getElementById('anpr-inv-plate').innerText.trim() || 'ticket';
+    const ticketNo = document.getElementById('anpr-inv-ticketnum').innerText.trim() || Date.now();
+    const a = document.createElement('a');
+    a.download = 'Ticket_' + plate.replace(/\s+/g,'_') + '_' + ticketNo + '.png';
+    a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   } catch(e){
-	console.error('Export error:', e);
-	alert('Export failed: ' + e.message);
+    console.error('Export error:', e);
+    alert('Export failed: ' + e.message);
   }
   if(btn){ btn.disabled = false; btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Save PNG'; }
 }
@@ -5965,21 +6349,21 @@ async function studioShareByEmail() {
   let attachmentObj = null;
   const pdfFileName = (docType + '_' + (refNo || 'OPX') + '.pdf').replace(/\s+/g, '_');
   if (pdfB64) {
-	try {
-	  if (btn) btn.innerText = 'Uploading PDF…';
-	  // pdfB64 is already raw base64 (no data-URI prefix) — pass directly
-	  const up = await gasCall(STUDIO_API, {
-		action:   'uploadMailAttachment',
-		base64:   pdfB64,
-		mimeType: 'application/pdf',
-		fileName: pdfFileName
-	  });
-	  if (up && up.success && up.data) {
-		attachmentObj = { name: pdfFileName, url: up.data.url, downloadUrl: up.data.downloadUrl || up.data.url, driveId: up.data.fileId, size: 0 };
-	  } else {
-		console.warn('PDF Drive upload failed:', up?.error);
-	  }
-	} catch(e) { console.warn('PDF upload failed:', e.message); }
+    try {
+      if (btn) btn.innerText = 'Uploading PDF…';
+      // pdfB64 is already raw base64 (no data-URI prefix) — pass directly
+      const up = await gasCall(STUDIO_API, {
+        action:   'uploadMailAttachment',
+        base64:   pdfB64,
+        mimeType: 'application/pdf',
+        fileName: pdfFileName
+      });
+      if (up && up.success && up.data) {
+        attachmentObj = { name: pdfFileName, url: up.data.url, downloadUrl: up.data.downloadUrl || up.data.url, driveId: up.data.fileId, size: 0 };
+      } else {
+        console.warn('PDF Drive upload failed:', up?.error);
+      }
+    } catch(e) { console.warn('PDF upload failed:', e.message); }
   }
 
   // Build HTML email body with real logo <img>
@@ -6276,54 +6660,54 @@ async function openEmail(em, cardEl) {
 
   // ── Render attachments safely via DOM (avoids template literal nesting issues) ──
   if (atts.length) {
-	const attsDiv = document.getElementById('mail-read-atts-' + em.id);
-	if (attsDiv) {
-	  attsDiv.style.cssText = 'margin-top:20px;padding-top:14px;border-top:1px solid var(--border2);';
-	  const hdr = document.createElement('div');
-	  hdr.style.cssText = 'font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;';
-	  hdr.innerText = 'Attachments (' + atts.length + ')';
-	  attsDiv.appendChild(hdr);
-	  const row = document.createElement('div');
-	  row.style.cssText = 'display:flex;gap:7px;flex-wrap:wrap;';
-	  atts.forEach(function(a) {
-		// Build URLs — fall back to constructing from driveId if fields were saved empty
-		const driveId = a.driveId || a.fileId || '';
-		const dlUrl   = a.downloadUrl || (driveId ? 'https://drive.google.com/uc?export=download&id=' + driveId : '') || a.url || '';
-		const viewUrl = a.url || (driveId ? 'https://drive.google.com/file/d/' + driveId + '/view' : '') || a.downloadUrl || '';
-		const wrap = document.createElement('div');
-		wrap.style.cssText = 'display:inline-flex;align-items:center;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;';
+    const attsDiv = document.getElementById('mail-read-atts-' + em.id);
+    if (attsDiv) {
+      attsDiv.style.cssText = 'margin-top:20px;padding-top:14px;border-top:1px solid var(--border2);';
+      const hdr = document.createElement('div');
+      hdr.style.cssText = 'font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;';
+      hdr.innerText = 'Attachments (' + atts.length + ')';
+      attsDiv.appendChild(hdr);
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;gap:7px;flex-wrap:wrap;';
+      atts.forEach(function(a) {
+        // Build URLs — fall back to constructing from driveId if fields were saved empty
+        const driveId = a.driveId || a.fileId || '';
+        const dlUrl   = a.downloadUrl || (driveId ? 'https://drive.google.com/uc?export=download&id=' + driveId : '') || a.url || '';
+        const viewUrl = a.url || (driveId ? 'https://drive.google.com/file/d/' + driveId + '/view' : '') || a.downloadUrl || '';
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'display:inline-flex;align-items:center;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;';
 
-		// Download / open button
-		const dlBtn = document.createElement('button');
-		dlBtn.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:7px 11px;font-size:11px;font-weight:600;color:var(--purple);background:transparent;border:none;cursor:pointer;';
-		dlBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
-		dlBtn.appendChild(document.createTextNode(a.name || 'Attachment'));
-		dlBtn.onmouseenter = function() { this.style.background = 'var(--purple-bg)'; };
-		dlBtn.onmouseleave = function() { this.style.background = 'transparent'; };
-		dlBtn.onclick = function() {
-		  if (dlUrl) window.open(dlUrl, '_blank', 'noopener,noreferrer');
-		  else alert('No download URL available for this attachment.');
-		};
-		wrap.appendChild(dlBtn);
+        // Download / open button
+        const dlBtn = document.createElement('button');
+        dlBtn.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:7px 11px;font-size:11px;font-weight:600;color:var(--purple);background:transparent;border:none;cursor:pointer;';
+        dlBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+        dlBtn.appendChild(document.createTextNode(a.name || 'Attachment'));
+        dlBtn.onmouseenter = function() { this.style.background = 'var(--purple-bg)'; };
+        dlBtn.onmouseleave = function() { this.style.background = 'transparent'; };
+        dlBtn.onclick = function() {
+          if (dlUrl) window.open(dlUrl, '_blank', 'noopener,noreferrer');
+          else alert('No download URL available for this attachment.');
+        };
+        wrap.appendChild(dlBtn);
 
-		// View in Drive button
-		if (viewUrl && viewUrl !== dlUrl) {
-		  const sep = document.createElement('div');
-		  sep.style.cssText = 'width:1px;background:var(--border2);align-self:stretch;';
-		  wrap.appendChild(sep);
-		  const viewBtn = document.createElement('button');
-		  viewBtn.title = 'View in Google Drive';
-		  viewBtn.style.cssText = 'display:inline-flex;align-items:center;padding:7px 9px;border:none;font-size:10px;color:var(--text3);background:transparent;cursor:pointer;';
-		  viewBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
-		  viewBtn.onmouseenter = function() { this.style.color = 'var(--purple)'; };
-		  viewBtn.onmouseleave = function() { this.style.color = 'var(--text3)'; };
-		  viewBtn.onclick = function() { window.open(viewUrl, '_blank', 'noopener,noreferrer'); };
-		  wrap.appendChild(viewBtn);
-		}
-		row.appendChild(wrap);
-	  });
-	  attsDiv.appendChild(row);
-	}
+        // View in Drive button
+        if (viewUrl && viewUrl !== dlUrl) {
+          const sep = document.createElement('div');
+          sep.style.cssText = 'width:1px;background:var(--border2);align-self:stretch;';
+          wrap.appendChild(sep);
+          const viewBtn = document.createElement('button');
+          viewBtn.title = 'View in Google Drive';
+          viewBtn.style.cssText = 'display:inline-flex;align-items:center;padding:7px 9px;border:none;font-size:10px;color:var(--text3);background:transparent;cursor:pointer;';
+          viewBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+          viewBtn.onmouseenter = function() { this.style.color = 'var(--purple)'; };
+          viewBtn.onmouseleave = function() { this.style.color = 'var(--text3)'; };
+          viewBtn.onclick = function() { window.open(viewUrl, '_blank', 'noopener,noreferrer'); };
+          wrap.appendChild(viewBtn);
+        }
+        row.appendChild(wrap);
+      });
+      attsDiv.appendChild(row);
+    }
   }
 }
 
@@ -6448,16 +6832,16 @@ function renderToSuggestions() {
 // ── Upload helper: any file → Google Drive via STUDIO_API GAS ──
 async function uploadFileToDrive(file) {
   const base64 = await new Promise((res, rej) => {
-	const r = new FileReader();
-	r.onload  = () => res((r.result || '').split(',')[1] || '');
-	r.onerror = rej;
-	r.readAsDataURL(file);
+    const r = new FileReader();
+    r.onload  = () => res((r.result || '').split(',')[1] || '');
+    r.onerror = rej;
+    r.readAsDataURL(file);
   });
   const d = await gasCall(STUDIO_API, {
-	action:   'uploadMailAttachment',
-	base64:   base64,
-	mimeType: file.type || 'application/octet-stream',
-	fileName: file.name
+    action:   'uploadMailAttachment',
+    base64:   base64,
+    mimeType: file.type || 'application/octet-stream',
+    fileName: file.name
   });
   if (!d || !d.success) throw new Error(d?.error || 'Upload failed');
   const r = d.data || d; // GAS wraps result in .data
@@ -6469,19 +6853,19 @@ async function mailAttachFile() {
   input.type = 'file';
   input.multiple = true;
   input.onchange = async (e) => {
-	const files = Array.from(e.target.files);
-	for (const file of files) {
-	  const btn = document.getElementById('mail-attach-btn');
-	  if (btn) { btn.innerText = 'Uploading…'; btn.disabled = true; }
-	  try {
-		const att = await uploadFileToDrive(file);
-		mailComposeAttachments.push(att);
-		renderComposeAttachments();
-	  } catch(err) {
-		alert('Upload error: ' + err.message);
-	  }
-	  if (btn) { btn.innerText = '📎 Attach'; btn.disabled = false; }
-	}
+    const files = Array.from(e.target.files);
+    for (const file of files) {
+      const btn = document.getElementById('mail-attach-btn');
+      if (btn) { btn.innerText = 'Uploading…'; btn.disabled = true; }
+      try {
+        const att = await uploadFileToDrive(file);
+        mailComposeAttachments.push(att);
+        renderComposeAttachments();
+      } catch(err) {
+        alert('Upload error: ' + err.message);
+      }
+      if (btn) { btn.innerText = '📎 Attach'; btn.disabled = false; }
+    }
   };
   input.click();
 }
@@ -6526,11 +6910,19 @@ async function mailSend(isDraft) {
 	bodyHtml = bodyEl.dataset.htmlBody;
 	delete bodyEl.dataset.htmlBody; // consume it
   } else {
-	const LOGO_HTML = '<img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="height:32px;width:auto;vertical-align:middle;border-radius:7px;margin-right:6px;" alt="OPERIX"><strong style="font-family:Space Grotesk,sans-serif;font-size:13px;letter-spacing:.06em;vertical-align:middle;">OPERIX</strong><br>';
-	bodyHtml = body
-	  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-	  .replace(/\[OPERIX_LOGO\]/g, LOGO_HTML)
-	  .replace(/\n/g,'<br>');
+    const LOGO_HTML = '<img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="height:32px;width:auto;vertical-align:middle;border-radius:7px;margin-right:6px;" alt="OPERIX"><strong style="font-family:Space Grotesk,sans-serif;font-size:13px;letter-spacing:.06em;vertical-align:middle;">OPERIX</strong><br>';
+    // Check for HTML signature marker
+    if (body.includes('[OPERIX_HTML_SIGNATURE]') && bodyEl && bodyEl.dataset.htmlSig) {
+      const htmlSig = bodyEl.dataset.htmlSig;
+      const plainPart = body.slice(0, body.indexOf('[OPERIX_HTML_SIGNATURE]')).replace(/\n-- \n$/, '').trim();
+      const escapedPlain = plainPart.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      bodyHtml = '<p>' + escapedPlain + '</p><br><div style="border-top:1px solid #e5e3de;padding-top:14px;margin-top:10px;">' + htmlSig + '</div>';
+    } else {
+      bodyHtml = body
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/\[OPERIX_LOGO\]/g, LOGO_HTML)
+        .replace(/\n/g,'<br>');
+    }
   }
 
   const u = currentUser;
@@ -6668,6 +7060,91 @@ function editSignature(idx) {
   setSigLogoState(s.show_logo || false);
   document.getElementById('sig-save-btn').setAttribute('data-edit-id', s.id);
   document.getElementById('sig-save-btn').innerText = 'Update Signature';
+}
+
+// ── OPERIX HTML Signature Template Builder ──────────────────────
+function buildOPERIXSigHTML(name, title, dept, phone, email, photoUrl) {
+  var LOGO = 'https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png';
+  var photoBlock = photoUrl
+    ? '<img src="' + photoUrl + '" width="70" height="70" style="border-radius:10px;object-fit:cover;display:block;" alt="' + name + '">'
+    : '<div style="width:70px;height:70px;border-radius:10px;background:#1c1a16;display:flex;align-items:center;justify-content:center;"><span style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#c49440;">' + (name||'?').charAt(0).toUpperCase() + '</span></div>';
+  var phoneRow = phone ? '<div style="margin-bottom:2px;"><span style="color:#9a7230;font-weight:700;font-size:10px;">T:</span> <span style="font-size:11px;color:#4a4640;">' + phone + '</span></div>' : '';
+  var emailRow = email ? '<div style="margin-bottom:2px;"><span style="color:#9a7230;font-weight:700;font-size:10px;">E:</span> <a href="mailto:' + email + '" style="font-size:11px;color:#1c1a16;text-decoration:none;">' + email + '</a></div>' : '';
+
+  return '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;font-family:Arial,sans-serif;border-collapse:collapse;">' +
+    '<tr><td style="padding:16px 0 10px;">' +
+      '<table cellpadding="0" cellspacing="0" border="0"><tr>' +
+        '<td style="padding-right:14px;vertical-align:top;">' + photoBlock + '</td>' +
+        '<td style="padding:0 14px;width:1px;background:linear-gradient(to bottom,#c49440,#9a7230);min-width:1px;"></td>' +
+        '<td style="padding-left:16px;vertical-align:top;">' +
+          '<div style="font-size:16px;font-weight:700;color:#1c1a16;margin-bottom:2px;">' + (name||'') + '</div>' +
+          '<div style="font-size:12px;font-weight:600;color:#9a7230;margin-bottom:1px;">' + (title||'') + '</div>' +
+          '<div style="font-size:10px;color:#6b6560;margin-bottom:10px;">' + (dept||'') + '</div>' +
+          phoneRow + emailRow +
+        '</td>' +
+      '</tr></table>' +
+    '</td></tr>' +
+    '<tr><td style="padding:8px 0;">' +
+      '<table cellpadding="0" cellspacing="0" border="0"><tr>' +
+        '<td style="padding-right:14px;vertical-align:middle;text-align:center;">' +
+          '<img src="' + LOGO + '" width="48" height="48" style="border-radius:10px;display:block;" alt="OPERIX">' +
+        '</td>' +
+        '<td style="padding:0 14px;width:1px;background:linear-gradient(to bottom,#c49440,#9a7230);min-width:1px;"></td>' +
+        '<td style="padding-left:16px;vertical-align:middle;">' +
+          '<div style="font-family:Georgia,serif;font-size:17px;font-weight:700;color:#1c1a16;letter-spacing:.06em;">OPERIX<sup style="font-size:8px;">&reg;</sup></div>' +
+          '<div style="font-size:8px;font-weight:700;letter-spacing:.2em;color:#9a7230;text-transform:uppercase;margin-top:1px;">Operations &amp; Management</div>' +
+        '</td>' +
+      '</tr></table>' +
+    '</td></tr>' +
+    '<tr><td style="padding:4px 0 10px;"><div style="height:2px;background:linear-gradient(to right,#9a7230,#e8b96a,#9a7230);border-radius:2px;"></div></td></tr>' +
+    '<tr><td>' +
+      '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-radius:10px;overflow:hidden;background:#1c1a16;">' +
+        '<tr>' +
+          '<td style="padding:14px 18px;vertical-align:middle;width:55%;">' +
+            '<div style="font-size:13px;font-weight:700;color:#fff;line-height:1.4;margin-bottom:8px;">Smarter operations,<br>better results.</div>' +
+            '<a href="https://operix.app" style="display:inline-block;background:linear-gradient(135deg,#9a7230,#c49440);color:#fff;font-size:10px;font-weight:700;padding:6px 14px;border-radius:20px;text-decoration:none;letter-spacing:.04em;">Learn more</a>' +
+          '</td>' +
+          '<td style="padding:14px 18px;text-align:right;vertical-align:middle;">' +
+            '<span style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#9a7230;letter-spacing:.12em;opacity:.3;">OPERIX</span>' +
+          '</td>' +
+        '</tr>' +
+      '</table>' +
+    '</td></tr>' +
+    '<tr><td style="padding-top:8px;">' +
+      '<div style="font-size:9px;color:#aaa;line-height:1.5;">The content of this email is confidential and intended for the recipient specified only. Strictly forbidden to share without written consent of the sender.</div>' +
+    '</td></tr>' +
+  '</table>';
+}
+
+function previewOPERIXSig() {
+  var name     = document.getElementById('tpl-name')?.value.trim()  || 'Your Name';
+  var title    = document.getElementById('tpl-title')?.value.trim() || 'Your Title';
+  var dept     = document.getElementById('tpl-dept')?.value.trim()  || 'Department';
+  var phone    = document.getElementById('tpl-phone')?.value.trim() || '';
+  var email    = document.getElementById('tpl-email')?.value.trim() || '';
+  var photo    = document.getElementById('tpl-photo')?.value.trim() || '';
+  var preview  = document.getElementById('sig-tpl-preview');
+  if (!preview) return;
+  preview.style.display = 'block';
+  preview.innerHTML = buildOPERIXSigHTML(name, title, dept, phone, email, photo);
+}
+
+function useOPERIXTemplate() {
+  var name  = document.getElementById('tpl-name')?.value.trim();
+  var title = document.getElementById('tpl-title')?.value.trim();
+  var dept  = document.getElementById('tpl-dept')?.value.trim();
+  var phone = document.getElementById('tpl-phone')?.value.trim();
+  var email = document.getElementById('tpl-email')?.value.trim();
+  var photo = document.getElementById('tpl-photo')?.value.trim();
+  if (!name) { alert('Please enter your name first.'); document.getElementById('tpl-name')?.focus(); return; }
+  // Put the generated HTML into sig-content-input as raw HTML
+  var html = buildOPERIXSigHTML(name, title, dept, phone, email, photo);
+  document.getElementById('sig-name-input').value = (name || 'Me') + ' — OPERIX';
+  document.getElementById('sig-content-input').value = html;
+  // Scroll to save button
+  document.getElementById('sig-save-btn').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('sig-save-btn').style.outline = '2px solid #a78bfa';
+  setTimeout(function() { document.getElementById('sig-save-btn').style.outline = ''; }, 2000);
 }
 
 async function saveSignature() {
@@ -6976,12 +7453,60 @@ initMailBoard = async function() {
 		  </div>
 		  <div style="font-size:12px;color:var(--text3);margin-bottom:20px;">Manage your personal email signatures. The default one is automatically added to new messages.</div>
 
+		  <!-- OPERIX Template Generator -->
+		  <div style="background:linear-gradient(135deg,#1c1a16,#2e2c28);border-radius:14px;padding:18px;margin-bottom:20px;">
+			<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+			  <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="width:32px;height:32px;border-radius:8px;object-fit:contain;">
+			  <div>
+				<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;">OPERIX Signature Template</div>
+				<div style="font-size:10px;color:rgba(255,255,255,.45);">Professional branded template — fill in your details</div>
+			  </div>
+			</div>
+			<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+			  <div>
+				<label style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px;">Your Name</label>
+				<input id="tpl-name" class="field" placeholder="e.g. Ahmed Al-Rashid" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);color:#fff;font-size:12px;padding:8px 10px;">
+			  </div>
+			  <div>
+				<label style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px;">Job Title</label>
+				<input id="tpl-title" class="field" placeholder="e.g. Operations Manager" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);color:#fff;font-size:12px;padding:8px 10px;">
+			  </div>
+			  <div>
+				<label style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px;">Department</label>
+				<input id="tpl-dept" class="field" placeholder="e.g. Operations & Maintenance" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);color:#fff;font-size:12px;padding:8px 10px;">
+			  </div>
+			  <div>
+				<label style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px;">Phone</label>
+				<input id="tpl-phone" class="field" placeholder="+966 5x xxx xxxx" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);color:#fff;font-size:12px;padding:8px 10px;">
+			  </div>
+			  <div>
+				<label style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px;">Email</label>
+				<input id="tpl-email" class="field" placeholder="you@operix.com" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);color:#fff;font-size:12px;padding:8px 10px;">
+			  </div>
+			  <div>
+				<label style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px;">Photo URL (optional)</label>
+				<input id="tpl-photo" class="field" placeholder="https://drive.google.com/..." style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);color:#fff;font-size:12px;padding:8px 10px;">
+			  </div>
+			</div>
+			<div style="display:flex;gap:8px;margin-top:4px;">
+			  <button onclick="previewOPERIXSig()" style="flex:1;padding:9px;background:rgba(154,114,48,.25);border:1px solid rgba(196,148,64,.4);color:#e8b96a;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;">
+				👁 Preview
+			  </button>
+			  <button onclick="useOPERIXTemplate()" style="flex:1;padding:9px;background:linear-gradient(135deg,#9a7230,#c49440);border:none;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;">
+				✓ Use This Template
+			  </button>
+			</div>
+			<!-- Preview area -->
+			<div id="sig-tpl-preview" style="display:none;margin-top:12px;background:#fff;border-radius:10px;padding:16px;"></div>
+		  </div>
+
 		  <!-- Existing signatures -->
 		  <div id="mail-sig-list" style="margin-bottom:20px;"></div>
 
-		  <!-- Create / Edit form -->
+		  <!-- Create / Edit form (plain text fallback) -->
 		  <div style="background:#faf9ff;border:1.5px solid #e5e3ff;border-radius:12px;padding:18px;">
-			<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px;">Create / Edit Signature</div>
+			<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px;">Custom Signature</div>
+			<div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Or write a plain-text signature manually</div>
 			<div style="margin-bottom:10px;">
 			  <label class="field-label">Signature Name</label>
 			  <input id="sig-name-input" class="field" placeholder="e.g. Professional, Casual…">
@@ -7027,10 +7552,20 @@ function applySignatureToCompose(sigId) {
   const sepIdx = body.indexOf(sigSep);
   if (sepIdx !== -1) body = body.slice(0, sepIdx);
   if (sig) {
-	const logoLine = sig.show_logo ? '[OPERIX_LOGO]\n' : '';
-	bodyEl.value = body + sigSep + logoLine + sig.content;
+    // Detect HTML signature (starts with < tag)
+    const isHTML = sig.content && sig.content.trim().startsWith('<');
+    if (isHTML) {
+      // Store HTML sig separately — mailSend will pick it up
+      bodyEl.dataset.htmlSig = sig.content;
+      bodyEl.value = body + sigSep + '[OPERIX_HTML_SIGNATURE]';
+    } else {
+      delete bodyEl.dataset.htmlSig;
+      const logoLine = sig.show_logo ? '[OPERIX_LOGO]\n' : '';
+      bodyEl.value = body + sigSep + logoLine + sig.content;
+    }
   } else {
-	bodyEl.value = body;
+    delete bodyEl.dataset.htmlSig;
+    bodyEl.value = body;
   }
   updateLogoPreview();
 }
