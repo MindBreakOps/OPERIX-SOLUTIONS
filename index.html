@@ -7400,6 +7400,32 @@ async function updateMailBadges() {
 }
 
 // ── COMPOSE ──────────────────────────────────────────────────
+function openInGmail() {
+  var to      = (document.getElementById('mail-to')?.value     || '').trim();
+  var cc      = (document.getElementById('mail-cc')?.value     || '').trim();
+  var subject = (document.getElementById('mail-subject')?.value|| '').trim();
+  var bodyEl  = document.getElementById('mail-body');
+  var bodyRaw = bodyEl ? bodyEl.value : '';
+
+  // Strip the [OPERIX_HTML_SIGNATURE] marker and OPERIX_LOGO placeholder for plain text
+  var bodyPlain = bodyRaw
+    .replace('[OPERIX_HTML_SIGNATURE]', '')
+    .replace(/\[OPERIX_LOGO\]/g, '')
+    .replace(/\n-- \n$/, '')
+    .trim();
+
+  // Build mailto URL
+  var mailto = 'mailto:' + encodeURIComponent(to);
+  var params = [];
+  if (cc)        params.push('cc='      + encodeURIComponent(cc));
+  if (subject)   params.push('subject=' + encodeURIComponent(subject));
+  if (bodyPlain) params.push('body='    + encodeURIComponent(bodyPlain));
+  if (params.length) mailto += '?' + params.join('&');
+
+  // Open — browser will prompt to open Gmail / Mail app
+  window.location.href = mailto;
+}
+
 function openCompose() {
   mailComposeAttachments = [];
   mailDraftId = null;
@@ -8060,16 +8086,20 @@ initMailBoard = async function() {
 		  </div>
 
 		  <!-- Action buttons -->
-		  <div style="display:flex;gap:9px;margin-top:16px;">
-			<button id="mail-send-btn" onclick="mailSend(false)" style="flex:1;padding:13px;background:linear-gradient(135deg,#9a7230,#c49440);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 3px 14px rgba(154,114,48,.28);transition:all .18s;">
+		  <div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap;">
+			<button id="mail-send-btn" onclick="mailSend(false)" style="flex:1;min-width:120px;padding:13px;background:linear-gradient(135deg,#9a7230,#c49440);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 3px 14px rgba(154,114,48,.28);transition:all .18s;">
 			  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-			  Send
+			  Send Internal
 			</button>
-			<button id="mail-draft-btn" onclick="mailSend(true)" style="padding:13px 16px;background:#fff;border:1.5px solid #e8e5dc;color:var(--text3);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+			<button onclick="openInGmail()" title="Compose this email in Gmail to send externally" style="padding:13px 14px;background:#fff;border:1.5px solid #e0e8ff;color:#4285f4;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;">
+			  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+			  Open in Gmail
+			</button>
+			<button id="mail-draft-btn" onclick="mailSend(true)" style="padding:13px 14px;background:#fff;border:1.5px solid #e8e5dc;color:var(--text3);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;">
 			  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
 			  Draft
 			</button>
-			<button onclick="mailNav('inbox',document.getElementById('mail-nav-inbox'))" style="padding:13px 16px;background:#fff;border:1.5px solid #f0e0e0;color:var(--red);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;">
+			<button onclick="mailNav('inbox',document.getElementById('mail-nav-inbox'))" style="padding:13px 14px;background:#fff;border:1.5px solid #f0e0e0;color:var(--red);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;">
 			  Discard
 			</button>
 		  </div>
