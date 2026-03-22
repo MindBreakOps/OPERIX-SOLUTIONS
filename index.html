@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE htm +
+		  '<button onclick="adminResetSecurityQuestions(' + JSON.stringify(email) + ')" title="Reset security" style="padding:7px 9px;background:#fff8e6;border:1px solid #f0c060;color:#a07020;font-size:10px;font-weight:700;border-radius:var(--r3);cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;display:flex;align-items:center;">🔄</button>'l>
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
@@ -446,9 +447,10 @@ textarea.field{resize:none;line-height:1.6;}
 		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Sign In
 	  </button>
 	</div>
-	<div style="text-align:center;margin-top:16px;">
-	  <span style="font-size:12px;color:var(--text3);">Don't have an account?</span>
-	  <button onclick="showSignUp()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;margin-left:5px;font-family:'Plus Jakarta Sans',sans-serif;">Request Access</button>
+	<div style="text-align:center;margin-top:16px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+	  <button onclick="showForgotPassword()" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Forgot password?</button>
+	  <span style="color:var(--border3);font-size:12px;">|</span>
+	  <button onclick="showSignUp()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Request Access</button>
 	</div>
 	<p style="text-align:center;font-size:9px;color:var(--text4);margin-top:12px;letter-spacing:.1em;text-transform:uppercase;">OPERIX · 2026</p>
   </div>
@@ -529,6 +531,148 @@ textarea.field{resize:none;line-height:1.6;}
       </button>
     </div>
     <p style="text-align:center;font-size:9px;color:var(--text4);margin-top:14px;line-height:1.6;">This email will only be used for security verification codes. It is never shared or used for other purposes.</p>
+  </div>
+</section>
+
+<!-- SECURITY QUESTIONS SETUP PAGE -->
+<section id="sec-questions-page" class="screen hidden" style="display:flex;align-items:center;justify-content:center;padding:28px;min-height:100vh;">
+  <div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 20%,rgba(154,114,48,.06),transparent 60%);"></div>
+  <div style="width:100%;max-width:360px;position:relative;z-index:1;">
+    <div style="text-align:center;margin-bottom:22px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:76px;height:76px;border-radius:22px;background:var(--surface);border:1.5px solid var(--border2);box-shadow:var(--shadow-lg);margin-bottom:15px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h1 style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:800;color:var(--text);">Set Security Questions</h1>
+      <p style="font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5;max-width:280px;margin-left:auto;margin-right:auto;">These questions protect your account if you switch devices or forget your password. Set them once — keep answers memorable.</p>
+    </div>
+    <div class="card" style="padding:20px;">
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
+        <div>
+          <label class="field-label">Question 1</label>
+          <select id="sq-q1" class="field" style="margin-bottom:6px;">
+            <option value="">— Choose a question —</option>
+            <option>What is your mother's maiden name?</option>
+            <option>What was the name of your first pet?</option>
+            <option>What city were you born in?</option>
+            <option>What was the name of your primary school?</option>
+            <option>What is your oldest sibling's middle name?</option>
+            <option>What was the make of your first car?</option>
+          </select>
+          <input id="sq-a1" class="field" placeholder="Your answer" autocomplete="off">
+        </div>
+        <div>
+          <label class="field-label">Question 2</label>
+          <select id="sq-q2" class="field" style="margin-bottom:6px;">
+            <option value="">— Choose a question —</option>
+            <option>What is your mother's maiden name?</option>
+            <option>What was the name of your first pet?</option>
+            <option>What city were you born in?</option>
+            <option>What was the name of your primary school?</option>
+            <option>What is your oldest sibling's middle name?</option>
+            <option>What was the make of your first car?</option>
+          </select>
+          <input id="sq-a2" class="field" placeholder="Your answer" autocomplete="off">
+        </div>
+        <div>
+          <label class="field-label">Question 3</label>
+          <select id="sq-q3" class="field" style="margin-bottom:6px;">
+            <option value="">— Choose a question —</option>
+            <option>What is your mother's maiden name?</option>
+            <option>What was the name of your first pet?</option>
+            <option>What city were you born in?</option>
+            <option>What was the name of your primary school?</option>
+            <option>What is your oldest sibling's middle name?</option>
+            <option>What was the make of your first car?</option>
+          </select>
+          <input id="sq-a3" class="field" placeholder="Your answer" autocomplete="off">
+        </div>
+      </div>
+      <div id="sq-error" style="display:none;background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--red);margin-bottom:12px;"></div>
+      <button onclick="saveSecurityQuestions()" id="sq-save-btn" class="btn-dark" style="width:100%;font-size:14px;padding:13px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Save & Continue
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- NEW DEVICE VERIFICATION PAGE -->
+<section id="new-device-page" class="screen hidden" style="display:flex;align-items:center;justify-content:center;padding:28px;min-height:100vh;">
+  <div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 40% 30%,rgba(35,86,160,.05),transparent 60%);"></div>
+  <div style="width:100%;max-width:340px;position:relative;z-index:1;">
+    <div style="text-align:center;margin-bottom:22px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:76px;height:76px;border-radius:22px;background:var(--surface);border:1.5px solid var(--border2);box-shadow:var(--shadow-lg);margin-bottom:15px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      </div>
+      <h1 style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:800;color:var(--text);">New Device Detected</h1>
+      <p style="font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5;">We don't recognize this device. Answer your security questions to continue.</p>
+    </div>
+    <div class="card" style="padding:20px;">
+      <div id="nd-questions-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;"></div>
+      <div id="nd-error" style="display:none;background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--red);margin-bottom:12px;"></div>
+      <button onclick="verifySecurityAnswers()" id="nd-verify-btn" class="btn-dark" style="width:100%;font-size:14px;padding:13px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Verify & Continue
+      </button>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button onclick="backToLogin()" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">← Back to Sign In</button>
+    </div>
+  </div>
+</section>
+
+<!-- FORGOT PASSWORD PAGE -->
+<section id="forgot-pw-page" class="screen hidden" style="display:flex;align-items:center;justify-content:center;padding:28px;min-height:100vh;">
+  <div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 60% 30%,rgba(154,114,48,.05),transparent 55%);"></div>
+  <div style="width:100%;max-width:340px;position:relative;z-index:1;">
+    <div style="text-align:center;margin-bottom:22px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:76px;height:76px;border-radius:22px;background:var(--surface);border:1.5px solid var(--border2);box-shadow:var(--shadow-lg);margin-bottom:15px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h1 style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:800;color:var(--text);">Reset Password</h1>
+      <p id="fp-subtitle" style="font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5;">Enter your email to begin password reset.</p>
+    </div>
+    <div class="card" style="padding:20px;">
+      <!-- Step 1: Email -->
+      <div id="fp-step-email">
+        <label class="field-label">Your Login Email</label>
+        <input id="fp-email" type="email" class="field" placeholder="you@operix.com" style="margin-bottom:14px;">
+        <button onclick="fpSubmitEmail()" class="btn-dark" style="width:100%;padding:13px;">Continue →</button>
+      </div>
+      <!-- Step 2: Security questions -->
+      <div id="fp-step-questions" style="display:none;">
+        <div id="fp-questions-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px;"></div>
+        <button onclick="fpVerifyAnswers()" class="btn-dark" style="width:100%;padding:13px;">Verify Answers →</button>
+      </div>
+      <!-- Step 3: OTP -->
+      <div id="fp-step-otp" style="display:none;">
+        <p style="font-size:12px;color:var(--text3);margin-bottom:14px;" id="fp-otp-hint">Enter the code sent to your trusted email.</p>
+        <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;">
+          <input type="tel" maxlength="1" class="otp-digit" id="fp-otp-0" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;outline:none;" oninput="fpOtpInput(this,0)" onkeydown="fpOtpKey(event,0)">
+          <input type="tel" maxlength="1" class="otp-digit" id="fp-otp-1" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;outline:none;" oninput="fpOtpInput(this,1)" onkeydown="fpOtpKey(event,1)">
+          <input type="tel" maxlength="1" class="otp-digit" id="fp-otp-2" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;outline:none;" oninput="fpOtpInput(this,2)" onkeydown="fpOtpKey(event,2)">
+          <input type="tel" maxlength="1" class="otp-digit" id="fp-otp-3" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;outline:none;" oninput="fpOtpInput(this,3)" onkeydown="fpOtpKey(event,3)">
+          <input type="tel" maxlength="1" class="otp-digit" id="fp-otp-4" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;outline:none;" oninput="fpOtpInput(this,4)" onkeydown="fpOtpKey(event,4)">
+          <input type="tel" maxlength="1" class="otp-digit" id="fp-otp-5" style="width:42px;height:52px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--border2);border-radius:10px;outline:none;" oninput="fpOtpInput(this,5)" onkeydown="fpOtpKey(event,5)">
+        </div>
+        <button onclick="fpVerifyOTP()" class="btn-gold" style="width:100%;padding:13px;">Verify Code →</button>
+      </div>
+      <!-- Step 4: New password -->
+      <div id="fp-step-newpw" style="display:none;">
+        <label class="field-label">New Password</label>
+        <input id="fp-new-pass" type="password" class="field" placeholder="Enter new password" style="margin-bottom:10px;">
+        <label class="field-label">Confirm Password</label>
+        <input id="fp-confirm-pass" type="password" class="field" placeholder="Repeat password" style="margin-bottom:14px;">
+        <button onclick="fpSetNewPassword()" class="btn-gold" style="width:100%;padding:13px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Set New Password
+        </button>
+      </div>
+      <div id="fp-error" style="display:none;background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--red);margin-top:12px;"></div>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button onclick="backToLogin()" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">← Back to Sign In</button>
+    </div>
   </div>
 </section>
 
@@ -2163,6 +2307,378 @@ async function handleSignUp(){
   btn.innerText = 'Create Account';
 }
 
+// ══════════════════════════════════════════════════════════════════
+// DEVICE FINGERPRINT + TRUSTED DEVICE + SECURITY QUESTIONS
+// ══════════════════════════════════════════════════════════════════
+
+// Generate a stable device fingerprint from browser characteristics
+async function getDeviceFingerprint() {
+  var components = [
+    navigator.userAgent || '',
+    navigator.language  || '',
+    screen.width + 'x' + screen.height,
+    new Date().getTimezoneOffset().toString(),
+    navigator.platform  || '',
+    (navigator.hardwareConcurrency || '').toString()
+  ].join('|');
+  // Simple hash
+  var hash = 0;
+  for (var i = 0; i < components.length; i++) {
+    hash = ((hash << 5) - hash) + components.charCodeAt(i);
+    hash |= 0;
+  }
+  return 'dev_' + Math.abs(hash).toString(36);
+}
+
+function getDeviceName() {
+  var ua = navigator.userAgent;
+  if (/iPhone/.test(ua))  return 'iPhone';
+  if (/iPad/.test(ua))    return 'iPad';
+  if (/Android/.test(ua)) return 'Android Device';
+  if (/Mac/.test(ua))     return 'Mac';
+  if (/Windows/.test(ua)) return 'Windows PC';
+  return 'Unknown Device';
+}
+
+// Check if current device is trusted for this account
+async function isTrustedDevice(accountEmail) {
+  try {
+    var fp = await getDeviceFingerprint();
+    var rows = await sbFetch(
+      'operix_trusted_devices?account_email=eq.' + encodeURIComponent(accountEmail) +
+      '&device_id=eq.' + encodeURIComponent(fp) + '&limit=1',
+      { method: 'GET' }
+    );
+    if (Array.isArray(rows) && rows.length > 0) {
+      // Update last_used
+      sbFetch('operix_trusted_devices?id=eq.' + rows[0].id, {
+        method: 'PATCH',
+        headers: { 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ last_used: new Date().toISOString() })
+      }).catch(function(){});
+      return true;
+    }
+    return false;
+  } catch(e) { return false; }
+}
+
+// Register current device as trusted
+async function trustCurrentDevice(accountEmail) {
+  try {
+    var fp   = await getDeviceFingerprint();
+    var name = getDeviceName();
+    await sbFetch('operix_trusted_devices', {
+      method: 'POST',
+      body: JSON.stringify({
+        account_email: accountEmail,
+        device_id:     fp,
+        device_name:   name,
+        last_used:     new Date().toISOString()
+      })
+    });
+  } catch(e) { console.warn('trustDevice error:', e); }
+}
+
+// Check if user has security questions set
+async function hasSecurityQuestions(accountEmail) {
+  try {
+    var rows = await sbFetch(
+      'operix_security_questions?account_email=eq.' + encodeURIComponent(accountEmail) + '&limit=1',
+      { method: 'GET' }
+    );
+    return Array.isArray(rows) && rows.length > 0 && rows[0].q1;
+  } catch(e) { return false; }
+}
+
+// Complete login after all verification passed
+function completeLogin(acc, email) {
+  var userData = {
+    name:  acc.name  || email.split('@')[0],
+    role:  acc.role  || 'Staff',
+    job:   acc.job   || '',
+    phone: acc.phone || '',
+    photo: acc.photo || ''
+  };
+  currentUser = {
+    _ops: userData, _hr: userData, _anpr: userData,
+    name: userData.name, role: userData.role,
+    job: userData.job, phone: userData.phone,
+    photo: userData.photo, email: email, pass: ''
+  };
+  _pendingLoginData = null;
+  // Hide all auth pages
+  ['login-page','otp-page','otp-setup-page','sec-questions-page','new-device-page','forgot-pw-page'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+  showWorkspaceSelector();
+}
+
+// ── SECURITY QUESTIONS SETUP ──────────────────────────────────
+async function saveSecurityQuestions() {
+  var q1 = document.getElementById('sq-q1').value.trim();
+  var a1 = document.getElementById('sq-a1').value.trim().toLowerCase();
+  var q2 = document.getElementById('sq-q2').value.trim();
+  var a2 = document.getElementById('sq-a2').value.trim().toLowerCase();
+  var q3 = document.getElementById('sq-q3').value.trim();
+  var a3 = document.getElementById('sq-a3').value.trim().toLowerCase();
+  var errEl = document.getElementById('sq-error');
+  errEl.style.display = 'none';
+
+  if (!q1 || !a1 || !q2 || !a2 || !q3 || !a3) {
+    errEl.innerText = 'Please select and answer all 3 questions.'; errEl.style.display = 'block'; return;
+  }
+  if (q1 === q2 || q2 === q3 || q1 === q3) {
+    errEl.innerText = 'Please choose 3 different questions.'; errEl.style.display = 'block'; return;
+  }
+
+  var btn = document.getElementById('sq-save-btn');
+  btn.disabled = true; btn.innerText = 'Saving…';
+
+  try {
+    var acc = _pendingLoginData;
+    // Check if already exists
+    var existing = await sbFetch('operix_security_questions?account_email=eq.' + encodeURIComponent(acc.email), { method: 'GET' }).catch(function(){return[];});
+    if (Array.isArray(existing) && existing.length > 0) {
+      await sbFetch('operix_security_questions?account_email=eq.' + encodeURIComponent(acc.email), {
+        method: 'PATCH', headers: { 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ q1, a1, q2, a2, q3, a3 })
+      });
+    } else {
+      await sbFetch('operix_security_questions', {
+        method: 'POST',
+        body: JSON.stringify({ account_email: acc.email, q1, a1, q2, a2, q3, a3 })
+      });
+    }
+    // Now proceed to OTP for new device registration
+    document.getElementById('sec-questions-page').classList.add('hidden');
+    await sendAndShowOTP(acc);
+  } catch(e) {
+    errEl.innerText = 'Error saving: ' + e.message; errEl.style.display = 'block';
+  }
+  btn.disabled = false; btn.innerText = 'Save & Continue';
+}
+
+// ── NEW DEVICE VERIFICATION ───────────────────────────────────
+var _secQuestionsData = null; // loaded questions for current user
+
+async function showNewDevicePage() {
+  var acc = _pendingLoginData;
+  try {
+    var rows = await sbFetch('operix_security_questions?account_email=eq.' + encodeURIComponent(acc.email), { method: 'GET' });
+    _secQuestionsData = (Array.isArray(rows) && rows.length > 0) ? rows[0] : null;
+  } catch(e) { _secQuestionsData = null; }
+
+  var container = document.getElementById('nd-questions-container');
+  container.innerHTML = '';
+  if (!_secQuestionsData) {
+    container.innerHTML = '<p style="font-size:12px;color:var(--red);">No security questions set. Contact your administrator.</p>';
+    document.getElementById('nd-verify-btn').disabled = true;
+    return;
+  }
+  ['q1','q2'].forEach(function(k) { // only ask 2 of 3
+    var div = document.createElement('div');
+    div.innerHTML = '<label class="field-label">' + _secQuestionsData[k] + '</label>' +
+      '<input class="field" id="nd-ans-' + k + '" placeholder="Your answer" autocomplete="off">';
+    container.appendChild(div);
+  });
+  document.getElementById('nd-error').style.display = 'none';
+  document.getElementById('new-device-page').classList.remove('hidden');
+  setTimeout(function(){ document.getElementById('nd-ans-q1').focus(); }, 100);
+}
+
+async function verifySecurityAnswers() {
+  var a1 = (document.getElementById('nd-ans-q1')?.value || '').trim().toLowerCase();
+  var a2 = (document.getElementById('nd-ans-q2')?.value || '').trim().toLowerCase();
+  var errEl = document.getElementById('nd-error');
+  errEl.style.display = 'none';
+
+  if (!a1 || !a2) { errEl.innerText = 'Please answer both questions.'; errEl.style.display = 'block'; return; }
+  if (!_secQuestionsData) { errEl.innerText = 'Security data unavailable.'; errEl.style.display = 'block'; return; }
+
+  var btn = document.getElementById('nd-verify-btn');
+  btn.disabled = true; btn.innerText = 'Checking…';
+
+  if (a1 !== _secQuestionsData.a1 || a2 !== _secQuestionsData.a2) {
+    errEl.innerText = 'Incorrect answers. Please try again or contact your administrator.';
+    errEl.style.display = 'block';
+    btn.disabled = false; btn.innerText = 'Verify & Continue';
+    return;
+  }
+
+  // Answers correct — send OTP to register new device
+  document.getElementById('new-device-page').classList.add('hidden');
+  await sendAndShowOTP(_pendingLoginData);
+  btn.disabled = false; btn.innerText = 'Verify & Continue';
+}
+
+async function sendAndShowOTP(acc) {
+  var btn = document.getElementById('login-btn');
+  if (btn) { btn.disabled = true; btn.innerText = 'Sending code…'; }
+  var sent = await sendOTPCode(acc.email, acc.otp_email, acc.name);
+  if (!sent) { if (btn) { btn.disabled = false; btn.innerText = 'Sign In'; } return; }
+  if (btn) { btn.disabled = false; btn.innerText = 'Sign In'; }
+  var masked = maskEmail(acc.otp_email);
+  document.getElementById('otp-subtitle').innerText = 'A 6-digit code was sent to ' + masked;
+  showOTPPage();
+}
+
+// ── FORGOT PASSWORD FLOW ──────────────────────────────────────
+var _fpAccount = null; // account data during forgot password flow
+
+function showForgotPassword() {
+  ['login-page','otp-page'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+  // Reset all steps
+  document.getElementById('fp-step-email').style.display = 'block';
+  document.getElementById('fp-step-questions').style.display = 'none';
+  document.getElementById('fp-step-otp').style.display = 'none';
+  document.getElementById('fp-step-newpw').style.display = 'none';
+  document.getElementById('fp-error').style.display = 'none';
+  document.getElementById('fp-email').value = '';
+  document.getElementById('fp-subtitle').innerText = 'Enter your email to begin password reset.';
+  document.getElementById('forgot-pw-page').classList.remove('hidden');
+}
+
+function fpShowError(msg) {
+  var el = document.getElementById('fp-error');
+  if (el) { el.innerText = msg; el.style.display = 'block'; }
+}
+
+async function fpSubmitEmail() {
+  var email = (document.getElementById('fp-email')?.value || '').trim().toLowerCase();
+  if (!email) { fpShowError('Please enter your email.'); return; }
+  document.getElementById('fp-error').style.display = 'none';
+
+  try {
+    var rows = await sbFetch('accounts?email=eq.' + encodeURIComponent(email) + '&select=id,name,email,otp_email,role&limit=1', { method: 'GET' });
+    if (!Array.isArray(rows) || !rows.length) { fpShowError('No account found with that email.'); return; }
+    _fpAccount = rows[0];
+
+    // Check security questions
+    var sq = await sbFetch('operix_security_questions?account_email=eq.' + encodeURIComponent(email) + '&limit=1', { method: 'GET' });
+    if (!Array.isArray(sq) || !sq.length) { fpShowError('No security questions set. Contact your administrator.'); return; }
+    _secQuestionsData = sq[0];
+
+    // Show questions
+    var container = document.getElementById('fp-questions-container');
+    container.innerHTML = '';
+    ['q1','q2','q3'].forEach(function(k) {
+      var div = document.createElement('div');
+      div.innerHTML = '<label class="field-label">' + _secQuestionsData[k] + '</label>' +
+        '<input class="field" id="fp-ans-' + k + '" placeholder="Your answer" autocomplete="off">';
+      container.appendChild(div);
+    });
+
+    document.getElementById('fp-step-email').style.display = 'none';
+    document.getElementById('fp-step-questions').style.display = 'block';
+    document.getElementById('fp-subtitle').innerText = 'Answer your security questions.';
+    setTimeout(function(){ document.getElementById('fp-ans-q1')?.focus(); }, 100);
+
+  } catch(e) { fpShowError('Error: ' + e.message); }
+}
+
+async function fpVerifyAnswers() {
+  var a1 = (document.getElementById('fp-ans-q1')?.value || '').trim().toLowerCase();
+  var a2 = (document.getElementById('fp-ans-q2')?.value || '').trim().toLowerCase();
+  var a3 = (document.getElementById('fp-ans-q3')?.value || '').trim().toLowerCase();
+  document.getElementById('fp-error').style.display = 'none';
+
+  if (!a1 || !a2 || !a3) { fpShowError('Please answer all questions.'); return; }
+  if (a1 !== _secQuestionsData.a1 || a2 !== _secQuestionsData.a2 || a3 !== _secQuestionsData.a3) {
+    fpShowError('One or more answers are incorrect. Try again or contact your administrator.'); return;
+  }
+
+  // Correct — send OTP
+  if (!_fpAccount?.otp_email) { fpShowError('No trusted email configured. Contact your administrator.'); return; }
+
+  var sent = await sendOTPCode(_fpAccount.email, _fpAccount.otp_email, _fpAccount.name);
+  if (!sent) return;
+
+  document.getElementById('fp-step-questions').style.display = 'none';
+  document.getElementById('fp-step-otp').style.display = 'block';
+  document.getElementById('fp-otp-hint').innerText = 'Enter the code sent to ' + maskEmail(_fpAccount.otp_email);
+  document.getElementById('fp-subtitle').innerText = 'Verify your identity.';
+  setTimeout(function(){ document.getElementById('fp-otp-0')?.focus(); }, 100);
+}
+
+function fpOtpInput(el, idx) {
+  el.value = el.value.replace(/[^0-9]/g, '');
+  if (el.value && idx < 5) document.getElementById('fp-otp-' + (idx+1)).focus();
+  var code = '';
+  for (var i = 0; i < 6; i++) code += (document.getElementById('fp-otp-'+i)?.value || '');
+  if (code.length === 6) setTimeout(fpVerifyOTP, 120);
+}
+
+function fpOtpKey(event, idx) {
+  if (event.key === 'Backspace') {
+    var el = document.getElementById('fp-otp-' + idx);
+    if (!el.value && idx > 0) document.getElementById('fp-otp-' + (idx-1)).focus();
+  }
+  if (event.key === 'Enter') fpVerifyOTP();
+}
+
+async function fpVerifyOTP() {
+  var code = '';
+  for (var i = 0; i < 6; i++) code += (document.getElementById('fp-otp-'+i)?.value || '');
+  if (code.length < 6) { fpShowError('Enter all 6 digits.'); return; }
+  document.getElementById('fp-error').style.display = 'none';
+
+  try {
+    var now = new Date().toISOString();
+    var rows = await sbFetch(
+      'operix_otp?email=eq.' + encodeURIComponent(_fpAccount.email) +
+      '&code=eq.' + encodeURIComponent(code) +
+      '&used=eq.false&expires_at=gt.' + encodeURIComponent(now) + '&limit=1',
+      { method: 'GET' }
+    );
+    if (!Array.isArray(rows) || !rows.length) { fpShowError('Invalid or expired code.'); return; }
+
+    await sbFetch('operix_otp?id=eq.' + rows[0].id, {
+      method: 'PATCH', headers: {'Prefer':'return=minimal'}, body: JSON.stringify({used:true})
+    });
+
+    document.getElementById('fp-step-otp').style.display = 'none';
+    document.getElementById('fp-step-newpw').style.display = 'block';
+    document.getElementById('fp-subtitle').innerText = 'Set your new password.';
+    document.getElementById('fp-new-pass').focus();
+  } catch(e) { fpShowError('Verification error: ' + e.message); }
+}
+
+async function fpSetNewPassword() {
+  var np  = document.getElementById('fp-new-pass')?.value || '';
+  var cp  = document.getElementById('fp-confirm-pass')?.value || '';
+  if (!np || np.length < 6) { fpShowError('Password must be at least 6 characters.'); return; }
+  if (np !== cp) { fpShowError('Passwords do not match.'); return; }
+  document.getElementById('fp-error').style.display = 'none';
+
+  try {
+    await sbFetch('accounts?email=eq.' + encodeURIComponent(_fpAccount.email), {
+      method: 'PATCH', headers: {'Prefer':'return=minimal'}, body: JSON.stringify({password: np})
+    });
+    _fpAccount = null; _secQuestionsData = null;
+    alert('Password updated successfully! Please sign in with your new password.');
+    backToLogin();
+  } catch(e) { fpShowError('Error updating password: ' + e.message); }
+}
+
+// ── ADMIN: Reset security questions ──────────────────────────
+async function adminResetSecurityQuestions(accountEmail) {
+  if (!confirm('Reset security questions for ' + accountEmail + '? They will need to set new ones on next login.')) return;
+  try {
+    await sbFetch('operix_security_questions?account_email=eq.' + encodeURIComponent(accountEmail), {
+      method: 'DELETE', headers: {'Prefer':'return=minimal'}
+    });
+    await sbFetch('operix_trusted_devices?account_email=eq.' + encodeURIComponent(accountEmail), {
+      method: 'DELETE', headers: {'Prefer':'return=minimal'}
+    });
+    alert('Security questions and trusted devices cleared for ' + accountEmail);
+    loadAdminAccounts();
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
 // ── 2FA state ──────────────────────────────────────────────────
 var _pendingLoginData = null;   // holds verified account data between steps
 var _otpTimerInterval = null;
@@ -2199,52 +2715,47 @@ async function handleLogin(){
     // Store pending login data
     _pendingLoginData = acc;
 
-    // ── 2FA Check ──────────────────────────────────────────────
-    // Skip 2FA if: no otp_email configured OR running on file:// (local dev)
+    // ── Device + 2FA Check ──────────────────────────────────────
     const isLocalFile = window.location.protocol === 'file:';
     const hasOTPEmail = acc.otp_email && acc.otp_email.trim();
 
-    if(!hasOTPEmail || isLocalFile){
-      // No 2FA configured or local testing — log in directly
-      if(!hasOTPEmail && !isLocalFile){
-        alert('Two-step verification is not configured for your account.\n\nPlease contact your administrator to set up your trusted email address before signing in.');
-        btn.disabled = false; btn.innerText = 'Sign In';
-        return;
-      }
-      // Complete login directly
-      const userData = {
-        name:  acc.name  || email.split('@')[0],
-        role:  acc.role  || 'Staff',
-        job:   acc.job   || '',
-        phone: acc.phone || '',
-        photo: acc.photo || ''
-      };
-      currentUser = {
-        _ops: userData, _hr: userData, _anpr: userData,
-        name: userData.name, role: userData.role,
-        job: userData.job, phone: userData.phone,
-        photo: userData.photo, email: email, pass: pass
-      };
+    // Local file dev mode — skip all security
+    if (isLocalFile) {
+      btn.disabled = false; btn.innerText = 'Sign In';
+      completeLogin(acc, email);
+      return;
+    }
+
+    // No OTP email set — block login
+    if (!hasOTPEmail) {
+      alert('Two-step verification is not configured for your account.\n\nPlease contact your administrator.');
+      btn.disabled = false; btn.innerText = 'Sign In';
+      return;
+    }
+
+    btn.innerText = 'Checking device…';
+
+    // Check if this is a trusted device
+    var trusted = await isTrustedDevice(acc.email);
+    if (trusted) {
+      // Known device — login directly, no OTP needed
       btn.disabled = false; btn.innerText = 'Sign In';
       document.getElementById('login-page').classList.add('hidden');
-      showWorkspaceSelector();
+      completeLogin(acc, email);
       return;
     }
 
-    // Send OTP via GAS
-    btn.innerText = 'Sending code…';
-    const sent = await sendOTPCode(acc.email, acc.otp_email, acc.name);
-    if(!sent){
-      btn.disabled = false; btn.innerText = 'Sign In';
-      return;
-    }
-
-    // Show OTP verification page
+    // New device — check if security questions are set
     btn.disabled = false; btn.innerText = 'Sign In';
-    const masked = maskEmail(acc.otp_email);
-    document.getElementById('otp-subtitle').innerText = 'A 6-digit code was sent to ' + masked;
     document.getElementById('login-page').classList.add('hidden');
-    showOTPPage();
+    var hasSQ = await hasSecurityQuestions(acc.email);
+    if (!hasSQ) {
+      // First time ever — set security questions first
+      document.getElementById('sec-questions-page').classList.remove('hidden');
+    } else {
+      // Known user, new device — verify security questions first
+      await showNewDevicePage();
+    }
 
   } catch(e){
     alert('Connection error. Please check your internet and try again.');
@@ -2266,6 +2777,21 @@ async function sendOTPCode(accountEmail, otpEmail, name) {
     // Generate 6-digit code client-side, store in Supabase, then send via GAS MailApp
     const code = String(Math.floor(100000 + Math.random() * 900000));
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+
+    // Check cooldown — block resend if a code was sent less than 2 minutes ago
+    try {
+      const recent = await sbFetch(
+        'operix_otp?email=eq.' + encodeURIComponent(accountEmail) +
+        '&used=eq.false&created_at=gt.' + encodeURIComponent(new Date(Date.now() - 2*60*1000).toISOString()) +
+        '&order=created_at.desc&limit=1',
+        { method: 'GET' }
+      );
+      if (Array.isArray(recent) && recent.length > 0) {
+        const secondsLeft = Math.ceil((new Date(recent[0].created_at).getTime() + 2*60*1000 - Date.now()) / 1000);
+        alert('Please wait ' + secondsLeft + ' seconds before requesting a new code.');
+        return false;
+      }
+    } catch(e) {}
 
     // Invalidate any existing unused OTPs for this account
     await sbFetch(
@@ -2439,23 +2965,12 @@ async function verifyOTP() {
     // Clear timer
     if(_otpTimerInterval) clearInterval(_otpTimerInterval);
 
+    // Trust this device so next login skips OTP
+    await trustCurrentDevice(acc.email);
+
     // Complete login
-    var userData = {
-      name:  acc.name  || acc.email.split('@')[0],
-      role:  acc.role  || 'Staff',
-      job:   acc.job   || '',
-      phone: acc.phone || '',
-      photo: acc.photo || ''
-    };
-    currentUser = {
-      _ops: userData, _hr: userData, _anpr: userData,
-      name: userData.name, role: userData.role,
-      job: userData.job, phone: userData.phone,
-      photo: userData.photo, email: acc.email, pass: ''
-    };
-    _pendingLoginData = null;
     document.getElementById('otp-page').classList.add('hidden');
-    showWorkspaceSelector();
+    completeLogin(acc, acc.email);
 
   } catch(e){
     showOTPError('Verification failed. Please try again.');
