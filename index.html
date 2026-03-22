@@ -200,7 +200,7 @@ textarea.field{resize:none;line-height:1.6;}
 	height:auto !important;flex-direction:column !important;
 	position:fixed;bottom:0;left:0;right:0;z-index:50;
 	border-top:1px solid rgba(255,255,255,.12);
-	background:#1a1a2e;
+	background:linear-gradient(160deg,#1a1a2e 0%,#16213e 100%);
 	padding:0 !important;
   }
 
@@ -260,26 +260,26 @@ textarea.field{resize:none;line-height:1.6;}
 }
 
 /* ══ MAIL BOARD ══ */
-#mail-app { display:flex; flex-direction:column; height:100vh; min-height:100vh; background:#f0eff5; }
-.mail-sidebar { width:220px; min-width:220px; background:#1c1b30; display:flex; flex-direction:column; height:100vh; position:relative; z-index:10; flex-shrink:0; }
-.mail-nav-btn { display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px; background:transparent;border:none;border-radius:8px; color:rgba(255,255,255,.45);font-size:12px;font-weight:600; cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif; transition:all .15s;text-align:left;margin-bottom:2px; }
-.mail-nav-btn:hover { background:rgba(255,255,255,.07); color:rgba(255,255,255,.85); }
-.mail-nav-btn.active { background:rgba(167,139,250,.2); color:#a78bfa; border:1px solid rgba(167,139,250,.3); }
-.mail-nav-btn svg { flex-shrink:0; opacity:.7; }
+#mail-app { display:flex; flex-direction:column; height:100vh; min-height:100vh; background:#f0f2f8; }
+.mail-sidebar { width:230px; min-width:230px; background:linear-gradient(160deg,#1a1a2e 0%,#16213e 100%); display:flex; flex-direction:column; height:100vh; position:relative; z-index:10; flex-shrink:0; border-right:1px solid rgba(255,255,255,.06); }
+.mail-nav-btn { display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px; background:transparent;border:none;border-radius:10px; color:rgba(255,255,255,.4);font-size:12px;font-weight:600; cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif; transition:all .15s;text-align:left;margin-bottom:2px; }
+.mail-nav-btn:hover { background:rgba(255,255,255,.06); color:rgba(255,255,255,.8); }
+.mail-nav-btn.active { background:linear-gradient(135deg,rgba(154,114,48,.3),rgba(196,148,64,.15)); color:#e8b96a; border:1px solid rgba(196,148,64,.25); }
+.mail-nav-btn svg { flex-shrink:0; opacity:.6; }
 .mail-nav-btn.active svg { opacity:1; }
-.mail-nav-badge { margin-left:auto; background:#a78bfa; color:#fff; font-size:9px; font-weight:800; padding:2px 6px; border-radius:9px; font-family:'Space Grotesk',sans-serif; }
-.mail-card { background:#fff; border:1px solid var(--border2); border-radius:10px; padding:13px; margin-bottom:8px; cursor:pointer; transition:all .18s; box-shadow:0 1px 4px rgba(0,0,0,.04); }
-.mail-card:hover { border-color:var(--purple-border); box-shadow:0 2px 10px rgba(107,63,160,.1); }
-.mail-card.unread { border-left:3px solid #a78bfa; background:#faf9ff; }
-.mail-card.selected { border-color:#a78bfa; background:#f5f3ff; box-shadow:0 2px 12px rgba(107,63,160,.15); }
-.mail-compose-field { width:100%;padding:9px 12px;background:#f8f7ff;border:1.5px solid #e5e3ff;border-radius:8px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;outline:none;transition:border-color .15s; }
-.mail-compose-field:focus { border-color:#a78bfa; box-shadow:0 0 0 3px rgba(167,139,250,.12); }
-.mail-body-editor { width:100%;min-height:200px;padding:13px;background:#fff;border:1.5px solid #e5e3ff;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;line-height:1.7;color:var(--text);outline:none;resize:none;transition:border-color .15s; }
-.mail-body-editor:focus { border-color:#a78bfa; }
-.mail-att-chip { display:inline-flex;align-items:center;gap:5px;padding:4px 9px;background:#f0efff;border:1px solid #c4b5fd;border-radius:6px;font-size:11px;font-weight:600;color:#7c3aed;margin:3px; }
-.mail-att-chip button { background:none;border:none;cursor:pointer;color:#a78bfa;display:flex;padding:0;line-height:1; }
-.sig-box { background:#fff;border:1.5px solid var(--border2);border-radius:var(--r2);padding:13px;margin-bottom:9px; }
-.sig-box.active-sig { border-color:#a78bfa; background:#faf9ff; }
+.mail-nav-badge { margin-left:auto; background:linear-gradient(135deg,#9a7230,#c49440); color:#fff; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9px; font-family:'Space Grotesk',sans-serif; }
+.mail-card { background:#fff; border:1px solid #eaecf4; border-radius:12px; padding:13px 15px; margin-bottom:7px; cursor:pointer; transition:all .18s; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+.mail-card:hover { border-color:#c49440; box-shadow:0 3px 14px rgba(154,114,48,.12); transform:translateY(-1px); }
+.mail-card.unread { border-left:3px solid #c49440; background:#fffdf5; }
+.mail-card.selected { border-color:#c49440; background:#fffbf0; box-shadow:0 3px 14px rgba(154,114,48,.18); }
+.mail-compose-field { width:100%;padding:9px 12px;background:#faf9f6;border:1.5px solid #e8e5dc;border-radius:9px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;outline:none;transition:border-color .15s; }
+.mail-compose-field:focus { border-color:#c49440; box-shadow:0 0 0 3px rgba(196,148,64,.1); }
+.mail-body-editor { width:100%;min-height:200px;padding:13px;background:#fff;border:1.5px solid #e8e5dc;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;line-height:1.7;color:var(--text);outline:none;resize:none;transition:border-color .15s; }
+.mail-body-editor:focus { border-color:#c49440; box-shadow:0 0 0 3px rgba(196,148,64,.08); }
+.mail-att-chip { display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:#faf7f0;border:1px solid #e8b96a;border-radius:7px;font-size:11px;font-weight:600;color:#9a7230;margin:3px; }
+.mail-att-chip button { background:none;border:none;cursor:pointer;color:#c49440;display:flex;padding:0;line-height:1; }
+.sig-box { background:#fff;border:1.5px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:10px;transition:border-color .15s; }
+.sig-box.active-sig { border-color:#c49440; background:#fffbf0; box-shadow:0 2px 10px rgba(154,114,48,.1); }
 @media(max-width:768px){
   /* Stack layout vertically on mobile — same logic as HR board */
   #mail-app { flex-direction:column !important; height:auto !important; min-height:100vh !important; }
@@ -291,7 +291,7 @@ textarea.field{resize:none;line-height:1.6;}
 	height:auto !important;
 	position:fixed; bottom:0; left:0; right:0; z-index:50;
 	border-top:1px solid rgba(255,255,255,.1);
-	background:#1c1b30;
+	background:linear-gradient(160deg,#1a1a2e,#16213e);
 	padding:0 0 env(safe-area-inset-bottom,0px) !important;
 	overflow:hidden !important;
   }
@@ -327,14 +327,14 @@ textarea.field{resize:none;line-height:1.6;}
 	white-space:nowrap; overflow:hidden;
   }
   .mail-nav-btn.active {
-	color:#a78bfa !important;
-	background:rgba(108,99,255,.12) !important;
+	color:#e8b96a !important;
+	background:rgba(154,114,48,.15) !important;
 	border:none !important;
-	border-top:2px solid #a78bfa !important;
+	border-top:2px solid #c49440 !important;
   }
   .mail-nav-btn svg { width:17px !important; height:17px !important; flex-shrink:0; }
   /* Hide badge text on small screens to save space */
-  .mail-nav-badge { display:none !important; }
+  .mail-nav-badge { display:none !important; } /* badges hidden on mobile */
 
   /* Leave room at bottom for nav bar (~56px) */
   #mail-content { padding-bottom:60px !important; overflow-y:auto !important; }
@@ -350,7 +350,7 @@ textarea.field{resize:none;line-height:1.6;}
   #mail-list-panel {
 	width:100% !important; min-width:unset !important;
 	border-right:none !important;
-	border-bottom:1px solid #e5e3f5 !important;
+	border-bottom:1px solid #e2e5ef !important;
 	overflow-y:auto !important;
 	max-height:none !important;
 	flex:1 !important;
@@ -1873,7 +1873,7 @@ textarea.field{resize:none;line-height:1.6;}
 // ═══════════════════════════════
 // CONFIG
 // ═══════════════════════════════
-const OPS_API    = 'https://script.google.com/macros/s/AKfycbxuOln6h5ti1AUphB5O8qchUruglmKeV6xRLb3ohIn1orv7vMWWpTx1Rsv3Z2sXJJOS/exec';
+const OPS_API    = 'https://script.google.com/macros/s/AKfycbxQCZM9LF_8Ngx1O1dJOQ2bWcska1X0rZ2BBzpOik_ZCxVgYiTCBmY-sXJE4SrBS1sj/exec';
 const STUDIO_API = 'https://script.google.com/macros/s/AKfycbxJO6wprIYvwzptZBn-5aKa-GrUxFATODEfVWDTTJFkHN8HWs6dVALPgW2H2F0GPVqE/exec';
 
 const HR_API = 'https://script.google.com/macros/s/AKfycbxlPHGa8UAv-xSf9Oc1yFfs30tUiP-RJ4MllHsMkvMuhMmF98rYbedU_UE2ko_GHbSE/exec';
@@ -2199,16 +2199,39 @@ async function handleLogin(){
     // Store pending login data
     _pendingLoginData = acc;
 
-    // Check if user has a verified OTP email set up
-    if(!acc.otp_email || !acc.otp_email.trim()){
-      // First time — show setup page
+    // ── 2FA Check ──────────────────────────────────────────────
+    // Skip 2FA if: no otp_email configured OR running on file:// (local dev)
+    const isLocalFile = window.location.protocol === 'file:';
+    const hasOTPEmail = acc.otp_email && acc.otp_email.trim();
+
+    if(!hasOTPEmail || isLocalFile){
+      // No 2FA configured or local testing — log in directly
+      if(!hasOTPEmail && !isLocalFile){
+        alert('Two-step verification is not configured for your account.\n\nPlease contact your administrator to set up your trusted email address before signing in.');
+        btn.disabled = false; btn.innerText = 'Sign In';
+        return;
+      }
+      // Complete login directly
+      const userData = {
+        name:  acc.name  || email.split('@')[0],
+        role:  acc.role  || 'Staff',
+        job:   acc.job   || '',
+        phone: acc.phone || '',
+        photo: acc.photo || ''
+      };
+      currentUser = {
+        _ops: userData, _hr: userData, _anpr: userData,
+        name: userData.name, role: userData.role,
+        job: userData.job, phone: userData.phone,
+        photo: userData.photo, email: email, pass: pass
+      };
       btn.disabled = false; btn.innerText = 'Sign In';
       document.getElementById('login-page').classList.add('hidden');
-      document.getElementById('otp-setup-page').classList.remove('hidden');
+      showWorkspaceSelector();
       return;
     }
 
-    // Send OTP
+    // Send OTP via GAS
     btn.innerText = 'Sending code…';
     const sent = await sendOTPCode(acc.email, acc.otp_email, acc.name);
     if(!sent){
@@ -2216,7 +2239,7 @@ async function handleLogin(){
       return;
     }
 
-    // Show OTP page
+    // Show OTP verification page
     btn.disabled = false; btn.innerText = 'Sign In';
     const masked = maskEmail(acc.otp_email);
     document.getElementById('otp-subtitle').innerText = 'A 6-digit code was sent to ' + masked;
@@ -3092,7 +3115,7 @@ async function loadAdminAccounts(){
   const el = document.getElementById('admin-accounts-list');
   el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:12px;">Loading accounts…</div>';
   try {
-	const rows = await sbFetch('accounts?order=created_at.desc&select=id,name,email,role,job,phone,photo,created_at', { method: 'GET' });
+	const rows = await sbFetch('accounts?order=created_at.desc&select=id,name,email,role,job,phone,photo,otp_email,created_at', { method: 'GET' });
 	accountsData = Array.isArray(rows) ? rows : [];
 	renderAccounts(accountsData);
   } catch(e) {
@@ -3152,7 +3175,8 @@ function renderAccounts(arr){
 		</div>
 		<span class="tag" style="background:${roleColor}18;color:${roleColor};border:1px solid ${roleColor}40;flex-shrink:0;">${role}</span>
 	  </div>
-	  ${phone?`<div style="font-size:11px;color:var(--text3);font-family:Fira Code,monospace;margin-bottom:9px;">${phone}</div>`:''}
+	  ${phone?`<div style="font-size:11px;color:var(--text3);font-family:Fira Code,monospace;margin-bottom:6px;">${phone}</div>`:''}
+	  ${acc.otp_email?`<div style="font-size:10px;color:var(--green);margin-bottom:9px;display:flex;align-items:center;gap:5px;"><svg width=\"10\" height=\"10\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><rect x=\"5\" y=\"11\" width=\"14\" height=\"10\" rx=\"2\"/><path d=\"M8 11V7a4 4 0 0 1 8 0v4\"/></svg>2FA: ${acc.otp_email}</div>`:'<div style="font-size:10px;color:var(--amber);margin-bottom:9px;display:flex;align-items:center;gap:5px;"><svg width=\"10\" height=\"10\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><rect x=\"5\" y=\"11\" width=\"14\" height=\"10\" rx=\"2\"/><path d=\"M8 11V7a4 4 0 0 1 8 0v4\"/></svg>No 2FA email set</div>'}
 	  <div style="display:flex;gap:6px;">
 		${role === 'Pending' ?
 		  '<button onclick="activateAccount(' + idx + ')" style="flex:1;padding:7px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:var(--r3);cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;display:flex;align-items:center;justify-content:center;gap:4px;"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><path d=\"M22 11.08V12a10 10 0 1 1-5.93-9.14\"/><polyline points=\"22 4 12 14.01 9 11.01\"/></svg>Activate</button>'
@@ -3173,15 +3197,16 @@ function editAccountGAS(idx){
   document.getElementById('admin-modal-title').innerText = 'Edit Account';
   // Map from sheet field names to ACCOUNT_FIELDS ids
   const mapped = {
-	name:       acc.name  || acc.Name  || acc['Full Name'] || '',
-	email:      acc.email || acc.Email || '',
-	password:   acc.pass  || acc.Pass  || acc.password || '',
-	role:       acc.role  || acc.Role  || 'Staff',
-	job:        acc.job   || acc.Job   || acc['Job Title'] || '',
-	department: acc.department || acc.Department || '',
-	phone:      acc.phone || acc.Phone || '',
-	photo:      acc.photo || acc.Photo || '',
-	notes:      acc.notes || acc.Notes || ''
+    name:       acc.name  || acc.Name  || acc['Full Name'] || '',
+    email:      acc.email || acc.Email || '',
+    password:   acc.pass  || acc.Pass  || acc.password || '',
+    role:       acc.role  || acc.Role  || 'Staff',
+    job:        acc.job   || acc.Job   || acc['Job Title'] || '',
+    department: acc.department || acc.Department || '',
+    phone:      acc.phone || acc.Phone || '',
+    otp_email:  acc.otp_email || '',
+    photo:      acc.photo || acc.Photo || '',
+    notes:      acc.notes || acc.Notes || ''
   };
   buildAccountFields(mapped, idx);
   document.getElementById('admin-modal').classList.remove('hidden');
@@ -3320,12 +3345,13 @@ async function deleteStaff(idx){
 // ADMIN MODAL
 const ACCOUNT_FIELDS=[
   {id:'name',label:'Full Name',type:'text',ph:'John Doe'},
-  {id:'email',label:'Email',type:'email',ph:'user@operix.com'},
+  {id:'email',label:'Email (Login)',type:'email',ph:'user@operix.com'},
   {id:'password',label:'Password',type:'text',ph:'Set or update password'},
   {id:'role',label:'Role',type:'select',opts:['Admin','Manager','Accountant','Staff']},
   {id:'job',label:'Job Title',type:'text',ph:'e.g. Operations Manager'},
   {id:'department',label:'Department',type:'text',ph:'e.g. Operations'},
   {id:'phone',label:'Phone',type:'text',ph:'+966 5X XXX XXXX'},
+  {id:'otp_email',label:'2FA Trusted Email',type:'email',ph:'personal@gmail.com — for OTP verification codes'},
   {id:'photo',label:'Photo URL (optional)',type:'url',ph:'https://drive.google.com/…'},
   {id:'notes',label:'Notes (optional)',type:'text',ph:''}
 ];
@@ -6371,7 +6397,16 @@ async function studioShareByEmail() {
 
   const def      = mailSignatures.find(s => s.is_default);
   const sigLogo  = (def && def.show_logo) ? `<div style="display:flex;align-items:center;gap:4px;margin-bottom:5px;">${LOGO_IMG}</div>` : '';
-  const sigBody  = def ? `<br><span style="color:#999;">--</span><br>${sigLogo}${def.content.replace(/\n/g,'<br>')}` : '';
+  // Build sig — detect if content is HTML template
+  var sigBody = '';
+  if (def) {
+    const isHTMLSig = def.content && def.content.trim().startsWith('<');
+    if (isHTMLSig) {
+      sigBody = '<br><div style="border-top:1px solid #e5e3de;padding-top:14px;margin-top:14px;">' + def.content + '</div>';
+    } else {
+      sigBody = `<br><span style="color:#999;">--</span><br>${sigLogo}${def.content.replace(/\n/g,'<br>')}`;
+    }
+  }
 
   const greeting   = toName ? `Dear ${toName},` : 'Dear Sir / Madam,';
   const refLine    = refNo   ? `<b>Reference No.:</b> ${refNo}` : '';
@@ -6518,15 +6553,15 @@ async function loadMailFolder(folder) {
 
 	if (folder === 'inbox') {
 	  // Emails where current user is a recipient and folder=inbox
-	  query = `folder=eq.inbox&or=(recipient_emails.cs.{${myEmail}},recipient_names.cs.{${currentUser.name}})&order=created_at.desc`;
+	  query = `folder=eq.inbox&or=(recipient_emails.cs.{${myEmail}},recipient_names.cs.{${currentUser.name}})&order=created_at.desc&select=*`;
 	} else if (folder === 'sent') {
-	  query = `folder=eq.sent&sender_email=eq.${myEmail}&order=created_at.desc`;
+	  query = `folder=eq.sent&sender_email=eq.${myEmail}&order=created_at.desc&select=*`;
 	} else if (folder === 'drafts') {
-	  query = `folder=eq.draft&sender_email=eq.${myEmail}&order=created_at.desc`;
+	  query = `folder=eq.draft&sender_email=eq.${myEmail}&order=created_at.desc&select=*`;
 	} else if (folder === 'starred') {
 	  query = `is_starred=eq.true&or=(sender_email.eq.${myEmail},recipient_emails.cs.{${myEmail}})&order=created_at.desc`;
 	} else if (folder === 'trash') {
-	  query = `folder=eq.trash&or=(sender_email.eq.${myEmail},recipient_emails.cs.{${myEmail}})&order=created_at.desc`;
+	  query = `folder=eq.trash&or=(sender_email.eq.${myEmail},recipient_emails.cs.{${myEmail}})&order=created_at.desc&select=*`;
 	}
 
 	const rows = await sbFetch('operix_emails?' + query, { method: 'GET' });
@@ -6567,7 +6602,7 @@ function renderMailList(emails) {
 	div.setAttribute('data-id', em.id);
 	div.innerHTML = `
 	  <div style="display:flex;align-items:flex-start;gap:10px;">
-		<div style="width:36px;height:36px;border-radius:10px;background:${isUnread?'var(--purple-bg)':'var(--surface2)'};border:1.5px solid ${isUnread?'var(--purple-border)':'var(--border2)'};display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:${isUnread?'var(--purple)':'var(--text3)'};flex-shrink:0;">${(em.sender_name||'?').charAt(0).toUpperCase()}</div>
+		<div style="width:36px;height:36px;border-radius:10px;background:${isUnread?'rgba(154,114,48,.12)':'var(--surface2)'};border:1.5px solid ${isUnread?'rgba(196,148,64,.3)':'var(--border2)'};display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:${isUnread?'#9a7230':'var(--text3)'};flex-shrink:0;">${(em.sender_name||'?').charAt(0).toUpperCase()}</div>
 		<div style="flex:1;min-width:0;">
 		  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
 			<div style="font-size:13px;font-weight:${isUnread?'700':'600'};color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;">${em.sender_name||em.sender_email}</div>
@@ -6631,7 +6666,7 @@ async function openEmail(em, cardEl) {
 		<div style="flex:1;min-width:0;">
 		  <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;color:var(--text);margin-bottom:10px;">${em.subject||'(No Subject)'}</div>
 		  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-			<div style="width:34px;height:34px;border-radius:10px;background:var(--purple-bg);border:1.5px solid var(--purple-border);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:var(--purple);flex-shrink:0;">${(em.sender_name||'?').charAt(0).toUpperCase()}</div>
+			<div style="width:34px;height:34px;border-radius:10px;background:var(--gold-bg);border:1.5px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:var(--gold);flex-shrink:0;">${(em.sender_name||'?').charAt(0).toUpperCase()}</div>
 			<div>
 			  <div style="font-size:13px;font-weight:700;color:var(--text);">${em.sender_name||em.sender_email}</div>
 			  <div style="font-size:10px;color:var(--text4);">${em.sender_email} · ${dtStr}</div>
@@ -6643,10 +6678,10 @@ async function openEmail(em, cardEl) {
 		  </div>
 		</div>
 		<div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
-		  <button onclick="openReply()" style="padding:6px 10px;background:var(--purple-bg);border:1.5px solid var(--purple-border);color:var(--purple);font-size:11px;font-weight:700;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:4px;">
+		  <button onclick="openReply()" style="padding:6px 10px;background:var(--gold-bg);border:1.5px solid var(--gold-border);color:var(--gold);font-size:11px;font-weight:700;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:4px;">
 			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>Reply
 		  </button>
-		  <button onclick="mailMoveTrash('${em.id}')" style="padding:6px 10px;background:var(--red-bg);border:1.5px solid var(--red-border);color:var(--red);font-size:11px;font-weight:700;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:4px;">
+		  <button id="mail-read-del-btn" style="padding:6px 10px;background:var(--red-bg);border:1.5px solid var(--red-border);color:var(--red);font-size:11px;font-weight:700;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:4px;">
 			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete
 		  </button>
 		  <button onclick="mailCloseReadPanel()" style="background:var(--surface2);border:1px solid var(--border2);border-radius:7px;padding:6px;cursor:pointer;color:var(--text3);display:flex;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -6654,9 +6689,57 @@ async function openEmail(em, cardEl) {
 	  </div>
 	</div>
 	<div style="padding:20px 18px;line-height:1.75;font-size:14px;color:var(--text);">
-	  ${em.body ? em.body.replace(/\n/g,'<br>') : '<span style="color:var(--text4);">(No content)</span>'}
+	  <div id="mail-body-content-${em.id}"></div>
 	  <div id="mail-read-atts-${em.id}" style="margin-top:${atts.length?'20px':'0'};"></div>
 	</div>`;
+
+  // ── Wire up delete button safely via DOM ──
+  const delBtn = document.getElementById('mail-read-del-btn');
+  if (delBtn) {
+    const emId = em.id;
+    const emFolder = em.folder || mailCurrentFolder || 'inbox';
+    delBtn.onclick = function() { mailMoveTrash(emId, emFolder); };
+    // Update label based on folder
+    if (emFolder === 'trash') {
+      delBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>Delete Forever';
+    }
+  }
+
+  // ── Render body — always treat as HTML (all bodies stored from mailSend are HTML) ──
+  const bodyContentEl = document.getElementById('mail-body-content-' + em.id);
+  if (bodyContentEl) {
+    if (em.body) {
+      var bodyRaw = em.body;
+
+      // Decode double-escaped entities (happens when plain text was double-escaped on save)
+      var decoded = bodyRaw
+        .replace(/&amp;lt;/g,   '<')
+        .replace(/&amp;gt;/g,   '>')
+        .replace(/&amp;amp;/g,  '&')
+        .replace(/&amp;quot;/g, '"')
+        .replace(/&amp;#/g,     '&#')
+        .replace(/&amp;reg;/g,  '®')
+        .replace(/&amp;copy;/g, '©');
+
+      // Detect if it looks like HTML
+      var looksHTML = /<[a-z][\s\S]{0,20}>/i.test(decoded);
+
+      var wrapper = document.createElement('div');
+      wrapper.style.cssText = 'line-height:1.75;font-size:14px;color:var(--text);max-width:100%;overflow-x:auto;';
+
+      if (looksHTML) {
+        // Render as HTML
+        wrapper.innerHTML = decoded;
+      } else {
+        // Plain text — convert line breaks, keep entities decoded
+        var plainBody = decoded.replace(/\n/g, '<br>');
+        wrapper.innerHTML = plainBody;
+      }
+      bodyContentEl.appendChild(wrapper);
+    } else {
+      bodyContentEl.innerHTML = '<span style="color:var(--text4);">(No content)</span>';
+    }
+  }
 
   // ── Render attachments safely via DOM (avoids template literal nesting issues) ──
   if (atts.length) {
@@ -6732,7 +6815,13 @@ function openReply() {
 	if (subEl) subEl.value = (em.subject||'').startsWith('Re:') ? em.subject : 'Re: ' + (em.subject||'');
 	if (bodyEl) {
 	  const dt = new Date(em.created_at).toLocaleString('en-GB');
-	  bodyEl.value = `\n\n——— Original Message ———\nFrom: ${em.sender_name} <${em.sender_email}>\nDate: ${dt}\n\n${(em.body||'').replace(/<[^>]+>/g,'')}`;
+	  // Strip HTML tags from original body for plain-text quote
+    var origBody = (em.body || '')
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&reg;/g, '®').replace(/&copy;/g, '©')
+      .replace(/\s{3,}/g, '\n').trim();
+    bodyEl.value = `\n\n——— Original Message ———\nFrom: ${em.sender_name} <${em.sender_email}>\nDate: ${dt}\n\n${origBody}`;
 	}
 	mailThread = em.thread_id || em.id;
   }, 100);
@@ -6750,17 +6839,31 @@ async function toggleStar(id, starred, idx) {
   } catch(e) { alert('Error: ' + e.message); }
 }
 
-async function mailMoveTrash(id) {
-  if (!confirm('Move to trash?')) return;
-  try {
-	await sbFetch(`operix_emails?id=eq.${id}`, {
-	  method: 'PATCH',
-	  body: JSON.stringify({ folder: 'trash' }),
-	  headers: { 'Prefer': 'return=minimal' }
-	});
-	mailCloseReadPanel();
-	loadMailFolder(mailCurrentFolder);
-  } catch(e) { alert('Error: ' + e.message); }
+async function mailMoveTrash(id, folder) {
+  var effectiveFolder = folder || mailCurrentFolder;
+  if (effectiveFolder === 'trash') {
+    // Permanently delete — no confirm needed, user clicked Delete from trash
+    try {
+      await sbFetch('operix_emails?id=eq.' + id, {
+        method: 'DELETE',
+        headers: { 'Prefer': 'return=minimal' }
+      });
+      mailCloseReadPanel();
+      loadMailFolder('trash');
+    } catch(e) { alert('Error: ' + e.message); }
+  } else {
+    // Move to trash
+    if (!confirm('Move this email to trash?')) return;
+    try {
+      await sbFetch('operix_emails?id=eq.' + id, {
+        method: 'PATCH',
+        body: JSON.stringify({ folder: 'trash' }),
+        headers: { 'Prefer': 'return=minimal' }
+      });
+      mailCloseReadPanel();
+      loadMailFolder(mailCurrentFolder);
+    } catch(e) { alert('Error: ' + e.message); }
+  }
 }
 
 async function updateMailBadges() {
@@ -6911,13 +7014,25 @@ async function mailSend(isDraft) {
 	delete bodyEl.dataset.htmlBody; // consume it
   } else {
     const LOGO_HTML = '<img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="height:32px;width:auto;vertical-align:middle;border-radius:7px;margin-right:6px;" alt="OPERIX"><strong style="font-family:Space Grotesk,sans-serif;font-size:13px;letter-spacing:.06em;vertical-align:middle;">OPERIX</strong><br>';
-    // Check for HTML signature marker
+    // Detect HTML signatures — 3 cases:
+    const SIG_SEP = '\n\n-- \n';
+    const sigIdx  = body.indexOf(SIG_SEP);
+    const plainPart = sigIdx !== -1 ? body.slice(0, sigIdx) : body;
+
     if (body.includes('[OPERIX_HTML_SIGNATURE]') && bodyEl && bodyEl.dataset.htmlSig) {
+      // Case 1: marker present + htmlSig data attribute set
       const htmlSig = bodyEl.dataset.htmlSig;
-      const plainPart = body.slice(0, body.indexOf('[OPERIX_HTML_SIGNATURE]')).replace(/\n-- \n$/, '').trim();
-      const escapedPlain = plainPart.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-      bodyHtml = '<p>' + escapedPlain + '</p><br><div style="border-top:1px solid #e5e3de;padding-top:14px;margin-top:10px;">' + htmlSig + '</div>';
+      const escaped = plainPart.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      bodyHtml = '<p>' + escaped + '</p><br><div style="border-top:1px solid #e5e3de;padding-top:14px;margin-top:10px;">' + htmlSig + '</div>';
+
+    } else if (sigIdx !== -1 && /<[a-z][\s\S]*>/i.test(body.slice(sigIdx))) {
+      // Case 2: body has raw HTML after sig separator (legacy or direct paste)
+      const escaped = plainPart.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      const rawSig  = body.slice(sigIdx + SIG_SEP.length);
+      bodyHtml = '<p>' + escaped + '</p><br><div style="border-top:1px solid #e5e3de;padding-top:14px;margin-top:10px;">' + rawSig + '</div>';
+
     } else {
+      // Case 3: plain text body
       bodyHtml = body
         .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
         .replace(/\[OPERIX_LOGO\]/g, LOGO_HTML)
@@ -7017,7 +7132,7 @@ function renderSignaturesPanel() {
   container.innerHTML = mailSignatures.map((s, i) => `
 	<div class="sig-box ${s.is_default?'active-sig':''}">
 	  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-		<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:var(--text);">${s.name} ${s.is_default?'<span style="font-size:9px;background:#a78bfa;color:#fff;padding:2px 6px;border-radius:5px;font-weight:700;margin-left:5px;">DEFAULT</span>':''}</div>
+		<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:var(--text);">${s.name} ${s.is_default?'<span style="font-size:9px;background:#9a7230;color:#fff;padding:2px 6px;border-radius:5px;font-weight:700;margin-left:5px;">DEFAULT</span>':''}</div>
 		<div style="display:flex;gap:5px;">
 		  ${!s.is_default?`<button onclick="setDefaultSig('${s.id}')" style="padding:4px 8px;font-size:10px;font-weight:700;background:var(--purple-bg);border:1px solid var(--purple-border);color:var(--purple);border-radius:5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Set Default</button>`:''}
 		  <button onclick="editSignature(${i})" style="padding:4px 8px;font-size:10px;font-weight:700;background:var(--surface2);border:1px solid var(--border2);color:var(--text3);border-radius:5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Edit</button>
@@ -7287,13 +7402,15 @@ initMailBoard = async function() {
   <div class="mail-sidebar" style="padding:16px 10px;overflow:hidden;">
 	<!-- Logo -->
 	<div style="padding:6px 4px 18px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:12px;">
-	  <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:900;color:#fff;letter-spacing:-.02em;">OPERIX</div>
-	  <div style="font-size:9px;color:rgba(255,255,255,.35);font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-top:2px;">Mail Board</div>
+	  <div style="display:flex;align-items:center;gap:9px;">
+	    <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="width:28px;height:28px;border-radius:7px;object-fit:contain;" onerror="this.style.display='none'">
+	    <div><div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:900;color:#fff;letter-spacing:-.01em;">OPERIX</div><div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-top:1px;">Mail Board</div></div>
+	  </div>
 	</div>
 
 	<!-- User card -->
 	<div style="display:flex;align-items:center;gap:9px;padding:10px;background:rgba(255,255,255,.05);border-radius:10px;margin-bottom:14px;border:1px solid rgba(255,255,255,.07);">
-	  <div id="mail-sb-avatar" style="width:34px;height:34px;border-radius:9px;overflow:hidden;flex-shrink:0;background:rgba(167,139,250,.25);border:1.5px solid rgba(167,139,250,.4);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#a78bfa;"></div>
+	  <div id="mail-sb-avatar" style="width:34px;height:34px;border-radius:9px;overflow:hidden;flex-shrink:0;background:rgba(154,114,48,.2);border:1.5px solid rgba(196,148,64,.4);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#c49440;"></div>
 	  <div style="min-width:0;"><div id="mail-sb-name" style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div><div id="mail-sb-role" style="font-size:9px;color:rgba(255,255,255,.4);margin-top:1px;text-transform:uppercase;letter-spacing:.1em;"></div></div>
 	</div>
 
@@ -7304,7 +7421,7 @@ initMailBoard = async function() {
 		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
 		Boards
 	  </button>
-	  <div style="font-size:9px;color:rgba(255,255,255,.25);font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:0 6px;margin-bottom:5px;">Mail</div>
+	  <div style="font-size:9px;color:rgba(232,185,106,.35);font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:0 6px;margin-bottom:5px;">Mail</div>
 	  <button id="mail-nav-compose" class="mail-nav-btn" onclick="mailNav('compose',this)">
 		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
 		Compose
@@ -7330,7 +7447,7 @@ initMailBoard = async function() {
 		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
 		Trash
 	  </button>
-	  <div style="font-size:9px;color:rgba(255,255,255,.25);font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:0 6px;margin:10px 0 5px;">Settings</div>
+	  <div style="font-size:9px;color:rgba(232,185,106,.35);font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:0 6px;margin:10px 0 5px;">Settings</div>
 	  <button id="mail-nav-signatures" class="mail-nav-btn" onclick="mailNav('signatures',this)">
 		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
 		Signatures
@@ -7347,16 +7464,16 @@ initMailBoard = async function() {
   </div>
 
   <!-- MAIN CONTENT -->
-  <div id="mail-content" style="flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f4f3fa;">
+  <div id="mail-content" style="flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f0f2f8;">
 
 	<!-- Top bar -->
-	<div style="padding:12px 18px;background:rgba(244,243,250,.94);backdrop-filter:blur(18px);border-bottom:1px solid #e5e3f5;display:flex;align-items:center;gap:10px;flex-shrink:0;">
-	  <div id="mail-folder-title" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);min-width:80px;">Inbox</div>
+	<div style="padding:12px 18px;background:rgba(240,242,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid #e2e5ef;display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 1px 0 rgba(0,0,0,.04);">
+	  <div id="mail-folder-title" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:#1c1a16;min-width:80px;letter-spacing:-.01em;">Inbox</div>
 	  <div style="flex:1;position:relative;">
 		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-		<input type="text" placeholder="Search emails…" oninput="mailSearch(this.value)" style="width:100%;padding:8px 12px 8px 32px;background:#fff;border:1.5px solid #e5e3f5;border-radius:8px;font-size:13px;color:var(--text);outline:none;font-family:'Plus Jakarta Sans',sans-serif;">
+		<input type="text" placeholder="Search emails…" oninput="mailSearch(this.value)" style="width:100%;padding:8px 12px 8px 34px;background:#fff;border:1.5px solid #e2e5ef;border-radius:10px;font-size:13px;color:var(--text);outline:none;font-family:'Plus Jakarta Sans',sans-serif;transition:border-color .15s;" onfocus="this.style.borderColor='#c49440'" onblur="this.style.borderColor='#e2e5ef'">
 	  </div>
-	  <button onclick="loadMailFolder(mailCurrentFolder)" style="padding:8px;background:#fff;border:1.5px solid #e5e3f5;border-radius:8px;cursor:pointer;color:var(--text3);display:flex;" title="Refresh">
+	  <button onclick="loadMailFolder(mailCurrentFolder)" style="padding:8px;background:#fff;border:1.5px solid #e2e5ef;border-radius:9px;cursor:pointer;color:var(--text3);display:flex;" title="Refresh">
 		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
 	  </button>
 	</div>
@@ -7365,7 +7482,7 @@ initMailBoard = async function() {
 	<div style="display:flex;flex:1;overflow:hidden;gap:0;" id="mail-body-area">
 
 	  <!-- EMAIL LIST PANEL -->
-	  <div id="mail-list-panel" style="width:360px;min-width:260px;border-right:1px solid #e5e3f5;overflow-y:auto;background:#faf9ff;display:flex;flex-direction:column;">
+	  <div id="mail-list-panel" style="width:360px;min-width:260px;border-right:1px solid #e2e5ef;overflow-y:auto;background:#f7f8fc;display:flex;flex-direction:column;">
 		<div id="mail-email-list" style="padding:10px;flex:1;">
 		  <div style="text-align:center;padding:40px;color:#9ca3af;font-size:12px;">Loading…</div>
 		</div>
@@ -7380,25 +7497,25 @@ initMailBoard = async function() {
 	  <div id="mail-compose-panel" style="flex:1;overflow-y:auto;background:#fff;display:none;padding:22px 24px;">
 		<div style="max-width:620px;margin:0 auto;">
 		  <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:900;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:9px;">
-			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
 			New Message
 		  </div>
 
-		  <div style="background:#fff;border:1.5px solid #e5e3f5;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(107,63,160,.07);">
+		  <div style="background:#fff;border:1.5px solid #e8e5dc;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(154,114,48,.07);">
 			<!-- To -->
 			<div style="border-bottom:1px solid #f0effa;padding:10px 14px;display:flex;align-items:center;gap:8px;">
-			  <span style="font-size:11px;font-weight:700;color:#a78bfa;min-width:24px;text-transform:uppercase;letter-spacing:.08em;">To</span>
+			  <span style="font-size:11px;font-weight:700;color:#9a7230;min-width:24px;text-transform:uppercase;letter-spacing:.08em;">To</span>
 			  <input id="mail-to" list="mail-to-list" class="mail-compose-field" placeholder="Recipient email(s), comma-separated" style="border:none;background:transparent;padding:4px 0;box-shadow:none;">
 			  <datalist id="mail-to-list"></datalist>
 			</div>
 			<!-- CC -->
 			<div style="border-bottom:1px solid #f0effa;padding:10px 14px;display:flex;align-items:center;gap:8px;">
-			  <span style="font-size:11px;font-weight:700;color:#a78bfa;min-width:24px;text-transform:uppercase;letter-spacing:.08em;">CC</span>
+			  <span style="font-size:11px;font-weight:700;color:#9a7230;min-width:24px;text-transform:uppercase;letter-spacing:.08em;">CC</span>
 			  <input id="mail-cc" list="mail-to-list" class="mail-compose-field" placeholder="CC email(s), optional" style="border:none;background:transparent;padding:4px 0;box-shadow:none;">
 			</div>
 			<!-- Subject -->
 			<div style="border-bottom:1px solid #f0effa;padding:10px 14px;display:flex;align-items:center;gap:8px;">
-			  <span style="font-size:11px;font-weight:700;color:#a78bfa;min-width:24px;text-transform:uppercase;letter-spacing:.08em;">Sub</span>
+			  <span style="font-size:11px;font-weight:700;color:#9a7230;min-width:24px;text-transform:uppercase;letter-spacing:.08em;">Sub</span>
 			  <input id="mail-subject" class="mail-compose-field" placeholder="Subject" style="border:none;background:transparent;padding:4px 0;box-shadow:none;">
 			</div>
 			<!-- Body -->
@@ -7408,7 +7525,7 @@ initMailBoard = async function() {
 			  <div id="mail-logo-preview" style="display:none;margin-top:8px;padding:8px 12px;background:#f6f4ff;border:1px dashed #c4b5fd;border-radius:8px;display:flex;align-items:center;gap:8px;">
 				<img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="height:28px;width:auto;border-radius:6px;" onerror="this.style.display='none'">
 				<span style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:800;letter-spacing:.06em;color:#7c3aed;">OPERIX</span>
-				<span style="font-size:11px;color:#a78bfa;margin-left:4px;">← Logo will appear here in the sent email</span>
+				<span style="font-size:11px;color:#9a7230;margin-left:4px;">← Logo will appear here in the sent email</span>
 			  </div>
 			</div>
 			<!-- Attachments -->
@@ -7421,7 +7538,7 @@ initMailBoard = async function() {
 			<select id="mail-sig-select" class="field" style="max-width:200px;font-size:12px;padding:7px 10px;" onchange="applySignatureToCompose(this.value)">
 			  <option value="">— None —</option>
 			</select>
-			<button onclick="mailAttachFile()" id="mail-attach-btn" style="padding:7px 12px;background:var(--surface2);border:1.5px solid var(--border2);color:var(--text2);font-size:12px;font-weight:700;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:5px;">
+			<button onclick="mailAttachFile()" id="mail-attach-btn" style="padding:7px 12px;background:var(--surface2);border:1.5px solid var(--gold-border);color:var(--gold);font-size:12px;font-weight:700;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:5px;">
 			  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
 			  Attach
 			</button>
@@ -7429,11 +7546,11 @@ initMailBoard = async function() {
 
 		  <!-- Action buttons -->
 		  <div style="display:flex;gap:9px;margin-top:16px;">
-			<button id="mail-send-btn" onclick="mailSend(false)" style="flex:1;padding:13px;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 3px 14px rgba(124,58,237,.28);transition:all .18s;">
+			<button id="mail-send-btn" onclick="mailSend(false)" style="flex:1;padding:13px;background:linear-gradient(135deg,#9a7230,#c49440);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 3px 14px rgba(154,114,48,.28);transition:all .18s;">
 			  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
 			  Send
 			</button>
-			<button id="mail-draft-btn" onclick="mailSend(true)" style="padding:13px 16px;background:#fff;border:1.5px solid #e5e3f5;color:var(--text3);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+			<button id="mail-draft-btn" onclick="mailSend(true)" style="padding:13px 16px;background:#fff;border:1.5px solid #e8e5dc;color:var(--text3);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;">
 			  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
 			  Draft
 			</button>
@@ -7448,7 +7565,7 @@ initMailBoard = async function() {
 	  <div id="mail-sig-panel" style="flex:1;overflow-y:auto;background:#fff;display:none;padding:22px 24px;">
 		<div style="max-width:600px;margin:0 auto;">
 		  <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:900;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:9px;">
-			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.5" stroke-linecap="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
 			Email Signatures
 		  </div>
 		  <div style="font-size:12px;color:var(--text3);margin-bottom:20px;">Manage your personal email signatures. The default one is automatically added to new messages.</div>
@@ -7503,36 +7620,12 @@ initMailBoard = async function() {
 		  <!-- Existing signatures -->
 		  <div id="mail-sig-list" style="margin-bottom:20px;"></div>
 
-		  <!-- Create / Edit form (plain text fallback) -->
-		  <div style="background:#faf9ff;border:1.5px solid #e5e3ff;border-radius:12px;padding:18px;">
-			<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px;">Custom Signature</div>
-			<div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Or write a plain-text signature manually</div>
-			<div style="margin-bottom:10px;">
-			  <label class="field-label">Signature Name</label>
-			  <input id="sig-name-input" class="field" placeholder="e.g. Professional, Casual…">
-			</div>
-			<div style="margin-bottom:10px;">
-			  <label class="field-label">Signature Content</label>
-			  <textarea id="sig-content-input" class="field" rows="5" style="resize:none;line-height:1.6;" placeholder="Best regards,&#10;John Doe&#10;Operations Manager · OPERIX&#10;+966 5x xxx xxxx"></textarea>
-			</div>
-			<div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:8px;">
-			  <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="width:26px;height:26px;object-fit:contain;border-radius:6px;" onerror="this.style.display='none'">
-			  <div style="flex:1;">
-				<div style="font-size:12px;font-weight:700;color:var(--text);">Embed OPERIX Logo</div>
-				<div style="font-size:10px;color:var(--text3);">Show the OPERIX logo above your signature text</div>
-			  </div>
-			  <label style="position:relative;display:inline-flex;align-items:center;cursor:pointer;">
-				<input type="checkbox" id="sig-logo-toggle" style="opacity:0;width:0;height:0;position:absolute;">
-				<div id="sig-logo-toggle-track" onclick="toggleSigLogo()" style="width:36px;height:20px;background:var(--border2);border-radius:10px;position:relative;cursor:pointer;transition:background .2s;">
-				  <div id="sig-logo-toggle-thumb" style="position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>
-				</div>
-			  </label>
-			</div>
-			<button id="sig-save-btn" onclick="saveSignature()" class="btn-purple" style="width:100%;">
-			  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-			  Save Signature
-			</button>
-		  </div>
+		  <!-- Hidden fields required by saveSignature() JS — do not remove -->
+		  <input type="hidden" id="sig-name-input">
+		  <input type="hidden" id="sig-content-input">
+		  <input type="hidden" id="sig-logo-toggle">
+		  <div id="sig-logo-toggle-track" style="display:none;"><div id="sig-logo-toggle-thumb"></div></div>
+		  <button id="sig-save-btn" onclick="saveSignature()" style="display:none;"></button>
 		</div>
 	  </div>
 
