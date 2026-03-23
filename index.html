@@ -5020,6 +5020,9 @@ async function loadAdminReqs(){
 
 	el.innerHTML = '';
 	pending.slice().reverse().forEach(function(r){
+	  // Declare all variables first to avoid hoisting issues
+	  var rid     = r.id;
+	  var empName = r.employee_name || r.name || '';
 	  var isSalaryInquiry = r.type === 'Salary Inquiry';
 	  var empSal = isSalaryInquiry ? salaries.find(function(s){
 		return (s['Employee Name']||'').toLowerCase().includes(empName.toLowerCase().split(' ')[0]);
@@ -5030,8 +5033,6 @@ async function loadAdminReqs(){
 
 	  var div = document.createElement('div');
 	  div.style.cssText = 'background:#fff;border:1px solid #e8e7f0;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04);';
-	  var rid = r.id;  // UUID from Supabase
-	  var empName = r.employee_name || r.name || '';
 
 	  // Build card
 	  div.innerHTML =
