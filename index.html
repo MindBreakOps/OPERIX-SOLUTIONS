@@ -6894,15 +6894,46 @@ function refreshAllUserAvatars(){
 // ═══════════════════════════════════════════════════════
 // PROJECT MANAGEMENT
 // ═══════════════════════════════════════════════════════
+// Cache for instant project list rendering
+var _projectsCache = null;
+
 async function loadProjectsList(){
   const container = document.getElementById('projects-list-container');
   if(!container) return;
-  container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px;">Loading projects…</div>';
+
+  // If we have a cache — render instantly, no flicker
+  if(_projectsCache !== null){
+    renderProjectsList(_projectsCache);
+    // Then silently refresh in background
+    sbFetch('operix_projects?order=created_at.asc', { method:'GET' })
+      .then(function(rows){
+        if(Array.isArray(rows)){
+          _projectsCache = rows;
+          renderProjectsList(rows);
+        }
+      }).catch(function(){});
+    return;
+  }
+
+  // First load — show skeleton cards instead of "Loading…" text
+  container.innerHTML =
+    [1,2].map(function(){
+      return '<div style="background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--r);padding:17px;margin-bottom:9px;display:flex;gap:14px;align-items:center;">'
+        + '<div style="width:48px;height:48px;border-radius:13px;background:var(--surface3);flex-shrink:0;"></div>'
+        + '<div style="flex:1;">'
+          + '<div style="height:14px;background:var(--surface3);border-radius:6px;width:55%;margin-bottom:8px;"></div>'
+          + '<div style="height:10px;background:var(--surface3);border-radius:6px;width:35%;"></div>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+
   try{
-	const rows = await sbFetch('operix_projects?order=created_at.asc', { method:'GET' });
-	renderProjectsList(Array.isArray(rows) ? rows : []);
+    const rows = await sbFetch('operix_projects?order=created_at.asc', { method:'GET' });
+    _projectsCache = Array.isArray(rows) ? rows : [];
+    renderProjectsList(_projectsCache);
   } catch(err){
-	renderProjectsList([]);
+    _projectsCache = [];
+    renderProjectsList([]);
   }
 }
 
@@ -7029,7 +7060,7 @@ async function saveNewProject(){
 		anpr_api: project.anprApi  || ''
 	  })
 	});
-	closeNewProjectModal(); loadProjectsList();
+	_projectsCache = null; closeNewProjectModal(); loadProjectsList();
   } catch(e){ alert('Save error: ' + e.message); }
   btn.disabled = false; btn.innerText = 'Create Project';
 }
@@ -7041,6 +7072,7 @@ async function deleteProject(id){
 	await sbFetch('operix_projects?id=eq.' + encodeURIComponent(id), {
 	  method:'DELETE', headers:{'Prefer':'return=minimal'}
 	});
+	_projectsCache = null;
 	loadProjectsList();
   } catch(e){ alert('Delete error: ' + e.message); }
 }
