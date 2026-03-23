@@ -742,6 +742,9 @@ textarea.field{resize:none;line-height:1.6;}
 		  </div>
 		  <div id="ws-user-avatar" style="width:36px;height:36px;border-radius:10px;overflow:hidden;flex-shrink:0;border:2px solid var(--border2);background:var(--gold-bg);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--gold);"></div>
 		</dv></div>
+	  <button onclick="showMailDevicesModal()" title="My Trusted Devices" style="padding:7px;background:var(--surface2);border:1.5px solid var(--gold-border);border-radius:9px;cursor:pointer;color:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;" onmouseenter="this.style.background='var(--gold-bg)'" onmouseleave="this.style.background='var(--surface2)'" >
+		<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+	  </button>
 	  <button onclick="location.reload()" class="btn-danger"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
 	</div>
   </div>
@@ -7683,40 +7686,49 @@ function openInGmail() {
   var bodyEl  = document.getElementById('mail-body');
   var bodyRaw = bodyEl ? bodyEl.value : '';
 
-  // Extract message part (before sig separator)
+  // Extract plain message (before sig separator)
   var sigIdx  = bodyRaw.indexOf('\n\n-- \n');
   var msgPart = sigIdx > -1 ? bodyRaw.slice(0, sigIdx) : bodyRaw;
   msgPart = msgPart.replace('[OPERIX_HTML_SIGNATURE]','').replace(/\[OPERIX_LOGO\]/g,'').trim();
 
-  // Build the body — try Gmail compose URL first (supports HTML), fallback to mailto
-  var useGmailURL = true;
+  // Build HTML version of signature
+  var htmlSig = (bodyEl && bodyEl.dataset.htmlSig) ? bodyEl.dataset.htmlSig : '';
 
-  if (useGmailURL) {
-    // Gmail compose URL — opens Gmail web with pre-filled fields
-    // Body is plain text here; Gmail will format it
-    var sigPart = '';
-    if (bodyEl && bodyEl.dataset.htmlSig) {
-      // Strip HTML to readable plain text for Gmail body field
-      sigPart = bodyEl.dataset.htmlSig
-        .replace(/<style[\s\S]*?<\/style>/gi,'')
-        .replace(/<br\s*\/?>/gi,'\n')
-        .replace(/<\/p>/gi,'\n').replace(/<\/div>/gi,'\n')
-        .replace(/<[^>]+>/g,'')
-        .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ').replace(/&reg;/g,'®')
-        .replace(/\n{3,}/g,'\n\n').trim();
-    } else if (sigIdx > -1) {
-      sigPart = bodyRaw.slice(sigIdx + 4).replace(/\[OPERIX_LOGO\]/g,'').trim();
-    }
+  // Build full HTML to copy to clipboard
+  var fullHtml = '<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#1c1a16;">'
+    + msgPart.replace(/\n/g,'<br>')
+    + (htmlSig ? '<br><br><div style="border-top:2px solid #e8b96a;padding-top:14px;margin-top:10px;">' + htmlSig + '</div>' : '')
+    + '</div>';
 
-    var fullBody = msgPart + (sigPart ? '\n\n--\n' + sigPart : '');
+  // Open Gmail compose URL (subject, to, cc pre-filled; body is plain — user will paste HTML)
+  var gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1';
+  if (to)      gmailUrl += '&to='  + encodeURIComponent(to);
+  if (cc)      gmailUrl += '&cc='  + encodeURIComponent(cc);
+  if (subject) gmailUrl += '&su='  + encodeURIComponent(subject);
+  // Pass plain text body — signature will be pasted
+  gmailUrl += '&body=' + encodeURIComponent(msgPart.slice(0, 500));
 
-    var gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1';
-    if (to)       gmailUrl += '&to='      + encodeURIComponent(to);
-    if (cc)       gmailUrl += '&cc='      + encodeURIComponent(cc);
-    if (subject)  gmailUrl += '&su='      + encodeURIComponent(subject);
-    if (fullBody) gmailUrl += '&body='    + encodeURIComponent(fullBody.slice(0, 5000));
+  window.open(gmailUrl, '_blank', 'noopener,noreferrer');
 
-    window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+  // Copy full HTML (with styled signature) to clipboard
+  if (htmlSig && navigator.clipboard) {
+    var copyHtml = function(html) {
+      try {
+        if (window.ClipboardItem) {
+          var blob = new Blob([html], { type: 'text/html' });
+          var plain = new Blob([msgPart], { type: 'text/plain' });
+          navigator.clipboard.write([new ClipboardItem({'text/html': blob, 'text/plain': plain})]);
+        }
+      } catch(e) {}
+    };
+    setTimeout(function() { copyHtml(fullHtml); }, 500);
+
+    // Toast notification
+    var toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1c1a16;color:#e8b96a;font-size:12px;font-weight:600;padding:12px 20px;border-radius:12px;z-index:9999;box-shadow:0 6px 24px rgba(0,0,0,.35);font-family:Plus Jakarta Sans,sans-serif;text-align:center;border:1px solid rgba(196,148,64,.3);max-width:300px;';
+    toast.innerHTML = '<div style="margin-bottom:3px;">Gmail opened ✓</div><div style="font-size:10px;color:rgba(232,185,106,.7);font-weight:500;">Your styled signature was copied to clipboard.<br>Click in Gmail body then press <strong style="color:#e8b96a;">⌘V / Ctrl+V</strong> to paste.</div>';
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.style.opacity='0'; toast.style.transition='opacity .5s'; setTimeout(function(){toast.remove();},500); }, 5000);
   }
 }
 
@@ -8247,9 +8259,6 @@ initMailBoard = async function() {
 	<div style="display:flex;align-items:center;gap:9px;padding:10px;background:rgba(255,255,255,.05);border-radius:10px;margin-bottom:14px;border:1px solid rgba(255,255,255,.07);">
 	  <div id="mail-sb-avatar" style="width:34px;height:34px;border-radius:9px;overflow:hidden;flex-shrink:0;background:rgba(154,114,48,.2);border:1.5px solid rgba(196,148,64,.4);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#c49440;"></div>
 	  <div style="flex:1;min-width:0;"><div id="mail-sb-name" style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div><div id="mail-sb-role" style="font-size:9px;color:rgba(255,255,255,.4);margin-top:1px;text-transform:uppercase;letter-spacing:.1em;"></div></div>
-	  <button onclick="showMailDevicesModal()" title="My Trusted Devices" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px;cursor:pointer;color:rgba(196,148,64,.8);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;" onmouseenter="this.style.background='rgba(196,148,64,.2)'" onmouseleave="this.style.background='rgba(255,255,255,.07)'">
-		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-	  </button>
 	</div>
 
 	<!-- Nav -->
@@ -8312,8 +8321,8 @@ initMailBoard = async function() {
 		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 		<input type="text" placeholder="Search emails…" oninput="mailSearch(this.value)" style="width:100%;padding:8px 12px 8px 34px;background:#fff;border:1.5px solid #e2e5ef;border-radius:10px;font-size:13px;color:var(--text);outline:none;font-family:'Plus Jakarta Sans',sans-serif;transition:border-color .15s;" onfocus="this.style.borderColor='#c49440'" onblur="this.style.borderColor='#e2e5ef'">
 	  </div>
-	  <button onclick="loadMailFolder(mailCurrentFolder)" style="padding:8px;background:#fff;border:1.5px solid #e2e5ef;border-radius:9px;cursor:pointer;color:var(--text3);display:flex;" title="Refresh">
-		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+	  <button onclick="loadMailFolder(mailCurrentFolder)" style="padding:7px 12px;background:#fff;border:1.5px solid #e2e5ef;border-radius:9px;cursor:pointer;color:var(--text3);display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;" title="Refresh">
+		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>Refresh
 	  </button>
 	</div>
 
