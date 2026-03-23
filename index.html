@@ -4199,18 +4199,51 @@ async function opsSave(){
   const data={action:'saveInvoice',plateNum:plate,cardNum:card,clientName:currentTab==='mb'?'Mind Break member':name,valetName:u.name,serviceType:currentTab==='mb'?'Free':'Paid',amount:currentTab==='mb'?0:19,phone,date,status:'Parked',ref};
   const btn=document.getElementById('ops-save-btn');btn.disabled=true;btn.innerText='Saving…';
   try{
-	// Use regular POST to get opID back
-	const res = await fetch(OPS_API,{method:'POST',body:JSON.stringify(data)});
-	const saved = await res.json().catch(()=>({}));
-	const opID  = saved.opID || ref;
-	await captureReceipt({...data,staffName:u.name,opID});
-	alert('Operation saved! ID: '+opID);
-	switchTab(currentTab);
+    // Post to GAS (Google Sheet — legacy store)
+    const res = await fetch(OPS_API,{method:'POST',body:JSON.stringify(data)});
+    const saved = await res.json().catch(()=>({}));
+    const opID  = saved.opID || ref;
+    // Also save to Supabase operix_invoices (fast reads, Arabic-safe)
+    sbFetch('operix_invoices', {
+      method: 'POST',
+      body: JSON.stringify({
+        op_id:          opID,
+        date:           new Date().toISOString(),
+        plate_num:      data.plateNum,
+        client_name:    data.clientName,
+        phone:          data.phone || '',
+        amount:         data.amount || 0,
+        card_num:       String(data.cardNum),
+        valet_name:     data.valetName,
+        service_type:   data.serviceType === 'Free' ? 'Free' : 'Paid',
+        vehicle_status: 'Parked',
+        ref:            ref
+      })
+    }).catch(function(e){ console.warn('Supabase invoice save failed (non-critical):', e); });
+    await captureReceipt({...data,staffName:u.name,opID});
+    alert('Operation saved! ID: '+opID);
+    switchTab(currentTab);
   }catch(e){
-	// Fallback no-cors if above fails
-	await fetch(OPS_API,{method:'POST',mode:'no-cors',body:JSON.stringify(data)}).catch(()=>{});
-	await captureReceipt({...data,staffName:u.name,opID:ref});
-	alert('Operation saved!');switchTab(currentTab);
+    // Fallback no-cors if GAS fails — still save to Supabase
+    await fetch(OPS_API,{method:'POST',mode:'no-cors',body:JSON.stringify(data)}).catch(()=>{});
+    sbFetch('operix_invoices', {
+      method: 'POST',
+      body: JSON.stringify({
+        op_id:          ref,
+        date:           new Date().toISOString(),
+        plate_num:      data.plateNum,
+        client_name:    data.clientName,
+        phone:          data.phone || '',
+        amount:         data.amount || 0,
+        card_num:       String(data.cardNum),
+        valet_name:     data.valetName,
+        service_type:   data.serviceType === 'Free' ? 'Free' : 'Paid',
+        vehicle_status: 'Parked',
+        ref:            ref
+      })
+    }).catch(()=>{});
+    await captureReceipt({...data,staffName:u.name,opID:ref});
+    alert('Operation saved!');switchTab(currentTab);
   }
   btn.disabled=false;btn.innerText='Save & Submit';
 }
@@ -4248,27 +4281,48 @@ async function loadReports(){
   const el=document.getElementById('reports-list');
   el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">Loading…</div>';
   try{
-	// Direct fetch — same pattern that always worked for getReports
-	const res = await fetch(OPS_API, {method:'POST', body:JSON.stringify({action:'getReports'})});
-	const text = await res.text();
-	let rows;
-	try{ rows = JSON.parse(text); }
-	catch(e){ throw new Error('Parse error: ' + text.slice(0,100)); }
-	// GAS returns plain array
-	if(Array.isArray(rows)){
-	  reportsData = rows;
-	} else if(rows && rows.data){
-	  reportsData = rows.data;
-	} else {
-	  reportsData = [];
-	}
-	if(!reportsData.length){
-	  el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">No records yet</div>';
-	  return;
-	}
-	renderReports(reportsData);
+    // ── PRIMARY: Supabase operix_invoices ────────────────────
+    // Fast, handles Arabic natively, no GAS timeout issues
+    var sbRows = await sbFetch(
+      'operix_invoices?order=date.desc&limit=500',
+      {method:'GET'}
+    ).catch(function(){ return null; });
+
+    if(Array.isArray(sbRows) && sbRows.length > 0){
+      reportsData = sbRows.map(function(r){
+        return {
+          plateNum:      r.plate_num      || '',
+          clientName:    r.client_name    || '',
+          phone:         r.phone          || '—',
+          amount:        parseFloat(r.amount) || 0,
+          cardNum:       r.card_num       || '',
+          valet:         r.valet_name     || '',
+          valetName:     r.valet_name     || '',
+          serviceType:   r.service_type   || 'Free',
+          vehicleStatus: r.vehicle_status || 'Returned',
+          opID:          r.op_id          || r.ref || '',
+          date:          r.date           || '',
+          ref:           r.op_id          || r.ref || '',
+          _sbId:         r.id   // Supabase UUID for status updates
+        };
+      });
+      renderReports(reportsData);
+      return;
+    }
+
+    // ── FALLBACK: GAS Google Sheet ────────────────────────────
+    const res  = await fetch(OPS_API, {method:'POST', body:JSON.stringify({action:'getReports'})});
+    const text = await res.text();
+    var rows;
+    try{ rows = JSON.parse(text); } catch(e){ throw new Error('Parse error: ' + text.slice(0,100)); }
+    reportsData = Array.isArray(rows) ? rows : (rows && rows.data ? rows.data : []);
+    if(!reportsData.length){
+      el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">No records yet</div>';
+      return;
+    }
+    renderReports(reportsData);
   }catch(err){
-	el.innerHTML='<div style="color:var(--red);text-align:center;padding:20px;font-size:12px;">Error: '+err.message+'</div>';
+    el.innerHTML='<div style="color:var(--red);text-align:center;padding:20px;font-size:12px;">Error: '+err.message+'</div>';
   }
 }
 
@@ -4346,8 +4400,23 @@ function renderReports(rows){
 function reExport(r){captureReceipt({...r,staffName:r.valet||r.valetName,phone:r.phone||'—',amount:r.amount||0,ref:r.ref||genRef()});}
 async function updateVehicle(plate,card,status){
   if(!confirm('Confirm status change?'))return;
-  await fetch(OPS_API,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'updateVehicleStatus',plateNum:plate,cardNum:card,status})});
-  setTimeout(loadReports,900);
+  // Update GAS sheet
+  fetch(OPS_API,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'updateVehicleStatus',plateNum:plate,cardNum:card,status})}).catch(()=>{});
+  // Update Supabase — find most recent matching record (Parked)
+  try{
+    var rows = await sbFetch(
+      'operix_invoices?plate_num=eq.'+encodeURIComponent(plate)+'&card_num=eq.'+encodeURIComponent(card)+'&vehicle_status=eq.Parked&order=date.desc&limit=1',
+      {method:'GET'}
+    );
+    if(Array.isArray(rows) && rows.length){
+      await sbFetch('operix_invoices?id=eq.'+rows[0].id, {
+        method: 'PATCH',
+        headers: {'Prefer':'return=minimal'},
+        body: JSON.stringify({vehicle_status: status})
+      });
+    }
+  }catch(e){ console.warn('Supabase vehicle update failed:', e); }
+  setTimeout(loadReports,600);
 }
 
 async function loadAttendance(){
