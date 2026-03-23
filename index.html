@@ -2109,9 +2109,12 @@ function normAttRow(r){
 	local.getUTCHours().toString().padStart(2,'0') + ':' +
 	local.getUTCMinutes().toString().padStart(2,'0') + ':' +
 	local.getUTCSeconds().toString().padStart(2,'0');
+  // Normalize type to canonical form regardless of source casing
+  var rawType = (r.type || '').toString().trim().toLowerCase();
+  var normType = rawType.includes('out') ? 'Check-Out' : 'Check-In';
   return {
 	name:     r.employee    || '',
-	type:     r.type        || '',
+	type:     normType,
 	date:     date,
 	time:     time,
 	location: r.project     || '',
@@ -4700,7 +4703,7 @@ async function loadHRHome(){
 	} else {
 	  el.innerHTML = '';
 	  mine.forEach(r => {
-		const isIn = r.type === 'Check-In';
+		const isIn = r.type === 'Check-In'; // normAttRow guarantees this casing
 		const row = document.createElement('div');
 		row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f3f4f6;';
 		row.innerHTML =
@@ -4755,13 +4758,18 @@ async function loadMyKPIs(){
   // ── Count real check-ins from Emp-atten ──
   try{
 	const rows = await sbGetMyAttendance((currentUser.name||''));
-	const mine = rows;
+	// Filter to current month only
+	var now = new Date();
+	var monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+	const mine = rows.filter(function(r){
+	  if(!r.raw || !r.raw.submitted_at) return true;
+	  return new Date(r.raw.submitted_at) >= monthStart;
+	});
 	const checkIns  = mine.filter(r => r.type === 'Check-In').length;
-	const checkOuts = mine.filter(r => r.type === 'Check-Out').length;
 	const dEl = document.getElementById('hr-kpi-days');
 	const hEl = document.getElementById('hr-kpi-hours');
 	if(dEl) dEl.innerText = checkIns;
-	if(hEl) hEl.innerText = (checkIns * 8) + 'h'; // approx 8h per shift
+	if(hEl) hEl.innerText = (checkIns * 8) + 'h';
   } catch(e){
 	const dEl = document.getElementById('hr-kpi-days');
 	const hEl = document.getElementById('hr-kpi-hours');
@@ -4769,14 +4777,22 @@ async function loadMyKPIs(){
 	if(hEl) hEl.innerText = '0h';
   }
 
-  // ── Salary from operix_salaries (Supabase) ──
+  // ── Salary from operix_shifts (most reliable — set by admin per employee) ──
   try{
-    var firstName1 = name.split(/[\s']+/)[0];
-    var salRows1   = await sbFetch('operix_salaries?select=employee_name,amount&order=created_at.desc', {method:'GET'}).catch(function(){return[];});
-    var mySal1 = (salRows1||[]).find(function(r){ return (r.employee_name||'').toLowerCase().includes(firstName1); });
-    if(mySal1){
-      var salEl = document.getElementById('hr-kpi-salary');
-      if(salEl) salEl.innerText = Number(mySal1.amount||0).toLocaleString();
+    var shiftName = currentUser.name || '';
+    var shiftRows = await sbFetch(
+      'operix_shifts?employee_name=eq.' + encodeURIComponent(shiftName) + '&select=monthly_salary&limit=1',
+      {method:'GET'}
+    ).catch(function(){ return []; });
+    var salEl = document.getElementById('hr-kpi-salary');
+    if(Array.isArray(shiftRows) && shiftRows.length && shiftRows[0].monthly_salary){
+      if(salEl) salEl.innerText = Number(shiftRows[0].monthly_salary||0).toLocaleString();
+    } else {
+      // Fallback: operix_salaries fuzzy match
+      var firstName1 = name.split(/[\s']+/)[0];
+      var salRows1 = await sbFetch('operix_salaries?select=employee_name,amount&order=created_at.desc', {method:'GET'}).catch(function(){return[];});
+      var mySal1 = (salRows1||[]).find(function(r){ return (r.employee_name||'').toLowerCase().includes(firstName1); });
+      if(mySal1 && salEl) salEl.innerText = Number(mySal1.amount||0).toLocaleString();
     }
   } catch(e){}
 }
@@ -4799,7 +4815,7 @@ async function loadMyAttendance(){
 	  const time    = r.time || r[5] || '';
 	  const loc     = r.location || r[3] || '';
 	  const dist    = r.distance || r[4] || '';
-	  const isIn = type === 'Check-In' || type.toLowerCase().includes('in');
+	  const isIn = type === 'Check-In'; // normAttRow already normalizes this
 	  const div = document.createElement('div');
 	  div.style.cssText = 'background:#fff;border:1px solid #e8e7f0;border-radius:12px;padding:12px;margin-bottom:7px;box-shadow:0 1px 2px rgba(0,0,0,.04);border-left:3px solid ' + (isIn?'var(--green)':'var(--red)') + ';';
 	  div.innerHTML =
@@ -4824,25 +4840,29 @@ async function loadMyAttendance(){
 
 // ── REQUESTS TAB ─────────────────────────────────────────────
 async function sendRequest(){
-  const d   = document.getElementById('req-details').value;
+  const d   = (document.getElementById('req-details').value || '').trim();
   if(!d) return alert('Please write details');
   const btn = document.getElementById('req-btn');
   btn.innerText = 'Sending…'; btn.disabled = true;
   const u = currentUser._hr || currentUser;
-  const f = document.getElementById('req-file');
-  let fData = f.files[0] ? await compressImg(f.files[0]) : null;
   try{
-	await fetch(HR_API, {method:'POST', body:JSON.stringify({
-	  action:'submit_request', name:u.name,
-	  type:document.getElementById('req-type').value,
-	  details:d, fileData:fData
-	})});
-	alert('Request submitted');
-	document.getElementById('req-details').value = '';
-	document.getElementById('req-file').value = '';
-	loadMyRequests();
+    await sbFetch('operix_requests', {
+      method: 'POST',
+      body: JSON.stringify({
+        employee_name:  u.name  || '',
+        employee_email: (u.email || currentUser.email || '').toLowerCase(),
+        type:           document.getElementById('req-type').value || 'General',
+        details:        d,
+        status:         'Pending',
+        created_at:     new Date().toISOString()
+      })
+    });
+    alert('Request submitted successfully');
+    document.getElementById('req-details').value = '';
+    try{ document.getElementById('req-file').value = ''; } catch(e){}
+    loadMyRequests();
   } catch(e){
-	alert('Error sending request');
+    alert('Error sending request: ' + e.message);
   }
   btn.disabled = false; btn.innerText = 'Submit Request';
 }
@@ -4852,16 +4872,25 @@ async function loadMyRequests(){
   if(!el) return;
   el.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px;">Loading…</div>';
   try{
-	const res  = await fetch(HR_API, {method:'POST', body:JSON.stringify({action:'get_requests'})});
-	const data = await res.json();
-	const name  = (currentUser.name||'').toLowerCase();
-	const mine  = (data||[]).filter(r => (r.name||'').toLowerCase() === name);
+    const myEmail = (currentUser.email || '').toLowerCase();
+    const myName  = (currentUser.name  || '').toLowerCase();
+    // Fetch by email first, fallback to name match
+    var rows = await sbFetch(
+      'operix_requests?employee_email=eq.' + encodeURIComponent(myEmail) + '&order=created_at.desc',
+      {method:'GET'}
+    ).catch(function(){ return []; });
+    // Also try by name if email match returns nothing (legacy data)
+    if (!Array.isArray(rows) || !rows.length) {
+      var allRows = await sbFetch('operix_requests?order=created_at.desc&limit=200', {method:'GET'}).catch(function(){ return []; });
+      rows = (allRows||[]).filter(function(r){ return (r.employee_name||'').toLowerCase() === myName; });
+    }
+    const mine = Array.isArray(rows) ? rows : [];
 	if(!mine.length){
 	  el.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px;">No requests yet</div>';
 	  return;
 	}
 	el.innerHTML = '';
-	mine.reverse().forEach(r => {
+	mine.forEach(r => {
 	  const statusColor = r.status==='Approved' ? 'var(--green)' : r.status==='Rejected' ? 'var(--red)' : 'var(--amber)';
 	  const statusLabel = r.status==='Approved' ? 'Approved' : r.status==='Rejected' ? 'Rejected' : 'Pending';
 	  const div = document.createElement('div');
@@ -4974,9 +5003,9 @@ async function loadAdminReqs(){
   if(!el) return;
   el.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:16px;">Loading…</div>';
   try{
-	const res  = await fetch(HR_API, {method:'POST', body:JSON.stringify({action:'get_requests'})});
-	const data = await res.json();
-	const pending = (data||[]).filter(function(r){ return r.status === 'Pending' || !r.status; });
+    var allReqs = await sbFetch('operix_requests?order=created_at.desc', {method:'GET'}).catch(function(){ return []; });
+    const data = Array.isArray(allReqs) ? allReqs : [];
+    const pending = data.filter(function(r){ return r.status === 'Pending' || !r.status; });
 	if(!pending.length){
 	  el.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:24px;">No pending requests</div>';
 	  return;
@@ -4993,7 +5022,7 @@ async function loadAdminReqs(){
 	pending.slice().reverse().forEach(function(r){
 	  var isSalaryInquiry = r.type === 'Salary Inquiry';
 	  var empSal = isSalaryInquiry ? salaries.find(function(s){
-		return (s['Employee Name']||'').toLowerCase().includes((r.name||'').toLowerCase().split(' ')[0]);
+		return (s['Employee Name']||'').toLowerCase().includes(empName.toLowerCase().split(' ')[0]);
 	  }) : null;
 	  var salInfo = empSal
 		? 'Amount: ' + Number(empSal['Amount (SAR)']||0).toLocaleString() + ' SAR · ' + (empSal['Payment Type']||'') + ' · ' + (empSal['Status']||'Pending')
@@ -5001,13 +5030,14 @@ async function loadAdminReqs(){
 
 	  var div = document.createElement('div');
 	  div.style.cssText = 'background:#fff;border:1px solid #e8e7f0;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04);';
-	  var rid = r.id;
+	  var rid = r.id;  // UUID from Supabase
+	  var empName = r.employee_name || r.name || '';
 
 	  // Build card
 	  div.innerHTML =
 		'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">' +
 		  '<div>' +
-			'<div style="font-size:14px;font-weight:800;color:#1a1a2e;">' + (r.name||'') + '</div>' +
+			'<div style="font-size:14px;font-weight:800;color:#1a1a2e;">' + (r.employee_name||r.name||'') + '</div>' +
 			'<div style="font-size:11px;font-weight:700;color:#6c63ff;margin-top:3px;background:#f0efff;display:inline-block;padding:2px 9px;border-radius:20px;">' + (r.type||'') + '</div>' +
 		  '</div>' +
 		  '<span style="font-size:10px;font-weight:700;color:#f59e0b;background:#fffbeb;padding:3px 9px;border-radius:20px;border:1px solid #fde68a;">Pending</span>' +
@@ -5049,20 +5079,15 @@ async function approveReqWithReply(rid){
   // Try to generate salary report if no reply typed
   if(!reply){
 	try{
-	  // Get all pending requests to find this one
-	  var res = await fetch(HR_API, {method:'POST', body:JSON.stringify({action:'get_requests'})});
-	  var data = await res.json();
-	  var req  = (data||[]).find(function(r){ return r.id == rid; });
+	  // Get request from Supabase by UUID
+	  var reqRows = await sbFetch('operix_requests?id=eq.' + rid + '&limit=1', {method:'GET'}).catch(function(){ return []; });
+	  var req = Array.isArray(reqRows) && reqRows.length ? reqRows[0] : null;
 
 	  if(req && req.type === 'Salary Inquiry'){
-		var empName = req.name || '';
+		var empName = req.employee_name || req.name || '';
 
-		// Get attendance
-		var aRes = await fetch(HR_API, {method:'POST', body:JSON.stringify({action:'get_attendance'})});
-		var aData = await aRes.json();
-		var records = (Array.isArray(aData)?aData:(aData.data||[])).filter(function(r){
-		  return (r.name||'').toLowerCase() === empName.toLowerCase();
-		});
+		// Get attendance from Supabase
+		var records = await sbGetMyAttendance(empName).catch(function(){ return []; });
 
 		// Get salary from operix_salaries
 		var salary = 0;
@@ -5110,11 +5135,13 @@ async function rejectReqWithReply(rid){
 
 async function updateHrReqFull(id, status, reply){
   try{
-	await fetch(HR_API, {method:'POST', body:JSON.stringify({
-	  action:'update_status', id:id, newStatus:status, reply:reply||''
-	})});
-	loadAdminReqs();
-  } catch(e){ alert('Error updating request'); }
+    await sbFetch('operix_requests?id=eq.' + id, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: status, reply: reply||'' })
+    });
+    loadAdminReqs();
+  } catch(e){ alert('Error updating request: ' + e.message); }
 }
 
 function updateHrReqEl(btn){
@@ -5124,7 +5151,11 @@ function updateHrReqEl(btn){
 }
 
 async function updateHrReq(id, s){
-  await fetch(HR_API, {method:'POST', body:JSON.stringify({action:'update_status', id:id, newStatus:s})});
+  await sbFetch('operix_requests?id=eq.' + id, {
+    method: 'PATCH',
+    headers: { 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ status: s })
+  });
   loadAdminReqs();
 }
 
