@@ -4765,11 +4765,11 @@ async function loadMyKPIs(){
 	  if(!r.raw || !r.raw.submitted_at) return true;
 	  return new Date(r.raw.submitted_at) >= monthStart;
 	});
-	const checkIns  = mine.filter(r => r.type === 'Check-In').length;
+	// Count unique days with a Check-In (days worked this month)
+	var workedDays = new Set(mine.filter(function(r){ return r.type==='Check-In'; }).map(function(r){ return r.date; })).size;
 	const dEl = document.getElementById('hr-kpi-days');
-	const hEl = document.getElementById('hr-kpi-hours');
-	if(dEl) dEl.innerText = checkIns;
-	if(hEl) hEl.innerText = (checkIns * 8) + 'h';
+	if(dEl) dEl.innerText = workedDays;
+	// Hours are calculated by loadAttendanceChart using real session pairing — don't overwrite here
   } catch(e){
 	const dEl = document.getElementById('hr-kpi-days');
 	const hEl = document.getElementById('hr-kpi-hours');
@@ -5057,8 +5057,8 @@ async function loadAdminReqs(){
 			' style="width:100%;padding:9px 12px;border:1.5px solid #e8e7f0;border-radius:8px;font-size:12px;color:#374151;font-family:Plus Jakarta Sans,sans-serif;resize:vertical;min-height:64px;outline:none;box-sizing:border-box;"></textarea>' +
 		'</div>' +
 		'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
-		  '<button onclick="approveReqWithReply(' + rid + ')" style="padding:10px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> Approve & Send</button>' +
-		  '<button onclick="rejectReqWithReply(' + rid + ')" style="padding:10px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Reject</button>' +
+		  '<button onclick="approveReqWithReply(\'' + rid + '\')" style="padding:10px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> Approve & Send</button>' +
+		  '<button onclick="rejectReqWithReply(\'' + rid + '\')" style="padding:10px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Reject</button>' +
 		'</div>';
 
 	  el.appendChild(div);
@@ -5089,12 +5089,19 @@ async function approveReqWithReply(rid){
 		// Get attendance from Supabase
 		var records = await sbGetMyAttendance(empName).catch(function(){ return []; });
 
-		// Get salary from operix_salaries
+		// Get salary from operix_shifts (primary) then operix_salaries (fallback)
 		var salary = 0;
 		try{
-		  var salRaw3 = await sbFetch('operix_salaries?select=employee_name,amount&order=created_at.desc', {method:'GET'}).catch(function(){return[];});
-		  var sRec3   = (salRaw3||[]).find(function(r){ return (r.employee_name||'').toLowerCase().includes(empName.toLowerCase().split(' ')[0]); });
-		  if(sRec3) salary = parseFloat(sRec3.amount||0);
+		  var shiftForSal = await sbFetch('operix_shifts?employee_name=eq.' + encodeURIComponent(empName) + '&select=monthly_salary&limit=1', {method:'GET'}).catch(function(){return[];});
+		  if(Array.isArray(shiftForSal) && shiftForSal.length && shiftForSal[0].monthly_salary){
+		    salary = parseFloat(shiftForSal[0].monthly_salary||0);
+		  }
+		  if(!salary){
+		    // Fallback: operix_salaries table
+		    var salRaw3 = await sbFetch('operix_salaries?select=employee_name,amount&order=created_at.desc', {method:'GET'}).catch(function(){return[];});
+		    var sRec3   = (salRaw3||[]).find(function(r){ return (r.employee_name||'').toLowerCase() === empName.toLowerCase(); });
+		    if(sRec3) salary = parseFloat(sRec3.amount||0);
+		  }
 		}catch(e){}
 
 		// Get employee shift
@@ -6196,128 +6203,179 @@ var LATE_DEDUCTION_PER_HOUR = 30;  // SAR per hour late
 function calcSalaryReport(records, shift, baseSalary){
   if(!baseSalary || !shift) return null;
 
-  var workDays = (shift.workDays||'1,2,3,4,5').split(',').map(Number);
+  // Parse work days (0=Sun,1=Mon,...,6=Sat)
+  var workDayNums = (shift.workDays || shift.work_days || '1,2,3,4,5').split(',').map(Number);
   var deductPerHour = LATE_DEDUCTION_PER_HOUR;
 
-  // Parse shift start + end → compute real shift duration
-  var shiftStartMins = 0;
-  var cleanStart = shift.cleanStart || shift.shiftStart || shift.shift_start || '';
-  var cleanEnd   = shift.shiftEnd   || shift.shift_end  || '';
-  if(cleanStart){
-	var sm = cleanStart.match(/(\d{1,2}):(\d{2})/);
-	if(sm) shiftStartMins = parseInt(sm[1])*60 + parseInt(sm[2]||0);
-  }
-  var shiftEndMins = 0;
-  if(cleanEnd){
-	var em = cleanEnd.match(/(\d{1,2}):(\d{2})/);
-	if(em) shiftEndMins = parseInt(em[1])*60 + parseInt(em[2]||0);
-  }
-  // Handle overnight shifts (e.g. 18:00 → 02:00)
+  // Parse shift start/end times
+  var cleanStart = (shift.cleanStart || shift.shiftStart || shift.shift_start || '').toString().trim();
+  var cleanEnd   = (shift.shiftEnd   || shift.shift_end  || '').toString().trim();
+  var shiftStartMins = 0, shiftEndMins = 0;
+  var smatch = cleanStart.match(/(\d{1,2}):(\d{2})/);
+  if(smatch) shiftStartMins = parseInt(smatch[1])*60 + parseInt(smatch[2]||0);
+  var ematch = cleanEnd.match(/(\d{1,2}):(\d{2})/);
+  if(ematch) shiftEndMins = parseInt(ematch[1])*60 + parseInt(ematch[2]||0);
+  // Shift duration in minutes (handles overnight)
   var shiftDurMins = shiftEndMins > shiftStartMins
-	? shiftEndMins - shiftStartMins
-	: (shiftEndMins + 1440) - shiftStartMins;
-  if(!shiftDurMins || shiftDurMins <= 0) shiftDurMins = shift.shiftDurMins || 480;
+    ? shiftEndMins - shiftStartMins
+    : shiftEndMins > 0 ? (shiftEndMins + 1440) - shiftStartMins : (shift.shiftDurMins || 480);
+  if(shiftDurMins <= 0) shiftDurMins = 480; // fallback 8h
 
-  // Group records by date
-  var byDate = {};
-  records.forEach(function(r){
-	if(!r.date) return;
-	if(!byDate[r.date]) byDate[r.date] = [];
-	byDate[r.date].push(r);
-  });
-
-  var totalDaysWorked = 0;
-  var totalMinutesWorked = 0;
-  var totalLateMinutes = 0;
-  var totalShortMinutes = 0;  // worked less than shift duration
-  var lateDetails = [];
-  var shortDetails = [];
-
-  Object.keys(byDate).forEach(function(date){
-	var dayRecs = byDate[date];
-	var checkIn  = dayRecs.find(function(r){ return r.type === 'Check-In'; });
-	var checkOut = dayRecs.find(function(r){ return r.type === 'Check-Out'; });
-	if(!checkIn) return;
-
-	totalDaysWorked++;
-
-	// Parse check-in time
-	var inDt  = parseAttDate(date, checkIn.time);
-	var outDt = checkOut ? parseAttDate(date, checkOut.time) : null;
-
-	// Late calculation
-	if(inDt){
-	  var actualInMins = inDt.getHours()*60 + inDt.getMinutes();
-	  var lateMins = actualInMins - shiftStartMins;
-	  if(lateMins > 15){ // grace period 15 mins
-		totalLateMinutes += lateMins;
-		var lh = Math.floor(lateMins/60), lm = lateMins%60;
-		lateDetails.push({
-		  date: date,
-		  lateMins: lateMins,
-		  lateStr: (lh>0?lh+'h ':'') + (lm>0?lm+'m':''),
-		  deduction: Math.round((lateMins/60) * deductPerHour)
-		});
-	  }
-	}
-
-	// Short hours calculation
-	if(inDt && outDt){
-	  var workedMins = Math.round((outDt - inDt) / 60000);
-	  totalMinutesWorked += workedMins;
-	  var shortMins = shiftDurMins - workedMins;
-	  if(shortMins > 30){ // only flag if > 30 mins short
-		totalShortMinutes += shortMins;
-		var sh2 = Math.floor(shortMins/60), sm2 = shortMins%60;
-		shortDetails.push({
-		  date: date,
-		  shortMins: shortMins,
-		  shortStr: (sh2>0?sh2+'h ':'') + (sm2>0?sm2+'m':''),
-		  deduction: Math.round((shortMins/60) * deductPerHour)
-		});
-	  }
-	}
-  });
-
-  // Working days this month
+  // ── Determine reporting month ─────────────────────────────
+  // Use the month of the records, or current month if no records
   var today = new Date();
-  var monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-  var totalWorkDaysInMonth = 0;
+  var reportYear  = today.getFullYear();
+  var reportMonth = today.getMonth(); // 0-indexed
+  if(records.length) {
+    // Use the most recent record's month
+    var latestDate = records.reduce(function(best, r) {
+      var d = r.raw && r.raw.submitted_at ? new Date(r.raw.submitted_at) : null;
+      return d && (!best || d > best) ? d : best;
+    }, null);
+    if(latestDate) { reportYear = latestDate.getFullYear(); reportMonth = latestDate.getMonth(); }
+  }
+  // Full month start/end (correct for 28/29/30/31 day months)
+  var monthStart = new Date(reportYear, reportMonth, 1);
+  var monthEnd   = new Date(reportYear, reportMonth + 1, 0); // last day of month
+  var daysInMonth = monthEnd.getDate(); // 28, 29, 30, or 31
+
+  // ── Count ALL scheduled work days in FULL month ───────────
+  // (Used for daily rate — stable regardless of when in month)
+  var totalWorkDaysFullMonth = 0;
   var d = new Date(monthStart);
-  while(d <= today){
-	if(workDays.indexOf(d.getDay()) !== -1) totalWorkDaysInMonth++;
-	d.setDate(d.getDate()+1);
+  while(d <= monthEnd) {
+    if(workDayNums.indexOf(d.getDay()) !== -1) totalWorkDaysFullMonth++;
+    d.setDate(d.getDate() + 1);
+  }
+  if(totalWorkDaysFullMonth === 0) totalWorkDaysFullMonth = 22; // safety fallback
+
+  // ── Count work days elapsed up to today (for absent calc) ─
+  var cutoff = today <= monthEnd ? today : monthEnd;
+  var elapsedWorkDays = 0;
+  d = new Date(monthStart);
+  while(d <= cutoff) {
+    if(workDayNums.indexOf(d.getDay()) !== -1) elapsedWorkDays++;
+    d.setDate(d.getDate() + 1);
   }
 
-  // Daily rate
-  var dailyRate = totalWorkDaysInMonth > 0 ? baseSalary / totalWorkDaysInMonth : baseSalary / 22;
-  var hourlyRate = dailyRate / (shiftDurMins/60);
+  // ── Daily rate (fixed for full month) ────────────────────
+  var dailyRate  = baseSalary / totalWorkDaysFullMonth;
+  var hourlyRate = dailyRate / (shiftDurMins / 60);
 
-  // Deductions
-  var lateDeduction  = Math.round((totalLateMinutes/60)  * deductPerHour);
-  var shortDeduction = Math.round((totalShortMinutes/60) * deductPerHour);
-  var totalDeduction = lateDeduction + shortDeduction;
+  // ── Filter records to THIS reporting month only ───────────
+  var monthRecords = records.filter(function(r) {
+    if(!r.raw || !r.raw.submitted_at) return false;
+    var rd = new Date(r.raw.submitted_at);
+    return rd.getFullYear() === reportYear && rd.getMonth() === reportMonth;
+  });
 
-  // Earned so far
-  var earned = Math.round(dailyRate * totalDaysWorked);
-  var netEarned = Math.max(0, earned - totalDeduction);
+  // ── Group by date ─────────────────────────────────────────
+  var byDate = {};
+  monthRecords.forEach(function(r) {
+    if(!r.date) return;
+    if(!byDate[r.date]) byDate[r.date] = [];
+    byDate[r.date].push(r);
+  });
+
+  var totalDaysWorked    = 0;
+  var totalMinutesWorked = 0;
+  var totalLateMinutes   = 0;
+  var totalShortMinutes  = 0;
+  var lateDetails        = [];
+  var shortDetails       = [];
+
+  Object.keys(byDate).forEach(function(date) {
+    var dayRecs  = byDate[date];
+    var checkIn  = dayRecs.find(function(r){ return r.type === 'Check-In'; });
+    var checkOut = dayRecs.find(function(r){ return r.type === 'Check-Out'; });
+    if(!checkIn) return;
+
+    totalDaysWorked++;
+
+    var inDt  = parseAttDate(date, checkIn.time);
+    var outDt = checkOut ? parseAttDate(date, checkOut.time) : null;
+
+    // Late arrival (grace period 15 min)
+    if(inDt) {
+      var actualInMins = inDt.getHours()*60 + inDt.getMinutes();
+      var lateMins = actualInMins - shiftStartMins;
+      if(lateMins > 15) {
+        totalLateMinutes += lateMins;
+        var lh = Math.floor(lateMins/60), lm = lateMins%60;
+        lateDetails.push({
+          date: date,
+          lateMins: lateMins,
+          lateStr: (lh>0?lh+'h ':'')+(lm>0?lm+'m':''),
+          deduction: Math.round((lateMins/60) * deductPerHour)
+        });
+      }
+    }
+
+    // Short hours (only if checked out, ignore active sessions)
+    if(inDt && outDt) {
+      var workedMins = Math.max(0, Math.round((outDt - inDt) / 60000));
+      totalMinutesWorked += workedMins;
+      var shortMins = shiftDurMins - workedMins;
+      if(shortMins > 30) { // only flag if >30 min short
+        totalShortMinutes += shortMins;
+        var sh = Math.floor(shortMins/60), sm = shortMins%60;
+        shortDetails.push({
+          date: date,
+          shortMins: shortMins,
+          shortStr: (sh>0?sh+'h ':'')+(sm>0?sm+'m':''),
+          deduction: Math.round((shortMins/60) * deductPerHour)
+        });
+      }
+    }
+  });
+
+  // ── Absent days (work days with no check-in, elapsed only) ─
+  var absentDays = Math.max(0, elapsedWorkDays - totalDaysWorked);
+
+  // ── Deductions ───────────────────────────────────────────
+  var lateDeduction   = Math.round((totalLateMinutes/60)  * deductPerHour);
+  var shortDeduction  = Math.round((totalShortMinutes/60) * deductPerHour);
+  var absentDeduction = Math.round(absentDays * dailyRate);
+  var totalDeduction  = lateDeduction + shortDeduction + absentDeduction;
+
+  // ── Net salary ────────────────────────────────────────────
+  // Policy: days off are paid rest days (included in base salary)
+  // Net = baseSalary - deductions for absences, lateness, short hours
+  // Prorated if mid-month: earned = daysWorked * dailyRate
+  var isFullMonth = today >= monthEnd; // month already complete?
+  var earned      = isFullMonth
+    ? baseSalary  // full month done — base salary
+    : Math.round(dailyRate * totalDaysWorked); // mid-month: prorated by worked days
+
+  // If end of month: net = base - deductions
+  // If mid-month: net = earned - deductions
+  var netEarned   = Math.max(0, (isFullMonth ? baseSalary : earned) - totalDeduction);
+  var projected   = Math.max(0, baseSalary - (lateDeduction + shortDeduction)); // projected end-of-month
+
+  var monthLabel = monthStart.toLocaleDateString('en-GB', {month:'long', year:'numeric'});
 
   return {
-	baseSalary:         baseSalary,
-	dailyRate:          Math.round(dailyRate),
-	hourlyRate:         Math.round(hourlyRate * 10) / 10,
-	totalDaysWorked:    totalDaysWorked,
-	totalWorkDaysMonth: totalWorkDaysInMonth,
-	totalHours:         Math.floor(totalMinutesWorked/60) + 'h ' + (totalMinutesWorked%60) + 'm',
-	lateDetails:        lateDetails,
-	shortDetails:       shortDetails,
-	lateDeduction:      lateDeduction,
-	shortDeduction:     shortDeduction,
-	totalDeduction:     totalDeduction,
-	earned:             earned,
-	netEarned:          netEarned,
-	totalLateMinutes:   totalLateMinutes,
-	totalShortMinutes:  totalShortMinutes
+    baseSalary:           baseSalary,
+    dailyRate:            Math.round(dailyRate * 100) / 100,
+    hourlyRate:           Math.round(hourlyRate * 100) / 100,
+    daysInMonth:          daysInMonth,
+    totalWorkDaysMonth:   totalWorkDaysFullMonth,
+    elapsedWorkDays:      elapsedWorkDays,
+    totalDaysWorked:      totalDaysWorked,
+    absentDays:           absentDays,
+    totalMinutesWorked:   totalMinutesWorked,
+    totalHours:           Math.floor(totalMinutesWorked/60) + 'h ' + (totalMinutesWorked%60) + 'm',
+    lateDetails:          lateDetails,
+    shortDetails:         shortDetails,
+    lateDeduction:        lateDeduction,
+    shortDeduction:       shortDeduction,
+    absentDeduction:      absentDeduction,
+    totalDeduction:       totalDeduction,
+    earned:               earned,
+    netEarned:            netEarned,
+    projected:            projected,
+    isFullMonth:          isFullMonth,
+    monthLabel:           monthLabel
   };
 }
 
@@ -6327,34 +6385,53 @@ function calcSalaryReport(records, shift, baseSalary){
 function buildSalaryReplyText(empName, report, month){
   if(!report) return '';
   var lines = [];
+  var monthLabel = month || report.monthLabel || new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   lines.push('SALARY REPORT — ' + empName);
-  lines.push('Month: ' + (month||new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'})));
+  lines.push('Period: ' + monthLabel);
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   lines.push('');
-  lines.push('Base Salary: ' + report.baseSalary.toLocaleString() + ' SAR');
-  lines.push('Daily Rate: ' + report.dailyRate.toLocaleString() + ' SAR');
-  lines.push('Days Worked: ' + report.totalDaysWorked + ' / ' + report.totalWorkDaysMonth);
-  lines.push('Total Hours: ' + report.totalHours);
+  lines.push('BASE SALARY: ' + report.baseSalary.toLocaleString() + ' SAR/month');
+  lines.push('Daily Rate: ' + Math.round(report.dailyRate) + ' SAR/day');
+  lines.push('Hourly Rate: ' + report.hourlyRate + ' SAR/hr');
+  lines.push('');
+  lines.push('ATTENDANCE SUMMARY:');
+  lines.push('  Work days this month: ' + report.totalWorkDaysMonth + ' days (' + report.daysInMonth + '-day month)');
+  lines.push('  Work days elapsed: ' + report.elapsedWorkDays);
+  lines.push('  Days worked: ' + report.totalDaysWorked);
+  lines.push('  Absent days: ' + report.absentDays);
+  lines.push('  Total hours logged: ' + report.totalHours);
   lines.push('');
   if(report.lateDetails.length > 0){
-	lines.push('LATE ARRIVALS:');
-	report.lateDetails.forEach(function(l){
-	  lines.push(l.date + ': Late ' + l.lateStr + ' → −' + l.deduction + ' SAR');
-	});
-	lines.push('Total late deduction: −' + report.lateDeduction + ' SAR');
-	lines.push('');
+    lines.push('LATE ARRIVALS (' + report.lateDetails.length + ' times):');
+    report.lateDetails.forEach(function(l){
+      lines.push('  ' + l.date + ': ' + l.lateStr + ' late → −' + l.deduction + ' SAR');
+    });
+    lines.push('  Subtotal: −' + report.lateDeduction.toLocaleString() + ' SAR');
+    lines.push('');
   }
   if(report.shortDetails.length > 0){
-	lines.push('SHORT HOURS:');
-	report.shortDetails.forEach(function(s){
-	  lines.push(s.date + ': Short ' + s.shortStr + ' → −' + s.deduction + ' SAR');
-	});
-	lines.push('Total short-hours deduction: −' + report.shortDeduction + ' SAR');
-	lines.push('');
+    lines.push('SHORT HOURS (' + report.shortDetails.length + ' days):');
+    report.shortDetails.forEach(function(s){
+      lines.push('  ' + s.date + ': ' + s.shortStr + ' short → −' + s.deduction + ' SAR');
+    });
+    lines.push('  Subtotal: −' + report.shortDeduction.toLocaleString() + ' SAR');
+    lines.push('');
   }
-  lines.push('SUMMARY:');
-  lines.push('Earned (days worked): ' + report.earned.toLocaleString() + ' SAR');
-  lines.push('Total Deductions: −' + report.totalDeduction.toLocaleString() + ' SAR');
-  lines.push('NET SALARY THIS MONTH: ' + report.netEarned.toLocaleString() + ' SAR');
+  if(report.absentDays > 0){
+    lines.push('ABSENT DEDUCTION: ' + report.absentDays + ' days × ' + Math.round(report.dailyRate) + ' SAR = −' + report.absentDeduction.toLocaleString() + ' SAR');
+    lines.push('');
+  }
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  lines.push('DEDUCTIONS TOTAL: −' + report.totalDeduction.toLocaleString() + ' SAR');
+  if(report.isFullMonth){
+    lines.push('NET SALARY: ' + report.netEarned.toLocaleString() + ' SAR');
+  } else {
+    lines.push('EARNED TO DATE: ' + report.earned.toLocaleString() + ' SAR');
+    lines.push('NET TO DATE: ' + report.netEarned.toLocaleString() + ' SAR');
+    lines.push('PROJECTED END-OF-MONTH: ' + report.projected.toLocaleString() + ' SAR');
+  }
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   return lines.join('\n');
 }
 
@@ -6386,7 +6463,7 @@ async function updateShiftCardSalary(){
 	var dedRow  = document.getElementById('hr-shift-deductions-row');
 	var dedDet  = document.getElementById('hr-shift-deductions-detail');
 
-	if(earnEl) earnEl.innerText = report.netEarned.toLocaleString();
+	if(earnEl) earnEl.innerText = report.netEarned.toLocaleString() + (report.isFullMonth ? '' : ' (so far)');
 	if(salRow)  salRow.style.display  = 'flex';
 
 	if(report.totalDeduction > 0 && dedRow && dedDet){
