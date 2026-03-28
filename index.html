@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="OPERIX">
 <link rel="manifest" id="pwa-manifest">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
@@ -1689,6 +1690,20 @@ textarea.field { resize: none; line-height: 1.6; }
 						   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
 						 </div>
 				   </div>
+					   <div class="workspace-card" id="ws-analytics-card" onclick="openWorkspace('analytics')" style="display:none;border-color:var(--blue-border);">
+					 <div style="display:flex;align-items:center;gap:15px;">
+					   <div style="width:50px;height:50px;border-radius:14px;background:var(--blue-bg);border:1.5px solid var(--blue-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><polyline points="1 4 5 4 9 8"/></svg></div>
+					   <div>
+						 <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px;">Analytics &amp; Reports</div>
+						 <div style="font-size:11px;color:var(--text3);">Charts · Tables · Export</div>
+					   </div>
+					 </div>
+					 <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
+					   <span style="font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.06em;">ADMIN ONLY</span>
+					   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+					 </div>
+					   </div>
+				   </div>
 				 </div>
 		   </div>
   </section>
@@ -2096,29 +2111,7 @@ textarea.field { resize: none; line-height: 1.6; }
 
 		<!-- ACCOUNTS PANEL -->
 		<div id="admin-panel-accounts" class="acc-panel active" style="padding-bottom:40px;">
-		  <div class="sec-hdr"><h2>System Accounts</h2><div class="line"></div>
-	  <!-- Entertainment KPIs for Admin -->
-	  <div id="admin-ent-kpi-section" style="background:linear-gradient(135deg,var(--red-bg),var(--gold-bg));border:1.5px solid var(--red-border);border-radius:14px;padding:14px 16px;margin-bottom:16px;">
-		<div style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:800;color:var(--text);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px;">
-		  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-		  Entertainment Jobs
-		</div>
-		<div style="display:flex;gap:10px;">
-		  <div style="flex:1;text-align:center;background:var(--glass);border:1px solid var(--glass-border);border-radius:9px;padding:10px 6px;backdrop-filter:blur(8px);">
-			<div id="admin-kpi-ent-jobs" style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:800;color:var(--blue);">—</div>
-			<div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.08em;">Total Jobs</div>
-		  </div>
-		  <div style="flex:1;text-align:center;background:var(--glass);border:1px solid var(--glass-border);border-radius:9px;padding:10px 6px;backdrop-filter:blur(8px);">
-			<div id="admin-kpi-ent-units" style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:800;color:var(--green);">—</div>
-			<div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.08em;">Persons Served</div>
-		  </div>
-		  <div style="flex:1;text-align:center;background:var(--glass);border:1px solid var(--glass-border);border-radius:9px;padding:10px 6px;backdrop-filter:blur(8px);">
-			<div id="admin-kpi-ent-rev" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--gold);">—</div>
-			<div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.08em;">Revenue</div>
-		  </div>
-		</div>
-	  </div>
-				<button onclick="syncAccountsToEmp()" style="padding:6px 10px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:var(--r3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:4px;margin-right:5px;">
+		  <div class="sec-hdr"><h2>System Accounts</h2><div class="line"></div><button onclick="syncAccountsToEmp()" style="padding:6px 10px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:var(--r3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:4px;margin-right:5px;">
 				  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>Sync→Staff
 				</button>
 				<button onclick="openAdminModal('account')" class="btn-dark" style="padding:6px 11px;font-size:11px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add</button>
@@ -2179,6 +2172,142 @@ textarea.field { resize: none; line-height: 1.6; }
 				<button class="exp-btn" onclick="exportStaffXLSX()" style="border-color:var(--blue-border);color:var(--blue);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Excel</button>
 		  </div>
 		</div>
+  </div>
+</section>
+
+<!-- ── ANALYTICS & REPORTS WORKSPACE ── -->
+<section id="analytics-workspace" class="screen hidden" style="min-height:100vh;background:var(--bg);padding-bottom:40px;">
+  <div class="app-header" style="position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);">
+	<button onclick="openWorkspace(null)" class="back-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Workspaces</button>
+	<div style="display:flex;align-items:center;gap:10px;">
+	  <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);">Analytics &amp; Reports</div>
+	  <span class="badge badge-admin2" style="font-size:9px;">Admin Only</span>
+	</div>
+	<div style="display:flex;gap:8px;">
+	  <button onclick="analyticsExportImage()" title="Export Chart as Image" style="padding:7px 12px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r3);font-size:11px;font-weight:700;color:var(--text3);cursor:pointer;display:flex;align-items:center;gap:5px;">
+		<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>PNG
+	  </button>
+	  <button onclick="analyticsExportExcel()" title="Export Data as Excel" style="padding:7px 12px;background:var(--green-bg);border:1.5px solid var(--green-border);border-radius:var(--r3);font-size:11px;font-weight:700;color:var(--green);cursor:pointer;display:flex;align-items:center;gap:5px;">
+		<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Excel
+	  </button>
+	</div>
+  </div>
+
+  <div style="max-width:900px;margin:0 auto;padding:18px;">
+
+	<!-- ── Filters Row ── -->
+	<div style="background:var(--surface);border:1.5px solid var(--border2);border-radius:16px;padding:16px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+	  <!-- Board selector -->
+	  <div style="flex:1;min-width:150px;">
+		<label style="display:block;font-size:10px;font-weight:800;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Data Source</label>
+		<select id="analytics-board" onchange="analyticsOnBoardChange()" style="width:100%;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r3);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;">
+		<option value="operations">Operations (Valets)</option>
+		  <option value="hr">HR & Attendance</option>
+		  <option value="tasks">Tasks</option>
+		  <option value="accounting">Accounting (Revenue)</option>
+		  <option value="expenses">Project Costs (Expenses)</option>
+		  <option value="salaries">Project Costs (Salaries)</option>
+		  <option value="entertainment">Entertainment</option>
+		  <option value="projects">Projects</option>
+		</select>
+	  </div>
+	  <!-- Metric selector -->
+	  <div style="flex:1;min-width:150px;">
+		<label style="display:block;font-size:10px;font-weight:800;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Metric</label>
+		<select id="analytics-metric" style="width:100%;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r3);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;">
+		  <option value="count_by_type">Count by Type</option>
+		</select>
+	  </div>
+	  <!-- Chart type -->
+	  <div style="flex:1;min-width:140px;">
+		<label style="display:block;font-size:10px;font-weight:800;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Chart Type</label>
+		<select id="analytics-chart-type" onchange="analyticsRender()" style="width:100%;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r3);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;">
+		  <option value="bar">Bar</option>
+		  <option value="line">Line</option>
+		  <option value="pie">Pie</option>
+		  <option value="doughnut">Doughnut</option>
+		</select>
+	  </div>
+	  <!-- Date from -->
+	  <div style="flex:1;min-width:130px;">
+		<label style="display:block;font-size:10px;font-weight:800;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">From</label>
+		<input type="date" id="analytics-from" style="width:100%;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r3);font-size:13px;font-weight:600;color:var(--text);">
+	  </div>
+	  <!-- Date to -->
+	  <div style="flex:1;min-width:130px;">
+		<label style="display:block;font-size:10px;font-weight:800;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">To</label>
+		<input type="date" id="analytics-to" style="width:100%;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r3);font-size:13px;font-weight:600;color:var(--text);">
+	  </div>
+	  <!-- Apply -->
+	  <button onclick="analyticsLoad()" style="padding:10px 20px;background:var(--text);color:var(--bg);border:none;border-radius:var(--r3);font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;">Generate Report</button>
+	</div>
+
+	<!-- ── KPI Summary Strip ── -->
+	<div id="analytics-kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;">
+	  <div style="background:var(--glass);border:1.5px solid var(--glass-border);border-radius:12px;padding:14px;text-align:center;backdrop-filter:blur(12px);">
+		<div id="analytics-kpi-1-val" style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:var(--blue);">—</div>
+		<div id="analytics-kpi-1-lbl" style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.07em;margin-top:3px;">TOTAL RECORDS</div>
+	  </div>
+	  <div style="background:var(--glass);border:1.5px solid var(--glass-border);border-radius:12px;padding:14px;text-align:center;backdrop-filter:blur(12px);">
+		<div id="analytics-kpi-2-val" style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:var(--green);">—</div>
+		<div id="analytics-kpi-2-lbl" style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.07em;margin-top:3px;">THIS PERIOD</div>
+	  </div>
+	  <div style="background:var(--glass);border:1.5px solid var(--glass-border);border-radius:12px;padding:14px;text-align:center;backdrop-filter:blur(12px);">
+		<div id="analytics-kpi-3-val" style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:var(--gold);">—</div>
+		<div id="analytics-kpi-3-lbl" style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.07em;margin-top:3px;">TOP CATEGORY</div>
+	  </div>
+	  <div style="background:var(--glass);border:1.5px solid var(--glass-border);border-radius:12px;padding:14px;text-align:center;backdrop-filter:blur(12px);">
+		<div id="analytics-kpi-4-val" style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:var(--red);">—</div>
+		<div id="analytics-kpi-4-lbl" style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.07em;margin-top:3px;">AVG / DAY</div>
+	  </div>
+	</div>
+
+	<!-- ── Chart Panel ── -->
+	<div id="analytics-chart-panel" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:16px;padding:20px;margin-bottom:18px;position:relative;">
+	  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+		<div id="analytics-chart-title" style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--text);">Select a board and click Generate Report</div>
+		<div style="display:flex;gap:6px;">
+		  <button onclick="document.getElementById('analytics-view-chart').click()" id="analytics-btn-chart" style="padding:5px 12px;background:var(--text);color:var(--bg);border:none;border-radius:var(--r3);font-size:11px;font-weight:700;cursor:pointer;">Chart</button>
+		  <button onclick="document.getElementById('analytics-view-table').click()" id="analytics-btn-table" style="padding:5px 12px;background:var(--surface2);color:var(--text3);border:1px solid var(--border2);border-radius:var(--r3);font-size:11px;font-weight:700;cursor:pointer;">Table</button>
+		</div>
+		<input type="radio" id="analytics-view-chart" name="analytics-view" value="chart" checked style="display:none;" onchange="analyticsToggleView()">
+		<input type="radio" id="analytics-view-table" name="analytics-view" value="table" style="display:none;" onchange="analyticsToggleView()">
+	  </div>
+
+	  <!-- Chart canvas -->
+	  <div id="analytics-chart-wrap" style="position:relative;height:320px;">
+		<div id="analytics-loading" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:13px;flex-direction:column;gap:12px;">
+		  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+		  Choose filters above and click <strong>Generate Report</strong>
+		</div>
+		<canvas id="analytics-canvas" style="display:none;max-height:320px;"></canvas>
+	  </div>
+
+	  <!-- Table -->
+	  <div id="analytics-table-wrap" style="display:none;overflow-x:auto;max-height:340px;overflow-y:auto;">
+		<table id="analytics-table" style="width:100%;border-collapse:collapse;font-size:12px;">
+		  <thead id="analytics-thead" style="position:sticky;top:0;background:var(--surface);z-index:1;"></thead>
+		  <tbody id="analytics-tbody"></tbody>
+		</table>
+	  </div>
+	</div>
+
+	<!-- ── Raw Data Table (always shown below chart) ── -->
+	<div style="background:var(--surface);border:1.5px solid var(--border2);border-radius:16px;overflow:hidden;">
+	  <div style="padding:14px 18px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;">
+		<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:var(--text);">Raw Data</div>
+		<div id="analytics-row-count" style="font-size:11px;color:var(--text3);font-weight:600;"></div>
+	  </div>
+	  <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
+		<table style="width:100%;border-collapse:collapse;font-size:11px;" id="analytics-raw-table">
+		  <thead id="analytics-raw-thead" style="position:sticky;top:0;background:var(--surface);z-index:1;"></thead>
+		  <tbody id="analytics-raw-tbody">
+			<tr><td colspan="99" style="text-align:center;padding:30px;color:var(--text3);">No data loaded yet</td></tr>
+		  </tbody>
+		</table>
+	  </div>
+	</div>
+
   </div>
 </section>
 
@@ -5052,6 +5181,7 @@ function showWorkspaceSelector(){
   document.getElementById('ws-role-hint').innerText = currentUser.role;
   document.getElementById('ws-accounting-card').style.display = isAdmin()?'block':'none';
   document.getElementById('ws-admin-card').style.display      = isAdmin()?'block':'none';
+  document.getElementById('ws-analytics-card').style.display  = isAdmin()?'block':'none';
   var isManagerOrAdmin = currentUser && (['admin','manager','system manager'].indexOf((currentUser.role||'').toLowerCase()) !== -1);
   document.getElementById('ws-perf-card').style.display = isManagerOrAdmin ? 'block' : 'none';
   refreshAllUserAvatars();
@@ -5072,6 +5202,7 @@ function showWorkspaceSelector(){
   if(isEnt || isArtist) {
 	document.getElementById('ws-accounting-card').style.display = 'none';
 	document.getElementById('ws-admin-card').style.display = 'none';
+document.getElementById('ws-analytics-card').style.display = 'none';
 	document.getElementById('ws-perf-card').style.display = 'none';
   }
 }
@@ -5094,6 +5225,10 @@ function openWorkspace(ws){
 		document.getElementById('workspace-selector').classList.add('hidden');
 		initMailBoard();
 		return;
+  }
+  else if(ws==='analytics'){
+document.getElementById('analytics-workspace').classList.remove('hidden');
+initAnalyticsBoard();
   }
   else if(ws==='entertainment'){
 		document.getElementById('entertainment-workspace').classList.remove('hidden');
@@ -11461,6 +11596,391 @@ openCompose = function() {
 		if (def) applySignatureToCompose(def.id);
   }, 80);
 };
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ANALYTICS & REPORTS BOARD
+// ═══════════════════════════════════════════════════════════════════════════
+
+var _analyticsChart = null;
+var _analyticsRawData = [];
+var _analyticsChartData = {labels:[], datasets:[]};
+
+// Board config: which Supabase table + date field + metric options
+var ANALYTICS_BOARDS = {
+  operations: {
+	table: 'operix_invoices',
+	dateField: 'date',
+	label: 'Operations (Valets)',
+	metrics: [
+	  {value:'count_by_type',   label:'Count by Service Type', group:'service_type'},
+	  {value:'count_by_status', label:'Count by Status',       group:'vehicle_status'},
+	  {value:'count_by_employee',label:'Count by Valet',       group:'valet_name'},
+	  {value:'count_by_day',    label:'Jobs per Day',           group:'_day'},
+	],
+	columns: ['op_id','valet_name','service_type','vehicle_status','plate_num','amount','date'],
+  },
+  hr: {
+	table: 'operix_attendance',
+	dateField: 'submitted_at',
+	label: 'HR & Attendance',
+	metrics: [
+	  {value:'count_by_employee',label:'Records by Employee',   group:'employee'},
+	  {value:'count_by_status',  label:'Records by Type',       group:'type'},
+	  {value:'count_by_project', label:'Records by Project',    group:'project'},
+	  {value:'count_by_day',     label:'Attendance per Day',    group:'_day'},
+	],
+	columns: ['employee','type','project','distance_m','submitted_at'],
+  },
+  tasks: {
+	table: 'operix_tasks',
+	dateField: 'created_at',
+	label: 'Tasks',
+	metrics: [
+	  {value:'count_by_status',  label:'Tasks by Status',       group:'status'},
+	  {value:'count_by_assignee',label:'Tasks by Assignee',     group:'assigned_to'},
+	  {value:'count_by_priority',label:'Tasks by Priority',     group:'priority'},
+	  {value:'count_by_day',     label:'Tasks Created per Day', group:'_day'},
+	],
+	columns: ['title','status','priority','assigned_to','due_date','created_at'],
+  },
+ accounting: {
+	table: 'operix_invoices',
+	dateField: 'date',
+	label: 'Accounting (Revenue)',
+	metrics: [
+	  {value:'amount_by_project',label:'Revenue by Project',     group:'project_name', sumField:'amount'},
+	  {value:'amount_by_status', label:'Revenue by Status',      group:'status', sumField:'amount'},
+	  {value:'count_by_day',     label:'Invoices per Day',      group:'_day'}
+	],
+	columns: ['op_id','valet_name','service_type','vehicle_status','amount','date'],
+  },
+  expenses: {
+	table: 'operix_expenses',
+	dateField: 'created_at',
+	label: 'Project Costs (Expenses)',
+	metrics: [
+	  {value:'cost_by_project',  label:'Total Costs by Project', group:'project', sumField:'amount'},
+	  {value:'cost_by_category', label:'Costs by Category',      group:'category', sumField:'amount'},
+	  {value:'count_by_project', label:'Number of Expenses by Project', group:'project'}
+	],
+	columns: ['project','category','description','amount','date','notes'],
+  },
+  salaries: {
+	table: 'operix_salaries',
+	dateField: 'created_at',
+	label: 'Project Costs (Salaries)',
+	metrics: [
+	  {value:'sal_by_project',   label:'Total Salaries by Project', group:'project', sumField:'amount'},
+	  {value:'sal_by_employee',  label:'Total Salaries by Employee', group:'employee_name', sumField:'amount'}
+	],
+	columns: ['project','employee_name','position','month','amount','status']
+  },
+  projects: {
+	table: 'operix_projects',
+	dateField: 'created_at',
+	label: 'Projects',
+	metrics: [
+	  {value:'count_by_services',label:'Projects by Services',  group:'services'},
+	  {value:'count_by_day',     label:'Projects Created/Day',  group:'_day'},
+	],
+	columns: ['name','services','created_at'],
+  },
+entertainment: {
+	table: 'operix_valets',
+	dateField: 'created_at',
+	label: 'Entertainment',
+	extraFilter: {project_type: 'entertainment'},
+	metrics: [
+	  {value:'count_by_type',    label:'Jobs by Service',       group:'job_type'},
+	  {value:'count_by_employee',label:'Jobs by Artist',        group:'employee_name'},
+	  {value:'count_by_project', label:'Jobs by Project',       group:'project_name'},
+	  {value:'count_by_day',     label:'Jobs per Day',          group:'_day'},
+	],
+	columns: ['id','employee_name','job_type','status','project_name','created_at'],
+  },
+};
+
+var ANALYTICS_PALETTE = [
+  '#6c63ff','#22c55e','#f59e0b','#ef4444','#3b82f6','#8b5cf6',
+  '#14b8a6','#f97316','#ec4899','#06b6d4','#84cc16','#a78bfa',
+];
+
+function initAnalyticsBoard(){
+  // Set default dates: last 90 days
+  var today = new Date();
+  var from  = new Date(today); from.setDate(from.getDate() - 89);
+  document.getElementById('analytics-from').value = from.toISOString().slice(0,10);
+  document.getElementById('analytics-to').value   = today.toISOString().slice(0,10);
+  analyticsOnBoardChange();
+}
+
+function analyticsOnBoardChange(){
+  var board  = document.getElementById('analytics-board').value;
+  var config = ANALYTICS_BOARDS[board];
+  var metricSel = document.getElementById('analytics-metric');
+  metricSel.innerHTML = config.metrics.map(m=>'<option value="'+m.value+'">'+m.label+'</option>').join('');
+}
+
+async function analyticsLoad(){
+  var board     = document.getElementById('analytics-board').value;
+  var metric    = document.getElementById('analytics-metric').value;
+  var fromDate  = document.getElementById('analytics-from').value;
+  var toDate    = document.getElementById('analytics-to').value;
+  var config    = ANALYTICS_BOARDS[board];
+  var metricCfg = config.metrics.find(m=>m.value===metric);
+
+  // Show loading state
+  document.getElementById('analytics-loading').style.display = 'flex';
+  document.getElementById('analytics-canvas').style.display  = 'none';
+  document.getElementById('analytics-row-count').textContent = 'Loading…';
+  ['analytics-kpi-1-val','analytics-kpi-2-val','analytics-kpi-3-val','analytics-kpi-4-val'].forEach(id=>{
+	document.getElementById(id).textContent = '…';
+  });
+
+  try {
+	// Fetch raw data from Supabase
+	var url = SUPABASE_URL + '/rest/v1/' + config.table
+	  + '?select=*'
+	  + (config.dateField && fromDate ? '&' + config.dateField + '=gte.' + fromDate : '')
+	  + (config.dateField && toDate   ? '&' + config.dateField + '=lte.' + toDate + 'T23:59:59' : '')
+	  + '&order=' + (config.dateField || 'id') + '.asc'
+	  + '&limit=5000';
+
+    var resp = await fetch(url, {
+	    headers: {
+		  'apikey': SUPABASE_ANON,
+		  'Authorization': 'Bearer ' + SUPABASE_ANON,
+		  'Accept': 'application/json',
+	    }
+	  });
+	  
+	var data = await resp.json();
+	if(!Array.isArray(data)) throw new Error(JSON.stringify(data));
+
+	// Apply any extra board-level filter
+	if(config.extraFilter){
+	  Object.entries(config.extraFilter).forEach(([k,v])=>{
+		data = data.filter(r=>(r[k]||'').toLowerCase()===v.toLowerCase());
+	  });
+	}
+
+	_analyticsRawData = data;
+
+	// Render raw data table
+	analyticsRenderRawTable(data, config.columns);
+
+	// Compute aggregated chart data
+	var grouped = {};
+	data.forEach(function(row){
+	  var key;
+	  if(metricCfg.group === '_day'){
+		var d = row[config.dateField] ? row[config.dateField].slice(0,10) : 'Unknown';
+		key = d;
+	  } else {
+		key = (row[metricCfg.group] != null && row[metricCfg.group] !== '') ? row[metricCfg.group] : 'Unknown';
+	  }
+	  if(!grouped[key]) grouped[key] = {count:0, sum:0};
+	  grouped[key].count++;
+	  if(metricCfg.sumField) grouped[key].sum += parseFloat(row[metricCfg.sumField]||0);
+	});
+
+	var labels = Object.keys(grouped).sort();
+	var values = labels.map(l=> metricCfg.sumField ? grouped[l].sum : grouped[l].count);
+
+	_analyticsChartData = {labels, datasets:[{
+	  label: metricCfg.label,
+	  data: values,
+	  backgroundColor: labels.map((_,i)=> ANALYTICS_PALETTE[i % ANALYTICS_PALETTE.length] + 'cc'),
+	  borderColor:     labels.map((_,i)=> ANALYTICS_PALETTE[i % ANALYTICS_PALETTE.length]),
+	  borderWidth: 2,
+	  borderRadius: 6,
+	}]};
+
+	// Update KPIs
+	var total = data.length;
+	var periodSum = values.reduce((a,b)=>a+b,0);
+	var topEntry = labels[values.indexOf(Math.max(...values))] || '—';
+	var dayCount = fromDate && toDate ? Math.max(1,(new Date(toDate)-new Date(fromDate))/86400000+1) : 1;
+	var avgPerDay = (total / dayCount).toFixed(1);
+
+	document.getElementById('analytics-kpi-1-val').textContent = total.toLocaleString();
+	document.getElementById('analytics-kpi-1-lbl').textContent = 'TOTAL RECORDS';
+	document.getElementById('analytics-kpi-2-val').textContent = metricCfg.sumField
+	  ? periodSum.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})
+	  : periodSum.toLocaleString();
+	document.getElementById('analytics-kpi-2-lbl').textContent = metricCfg.sumField ? 'TOTAL AMOUNT' : 'GROUPED TOTAL';
+	document.getElementById('analytics-kpi-3-val').textContent = topEntry.length > 14 ? topEntry.slice(0,12)+'…' : topEntry;
+	document.getElementById('analytics-kpi-3-lbl').textContent = 'TOP CATEGORY';
+	document.getElementById('analytics-kpi-4-val').textContent = avgPerDay;
+	document.getElementById('analytics-kpi-4-lbl').textContent = 'AVG / DAY';
+
+	// Update chart title
+	document.getElementById('analytics-chart-title').textContent =
+	  config.label + ' — ' + metricCfg.label
+	  + (fromDate ? ' (' + fromDate + ' → ' + toDate + ')' : '');
+
+	document.getElementById('analytics-row-count').textContent = total.toLocaleString() + ' records';
+
+	// Render chart
+	analyticsRender();
+
+  } catch(err) {
+	document.getElementById('analytics-loading').innerHTML =
+	  '<div style="color:var(--red);font-size:13px;">Error loading data: ' + (err.message||err) + '</div>';
+	document.getElementById('analytics-loading').style.display = 'flex';
+	console.error('Analytics load error:', err);
+  }
+}
+
+function analyticsRender(){
+  if(!_analyticsChartData.labels || _analyticsChartData.labels.length === 0) return;
+
+  var chartType = document.getElementById('analytics-chart-type').value;
+  var ctx = document.getElementById('analytics-canvas').getContext('2d');
+
+  if(_analyticsChart){ _analyticsChart.destroy(); _analyticsChart = null; }
+
+  document.getElementById('analytics-loading').style.display = 'none';
+  document.getElementById('analytics-canvas').style.display  = 'block';
+
+  var ds = JSON.parse(JSON.stringify(_analyticsChartData.datasets[0]));
+  if(chartType === 'line'){
+	ds.fill = true;
+	ds.tension = 0.4;
+	ds.borderWidth = 2.5;
+	ds.backgroundColor = ds.borderColor[0] + '33';
+  } else if(chartType === 'pie' || chartType === 'doughnut'){
+	// keep multi-color
+  } else {
+	ds.borderRadius = 6;
+  }
+
+  _analyticsChart = new Chart(ctx, {
+	type: chartType,
+	data: { labels: _analyticsChartData.labels, datasets: [ds] },
+	options: {
+	  responsive: true,
+	  maintainAspectRatio: false,
+	  plugins: {
+		legend: { display: chartType==='pie'||chartType==='doughnut', position:'right', labels:{font:{size:11}} },
+		tooltip: { callbacks: {
+		  label: function(ctx){
+			var v = ctx.raw;
+			return ' ' + (typeof v === 'number' ? v.toLocaleString() : v);
+		  }
+		}}
+	  },
+	  scales: (chartType==='pie'||chartType==='doughnut') ? {} : {
+		x: { ticks:{font:{size:10},maxRotation:45}, grid:{color:'var(--border)'} },
+		y: { beginAtZero:true, ticks:{font:{size:10}}, grid:{color:'var(--border)'} }
+	  }
+	}
+  });
+
+  // Also render the summary table
+  analyticsRenderSummaryTable(_analyticsChartData.labels, _analyticsChartData.datasets[0].data);
+}
+
+function analyticsRenderSummaryTable(labels, values){
+  var thead = document.getElementById('analytics-thead');
+  var tbody = document.getElementById('analytics-tbody');
+  thead.innerHTML = '<tr style="background:var(--surface2);">'
+	+ '<th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:800;color:var(--text3);border-bottom:1px solid var(--border2);">Category</th>'
+	+ '<th style="padding:10px 14px;text-align:right;font-size:11px;font-weight:800;color:var(--text3);border-bottom:1px solid var(--border2);">Value</th>'
+	+ '<th style="padding:10px 14px;text-align:right;font-size:11px;font-weight:800;color:var(--text3);border-bottom:1px solid var(--border2);">Share</th></tr>';
+  var total = values.reduce((a,b)=>a+b,0);
+  tbody.innerHTML = labels.map((lbl,i)=>{
+	var v = values[i]; var pct = total > 0 ? ((v/total)*100).toFixed(1) : '0.0';
+	return '<tr style="border-bottom:1px solid var(--border);">'
+	  + '<td style="padding:9px 14px;font-size:12px;font-weight:600;color:var(--text);">'+lbl+'</td>'
+	  + '<td style="padding:9px 14px;text-align:right;font-size:12px;font-weight:700;color:var(--text);">'+v.toLocaleString()+'</td>'
+	  + '<td style="padding:9px 14px;text-align:right;font-size:12px;color:var(--text3);">'+pct+'%</td></tr>';
+  }).join('');
+}
+
+function analyticsRenderRawTable(data, columns){
+  var thead = document.getElementById('analytics-raw-thead');
+  var tbody = document.getElementById('analytics-raw-tbody');
+  if(!data || data.length === 0){
+	tbody.innerHTML = '<tr><td colspan="99" style="text-align:center;padding:20px;color:var(--text3);">No data for this period</td></tr>';
+	thead.innerHTML = '';
+	return;
+  }
+  // Use configured columns or detected keys
+  var cols = columns || Object.keys(data[0]).slice(0,8);
+  thead.innerHTML = '<tr style="background:var(--surface2);">'
+	+ cols.map(c=>'<th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:800;color:var(--text3);white-space:nowrap;border-bottom:1px solid var(--border2);border-right:1px solid var(--border);">'+c+'</th>').join('')
+	+ '</tr>';
+  tbody.innerHTML = data.slice(0, 500).map(row=>{
+	return '<tr style="border-bottom:1px solid var(--border);">'
+	  + cols.map(c=>{
+		  var v = row[c]; if(v==null) v='';
+		  if(typeof v === 'string' && v.length > 26) v = v.slice(0,24)+'…';
+		  return '<td style="padding:7px 12px;font-size:11px;color:var(--text);white-space:nowrap;border-right:1px solid var(--border);">'+v+'</td>';
+		}).join('')
+	  + '</tr>';
+  }).join('');
+}
+
+function analyticsToggleView(){
+  var isChart = document.getElementById('analytics-view-chart').checked;
+  document.getElementById('analytics-chart-wrap').style.display  = isChart ? 'block' : 'none';
+  document.getElementById('analytics-table-wrap').style.display  = isChart ? 'none'  : 'block';
+  document.getElementById('analytics-btn-chart').style.background = isChart ? 'var(--text)' : 'var(--surface2)';
+  document.getElementById('analytics-btn-chart').style.color      = isChart ? 'var(--bg)'   : 'var(--text3)';
+  document.getElementById('analytics-btn-chart').style.border     = isChart ? 'none'        : '1px solid var(--border2)';
+  document.getElementById('analytics-btn-table').style.background = isChart ? 'var(--surface2)' : 'var(--text)';
+  document.getElementById('analytics-btn-table').style.color      = isChart ? 'var(--text3)'    : 'var(--bg)';
+  document.getElementById('analytics-btn-table').style.border     = isChart ? '1px solid var(--border2)' : 'none';
+}
+
+async function analyticsExportImage(){
+  var panel = document.getElementById('analytics-chart-panel');
+  if(!panel){ alert('No chart to export.'); return; }
+  if(!_analyticsChart){ alert('Generate a report first.'); return; }
+  try {
+	var canvas = await html2canvas(panel, {backgroundColor: null, scale: 2, useCORS: true});
+	var link = document.createElement('a');
+	link.download = 'operix-report-' + new Date().toISOString().slice(0,10) + '.png';
+	link.href = canvas.toDataURL('image/png');
+	link.click();
+  } catch(e){ alert('Export failed: ' + e.message); }
+}
+
+function analyticsExportExcel(){
+  if(!_analyticsRawData || _analyticsRawData.length === 0){ alert('Generate a report first.'); return; }
+  if(typeof XLSX === 'undefined'){ alert('Excel library not loaded.'); return; }
+  var board    = document.getElementById('analytics-board').value;
+  var config   = ANALYTICS_BOARDS[board];
+  var metric   = document.getElementById('analytics-metric').value;
+  var metricCfg= config.metrics.find(m=>m.value===metric);
+  var wb = XLSX.utils.book_new();
+
+  // Sheet 1: Summary (aggregated)
+  var summaryRows = [['Category','Value','Share (%)']];
+  var labels = _analyticsChartData.labels;
+  var values = _analyticsChartData.datasets[0].data;
+  var total  = values.reduce((a,b)=>a+b,0);
+  labels.forEach(function(lbl,i){
+	var v = values[i];
+	summaryRows.push([lbl, v, total>0 ? +((v/total*100).toFixed(2)) : 0]);
+  });
+  var ws1 = XLSX.utils.aoa_to_sheet(summaryRows);
+  XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
+
+  // Sheet 2: Raw data
+  var cols = config.columns || Object.keys(_analyticsRawData[0]||{}).slice(0,10);
+  var rawRows = [cols];
+  _analyticsRawData.forEach(function(row){
+	rawRows.push(cols.map(c=>row[c]!=null?row[c]:''));
+  });
+  var ws2 = XLSX.utils.aoa_to_sheet(rawRows);
+  XLSX.utils.book_append_sheet(wb, ws2, 'Raw Data');
+
+  XLSX.writeFile(wb, 'operix-report-' + board + '-' + new Date().toISOString().slice(0,10) + '.xlsx');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 </script>
 
 <!-- TRUSTED DEVICES MODAL -->
