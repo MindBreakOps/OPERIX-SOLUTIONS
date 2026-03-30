@@ -1616,6 +1616,22 @@ textarea.field { resize: none; line-height: 1.6; }
 					   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
 					 </div>
 				   </div>
+				   <!-- Business Card Generatir -->
+				  <div class="workspace-card" onclick="openWorkspace('idcard')">
+					<div style="display:flex;align-items:center;gap:15px;">
+					  <div style="width:50px;height:50px;border-radius:14px;background:var(--gold-bg);border:1.5px solid var(--gold-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+						<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M7 9h.01M7 12h.01"/></svg>
+					  </div>
+					  <div style="flex:1;">
+						<div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;color:var(--text);">ID Cards</div>
+						<div style="font-size:11px;color:var(--text3);margin-top:2px;">Business Card Generator</div>
+						<div style="margin-top:7px;display:flex;gap:5px;flex-wrap:wrap;">
+						  <span class="tag tag-gold">Generator</span>
+						</div>
+					  </div>
+					  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+					</div>
+				  </div>
 				   <!-- Document Studio -->
 				   <div class="workspace-card" onclick="openWorkspace('studio')">
 						 <div style="display:flex;align-items:center;gap:15px;">
@@ -1707,27 +1723,147 @@ textarea.field { resize: none; line-height: 1.6; }
 				 </div>
 		   </div>
   </section>
- <section id="entertainment-workspace" class="screen hidden">
+<section id="idcard-workspace" class="screen hidden">
 	<div class="app-header">
 	  <button onclick="openWorkspace(null)" class="back-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Workspaces</button>
-	  <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);">Entertainment Board</div>
-	  <button onclick="openEntJobModal()" class="btn-gold" style="padding:7px 13px;font-size:12px;">+ Add Job</button>
+	  <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);">ID Card Generator</div>
+	  <div style="width:80px;"></div>
 	</div>
-	<div style="max-width:700px;margin:0 auto;padding:14px 18px;">
-	  <div style="display:flex;gap:6px;margin-bottom:14px;">
-		<div class="kpi-card"><div class="kpi-num" id="kpi-ent-jobs" style="color:var(--blue);">0</div><div class="kpi-lbl">Total Jobs</div></div>
-		<div class="kpi-card"><div class="kpi-num" id="kpi-ent-people" style="color:var(--green);">0</div><div class="kpi-lbl">People Served</div></div>
-		<div class="kpi-card"><div class="kpi-num" id="kpi-ent-revenue" style="color:var(--gold);">SAR 0</div><div class="kpi-lbl">Revenue</div></div>
-	  </div>
+	
+	<style>
+	  .card-board-wrapper { --glass: rgba(255, 255, 255, 0.55); --glass-border: rgba(255, 255, 255, 0.6); --glass2: rgba(255,255,255,0.38); --shadow: 0 4px 16px rgba(18, 16, 31, .09), 0 2px 4px rgba(18, 16, 31, .05); --shadow-inset: inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(0,0,0,.04); }
+	  .card-config-panel { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 22px; padding: 24px; box-shadow: var(--shadow); backdrop-filter: blur(20px); }
+	  .card-field { width: 100%; padding: 11px 14px; background: var(--glass2); border: 1.5px solid var(--glass-border); border-radius: 12px; color: #18161f; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; outline: none; transition: all 0.2s ease; margin-bottom: 16px; }
+	  .card-field:focus { border-color: #1e2d40; background: #fff; }
+	  .btn-navy { width: 100%; padding: 12px; background: #1e2d40; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; }
+	  .btn-navy:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 45, 64, 0.35); }
+	  .btn-outline { width: 100%; padding: 12px; background: transparent; color: #1e2d40; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; border: 1.5px solid rgba(30, 45, 64, 0.25); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+	  .btn-outline:hover { background: rgba(30, 45, 64, 0.09); border-color: #1e2d40; }
 	  
-	  <div class="sec-hdr"><h2>Active Jobs</h2><div class="line"></div></div>
-	  
-	  <div id="ent-job-list">
-		  <div style="text-align:center;padding:40px;color:var(--text3);font-size:13px;">No active entertainment jobs.</div>
+	  .opx-business-card { width: 400px; height: 220px; background: var(--glass); border: 1.5px solid var(--glass-border); border-radius: 22px; box-shadow: var(--shadow), var(--shadow-inset); backdrop-filter: blur(20px) saturate(1.4); padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-sizing: border-box; flex-shrink: 0; }
+	  .opx-business-card::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(30, 45, 64, 0.09) 0%, transparent 70%); border-radius: 50%; z-index: 0; pointer-events: none; }
+	  .opx-business-card.card-back { justify-content: center; align-items: center; text-align: center; }
+	  .opx-business-card.card-back::before { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; background: radial-gradient(circle, rgba(30, 45, 64, 0.09) 0%, transparent 60%); }
+	  .card-ribbon-top, .card-ribbon-bottom { position: absolute; left: 0; width: 100%; display: flex; z-index: 10; }
+	  .card-ribbon-top { top: 0; flex-direction: column; }
+	  .card-ribbon-bottom { bottom: 0; flex-direction: column-reverse; }
+	  .ribbon-navy { height: 8px; background: #1e2d40; width: 100%; }
+	  .ribbon-gold { height: 4px; background: #9a6f28; width: 100%; }
+	</style>
+  
+	<div style="max-width:1000px;margin:0 auto;padding:24px;">
+	  <div class="card-board-wrapper flex flex-col lg:flex-row gap-8 items-start">
+		
+		<div class="card-config-panel w-full lg:w-80 shrink-0">
+		  <h2>Generate ID Card</h2>
+		  <div class="field-group">
+			<label class="field-label">Full Name</label>
+			<input type="text" class="card-field" id="idcard-input-name" value="Jane Doe" oninput="updateIDCard()">
+		  </div>
+		  <div class="field-group">
+			<label class="field-label">Job Title</label>
+			<input type="text" class="card-field" id="idcard-input-role" value="Operations Manager" oninput="updateIDCard()">
+		  </div>
+		  <div class="field-group">
+			<label class="field-label">Email Address</label>
+			<input type="email" class="card-field" id="idcard-input-email" value="jane.doe@operix.com" oninput="updateIDCard()">
+		  </div>
+		  <div class="field-group">
+			<label class="field-label">Phone Number</label>
+			<input type="text" class="card-field" id="idcard-input-phone" value="+966 50 123 4567" oninput="updateIDCard()">
+		  </div>
+		  <div class="field-group">
+			<label class="field-label">Location</label>
+			<input type="text" class="card-field" id="idcard-input-location" value="Riyadh, KSA" oninput="updateIDCard()">
+		  </div>
+  
+		  <div class="mt-6">
+			<button class="btn-navy" onclick="exportIDCardPDF()">Download PDF (Print)</button>
+			<button class="btn-outline" onclick="exportIDCardPNG()">Download PNG (Digital)</button>
+		  </div>
+		</div>
+  
+		<div class="flex flex-col gap-8 overflow-x-auto pb-4" id="idcard-export-container">
+		  
+		  <div class="opx-business-card" id="idcard-card-front">
+			<div class="card-ribbon-top"><div class="ribbon-navy"></div><div class="ribbon-gold"></div></div>
+			<div class="relative z-10 flex items-center gap-3 mt-1.5">
+			  <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white border border-black/10 shadow-sm" onerror="this.style.display='none'">
+			  <div class="flex flex-col">
+				<div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:#18161f;line-height:1;">OPERIX</div>
+				<div style="font-size:9px;color:#1e2d40;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">Operations & Management</div>
+			  </div>
+			</div>
+			<div class="relative z-10 mt-1.5">
+			  <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:800;color:#9a6f28;margin-bottom:2px;" id="idcard-display-name">Jane Doe</div>
+			  <div style="font-size:12px;color:#1e2d40;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;" id="idcard-display-role">Operations Manager</div>
+			</div>
+			<div class="relative z-10 flex justify-between items-end border-t border-black/10 pt-2.5 mt-auto mb-1.5">
+			  <div class="flex flex-col gap-2">
+				<div class="flex items-center gap-1.5 text-[11px] text-[#3d3a4e] font-medium">
+				  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e2d40" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+				  <span id="idcard-display-email">jane.doe@operix.com</span>
+				</div>
+				<div class="flex items-center gap-1.5 text-[11px] text-[#3d3a4e] font-medium">
+				  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e2d40" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+				  <span style="font-family:'Fira Code',monospace;" id="idcard-display-phone">+966 50 123 4567</span>
+				</div>
+			  </div>
+			  <div class="flex items-center gap-1.5 text-[11px] text-[#3d3a4e] font-medium pb-0.5">
+				<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e2d40" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+				<span id="idcard-display-location">Riyadh, KSA</span>
+			  </div>
+			</div>
+			<div class="card-ribbon-bottom"><div class="ribbon-navy"></div><div class="ribbon-gold"></div></div>
+		  </div>
+  
+		  <div class="opx-business-card card-back" id="idcard-card-back">
+			<div class="card-ribbon-top"><div class="ribbon-navy"></div><div class="ribbon-gold"></div></div>
+			<img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" alt="Logo" class="relative z-10 w-16 h-16 rounded-2xl mb-3 shadow-sm bg-white border border-black/10" onerror="this.style.display='none'">
+			<div class="relative z-10" style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:#18161f;line-height:1;">OPERIX</div>
+			<div class="relative z-10" style="font-size:11px;color:#1e2d40;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-top:8px;">Operations & Management</div>
+			<div class="card-ribbon-bottom"><div class="ribbon-navy"></div><div class="ribbon-gold"></div></div>
+		  </div>
+  
+		</div>
 	  </div>
 	</div>
+  
+	<script>
+	  function updateIDCard() {
+		document.getElementById('idcard-display-name').innerText = document.getElementById('idcard-input-name').value || 'Name';
+		document.getElementById('idcard-display-role').innerText = document.getElementById('idcard-input-role').value || 'Role';
+		document.getElementById('idcard-display-email').innerText = document.getElementById('idcard-input-email').value || 'Email';
+		document.getElementById('idcard-display-phone').innerText = document.getElementById('idcard-input-phone').value || 'Phone';
+		document.getElementById('idcard-display-location').innerText = document.getElementById('idcard-input-location').value || 'Location';
+	  }
+  
+	  function exportIDCardPNG() {
+		const container = document.getElementById('idcard-export-container');
+		html2canvas(container, { scale: 3, backgroundColor: null, useCORS: true }).then(canvas => {
+		  const link = document.createElement('a');
+		  link.download = `OPERIX_Card_${document.getElementById('idcard-input-name').value.replace(/\s+/g, '_')}.png`;
+		  link.href = canvas.toDataURL('image/png');
+		  link.click();
+		});
+	  }
+  
+	  function exportIDCardPDF() {
+		const { jsPDF } = window.jspdf;
+		html2canvas(document.getElementById('idcard-card-front'), { scale: 3, useCORS: true }).then(canvasFront => {
+		  const frontImg = canvasFront.toDataURL('image/jpeg', 1.0);
+		  html2canvas(document.getElementById('idcard-card-back'), { scale: 3, useCORS: true }).then(canvasBack => {
+			const backImg = canvasBack.toDataURL('image/jpeg', 1.0);
+			const pdf = new jsPDF({ orientation: 'landscape', unit: 'in', format: [3.5, 2] });
+			pdf.addImage(frontImg, 'JPEG', 0, 0, 3.5, 2);
+			pdf.addPage([3.5, 2], 'landscape');
+			pdf.addImage(backImg, 'JPEG', 0, 0, 3.5, 2);
+			pdf.save(`OPERIX_Card_${document.getElementById('idcard-input-name').value.replace(/\s+/g, '_')}.pdf`);
+		  });
+		});
+	  }
+	</script>
   </section>
-
   <!-- TASKS WORKSPACE -->
   <section id="tasks-workspace" class="screen hidden">
 		<div class="app-header">
@@ -5227,8 +5363,15 @@ function openWorkspace(ws){
 		return;
   }
   else if(ws==='analytics'){
-document.getElementById('analytics-workspace').classList.remove('hidden');
-initAnalyticsBoard();
+	  document.getElementById('analytics-workspace').classList.remove('hidden');
+	  initAnalyticsBoard();
+	}
+  else if(ws==='idcard'){
+	  document.getElementById('idcard-workspace').classList.remove('hidden');
+	}
+  else if(ws==='analytics'){
+     document.getElementById('analytics-workspace').classList.remove('hidden');
+     initAnalyticsBoard();
   }
   else if(ws==='entertainment'){
 		document.getElementById('entertainment-workspace').classList.remove('hidden');
