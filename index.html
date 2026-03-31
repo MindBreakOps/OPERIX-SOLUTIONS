@@ -1197,6 +1197,7 @@ textarea.field { resize: none; line-height: 1.6; }
 
 </script>
 </head>
+
 <body>
 
 <!-- INSTALL BANNER -->
@@ -1718,9 +1719,12 @@ textarea.field { resize: none; line-height: 1.6; }
 					   <span style="font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.06em;">ADMIN ONLY</span>
 					   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
 					 </div>
-					   </div>
+					 
+					 </div>
+					   
 				   </div>
 				 </div>
+				 
 		   </div>
   </section>
 <section id="idcard-workspace" class="screen hidden">
@@ -1740,7 +1744,18 @@ textarea.field { resize: none; line-height: 1.6; }
 	  .btn-outline { width: 100%; padding: 12px; background: transparent; color: #1e2d40; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; border: 1.5px solid rgba(30, 45, 64, 0.25); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
 	  .btn-outline:hover { background: rgba(30, 45, 64, 0.09); border-color: #1e2d40; }
 	  
-	  .opx-business-card { width: 400px; height: 220px; background: var(--glass); border: 1.5px solid var(--glass-border); border-radius: 22px; box-shadow: var(--shadow), var(--shadow-inset); backdrop-filter: blur(20px) saturate(1.4); padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-sizing: border-box; flex-shrink: 0; }
+	  /* Strict Card Styles to prevent html2canvas glitches */
+	  .opx-business-card { 
+		width: 400px; height: 220px; 
+		background: var(--glass); 
+		border: 1.5px solid var(--glass-border); 
+		border-radius: 22px; 
+		box-shadow: var(--shadow), var(--shadow-inset); 
+		backdrop-filter: blur(20px) saturate(1.4); 
+		padding: 24px; 
+		display: flex; flex-direction: column; justify-content: space-between; 
+		position: relative; overflow: hidden; box-sizing: border-box; flex-shrink: 0; 
+	  }
 	  .opx-business-card::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(30, 45, 64, 0.09) 0%, transparent 70%); border-radius: 50%; z-index: 0; pointer-events: none; }
 	  .opx-business-card.card-back { justify-content: center; align-items: center; text-align: center; }
 	  .opx-business-card.card-back::before { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; background: radial-gradient(circle, rgba(30, 45, 64, 0.09) 0%, transparent 60%); }
@@ -1758,7 +1773,7 @@ textarea.field { resize: none; line-height: 1.6; }
 		  <h2>Generate ID Card</h2>
 		  <div class="field-group">
 			<label class="field-label">Full Name</label>
-			<input type="text" class="card-field" id="idcard-input-name" value="Jane Doe" oninput="updateIDCard()">
+			<input type="text" class="card-field" id="idcard-input-name" value="Asim Aljma'an" oninput="updateIDCard()">
 		  </div>
 		  <div class="field-group">
 			<label class="field-label">Job Title</label>
@@ -1766,11 +1781,11 @@ textarea.field { resize: none; line-height: 1.6; }
 		  </div>
 		  <div class="field-group">
 			<label class="field-label">Email Address</label>
-			<input type="email" class="card-field" id="idcard-input-email" value="jane.doe@operix.com" oninput="updateIDCard()">
+			<input type="email" class="card-field" id="idcard-input-email" value="asim.aljmaan@gmail.com" oninput="updateIDCard()">
 		  </div>
 		  <div class="field-group">
 			<label class="field-label">Phone Number</label>
-			<input type="text" class="card-field" id="idcard-input-phone" value="+966 50 123 4567" oninput="updateIDCard()">
+			<input type="text" class="card-field" id="idcard-input-phone" value="+966 50 082 3643" oninput="updateIDCard()">
 		  </div>
 		  <div class="field-group">
 			<label class="field-label">Location</label>
@@ -1787,41 +1802,48 @@ textarea.field { resize: none; line-height: 1.6; }
 		  
 		  <div class="opx-business-card" id="idcard-card-front">
 			<div class="card-ribbon-top"><div class="ribbon-navy"></div><div class="ribbon-gold"></div></div>
-			<div class="relative z-10 flex items-center gap-3 mt-1.5">
-			  <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white border border-black/10 shadow-sm" onerror="this.style.display='none'">
-			  <div class="flex flex-col">
-				<div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:#18161f;line-height:1;">OPERIX Solutions</div>
+			
+			<div style="position: relative; z-index: 10; display: flex; align-items: center; gap: 12px; margin-top: 6px;">
+			  <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" alt="Logo" crossorigin="anonymous" style="width: 44px; height: 44px; border-radius: 10px; object-fit: contain; background: white; border: 1.5px solid rgba(0,0,0,0.1); box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onerror="this.style.display='none'">
+			  <div style="display: flex; flex-direction: column;">
+				<div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:#18161f;line-height:1;">OPERIX</div>
 				<div style="font-size:9px;color:#1e2d40;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">Operations & Management</div>
 			  </div>
 			</div>
-			<div class="relative z-10 mt-1.5">
-			  <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:800;color:#9a6f28;margin-bottom:2px;" id="idcard-display-name">Jane Doe</div>
+			
+			<div style="position: relative; z-index: 10; margin-top: 6px;">
+			  <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:800;color:#9a6f28;margin-bottom:2px;" id="idcard-display-name">Asim Aljma'an</div>
 			  <div style="font-size:12px;color:#1e2d40;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;" id="idcard-display-role">Operations Manager</div>
 			</div>
-			<div class="relative z-10 flex justify-between items-end border-t border-black/10 pt-2.5 mt-auto mb-1.5">
-			  <div class="flex flex-col gap-2">
-				<div class="flex items-center gap-1.5 text-[11px] text-[#3d3a4e] font-medium">
-				  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e2d40" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-				  <span id="idcard-display-email">jane.doe@operix.com</span>
+			
+			<div style="position: relative; z-index: 10; width: 100%; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 12px; margin-top: auto; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: flex-end;">
+			  
+			  <div style="display: flex; flex-direction: column; gap: 8px;">
+				<div style="display: flex; align-items: center; gap: 8px;">
+				  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e2d40" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+				  <span id="idcard-display-email" style="font-size: 11px; color: #3d3a4e; font-weight: 600; line-height: 1;">asim.aljmaan@gmail.com</span>
 				</div>
-				<div class="flex items-center gap-1.5 text-[11px] text-[#3d3a4e] font-medium">
-				  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e2d40" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-				  <span style="font-family:'Fira Code',monospace;" id="idcard-display-phone">+966 50 123 4567</span>
+				<div style="display: flex; align-items: center; gap: 8px;">
+				  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e2d40" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+				  <span id="idcard-display-phone" style="font-size: 11px; color: #3d3a4e; font-weight: 600; font-family: 'Fira Code', monospace; line-height: 1;">+966 50 082 3643</span>
 				</div>
 			  </div>
-			  <div class="flex items-center gap-1.5 text-[11px] text-[#3d3a4e] font-medium pb-0.5">
-				<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e2d40" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
-				<span id="idcard-display-location">Riyadh, KSA</span>
+  
+			  <div style="display: flex; align-items: center; gap: 8px; padding-bottom: 2px;">
+				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e2d40" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+				<span id="idcard-display-location" style="font-size: 11px; color: #3d3a4e; font-weight: 600; line-height: 1;">Riyadh, KSA</span>
 			  </div>
+			  
 			</div>
+			
 			<div class="card-ribbon-bottom"><div class="ribbon-navy"></div><div class="ribbon-gold"></div></div>
 		  </div>
   
 		  <div class="opx-business-card card-back" id="idcard-card-back">
 			<div class="card-ribbon-top"><div class="ribbon-navy"></div><div class="ribbon-gold"></div></div>
-			<img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" alt="Logo" class="relative z-10 w-16 h-16 rounded-2xl mb-3 shadow-sm bg-white border border-black/10" onerror="this.style.display='none'">
-			<div class="relative z-10" style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:#18161f;line-height:1;">OPERIX</div>
-			<div class="relative z-10" style="font-size:11px;color:#1e2d40;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-top:8px;">Operations & Management</div>
+			<img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" alt="Logo" crossorigin="anonymous" style="width: 64px; height: 64px; border-radius: 16px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; z-index: 10; object-fit: contain; background: white; border: 1.5px solid rgba(0,0,0,0.1);" onerror="this.style.display='none'">
+			<div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:#18161f;line-height:1;position: relative; z-index: 10;">OPERIX</div>
+			<div style="font-size:11px;color:#1e2d40;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-top:8px;position: relative; z-index: 10;">Operations & Management</div>
 			<div class="card-ribbon-bottom"><div class="ribbon-navy"></div><div class="ribbon-gold"></div></div>
 		  </div>
   
@@ -1838,29 +1860,73 @@ textarea.field { resize: none; line-height: 1.6; }
 		document.getElementById('idcard-display-location').innerText = document.getElementById('idcard-input-location').value || 'Location';
 	  }
   
-	  function exportIDCardPNG() {
+	  async function exportIDCardPNG() {
 		const container = document.getElementById('idcard-export-container');
-		html2canvas(container, { scale: 3, backgroundColor: null, useCORS: true }).then(canvas => {
+		
+		try {
+		  const canvas = await html2canvas(container, { 
+			scale: 4, // دقة 4K لتوضيح النصوص والأيقونات
+			backgroundColor: '#f0eff5', // لون صلب بديل لتشوه الشفافية
+			useCORS: true,
+			allowTaint: true,
+			logging: false,
+			onclone: function(clonedDoc) {
+			  // إزالة التأثير الزجاجي (Blur) داخل النسخة المصدرة فقط لمنع التشوه البصري
+			  const cards = clonedDoc.querySelectorAll('.opx-business-card');
+			  cards.forEach(c => {
+				c.style.background = '#eaf0f6';
+				c.style.backdropFilter = 'none';
+				c.style.boxShadow = 'none';
+			  });
+			}
+		  });
+		  
 		  const link = document.createElement('a');
 		  link.download = `OPERIX_Card_${document.getElementById('idcard-input-name').value.replace(/\s+/g, '_')}.png`;
-		  link.href = canvas.toDataURL('image/png');
+		  link.href = canvas.toDataURL('image/png', 1.0);
 		  link.click();
-		});
+		} catch(e) {
+		  alert('حدث خطأ أثناء التصدير: ' + e.message);
+		}
 	  }
   
-	  function exportIDCardPDF() {
+	  async function exportIDCardPDF() {
+		const front = document.getElementById('idcard-card-front');
+		const back = document.getElementById('idcard-card-back');
 		const { jsPDF } = window.jspdf;
-		html2canvas(document.getElementById('idcard-card-front'), { scale: 3, useCORS: true }).then(canvasFront => {
+  
+		try {
+		  // إعدادات الـ html2canvas المشتركة
+		  const opt = { 
+			scale: 4, 
+			useCORS: true, 
+			allowTaint: true,
+			backgroundColor: '#eaf0f6',
+			onclone: function(clonedDoc) {
+			  // ضمان عدم تشوه الزجاج في ملف الـ PDF
+			  const f = clonedDoc.getElementById('idcard-card-front');
+			  const b = clonedDoc.getElementById('idcard-card-back');
+			  if(f) { f.style.background = '#eaf0f6'; f.style.backdropFilter = 'none'; f.style.boxShadow = 'none'; }
+			  if(b) { b.style.background = '#eaf0f6'; b.style.backdropFilter = 'none'; b.style.boxShadow = 'none'; }
+			}
+		  };
+  
+		  const canvasFront = await html2canvas(front, opt);
 		  const frontImg = canvasFront.toDataURL('image/jpeg', 1.0);
-		  html2canvas(document.getElementById('idcard-card-back'), { scale: 3, useCORS: true }).then(canvasBack => {
-			const backImg = canvasBack.toDataURL('image/jpeg', 1.0);
-			const pdf = new jsPDF({ orientation: 'landscape', unit: 'in', format: [3.5, 2] });
-			pdf.addImage(frontImg, 'JPEG', 0, 0, 3.5, 2);
-			pdf.addPage([3.5, 2], 'landscape');
-			pdf.addImage(backImg, 'JPEG', 0, 0, 3.5, 2);
-			pdf.save(`OPERIX_Card_${document.getElementById('idcard-input-name').value.replace(/\s+/g, '_')}.pdf`);
-		  });
-		});
+		  
+		  const canvasBack = await html2canvas(back, opt);
+		  const backImg = canvasBack.toDataURL('image/jpeg', 1.0);
+		  
+		  // حجم بطاقة العمل القياسي (3.5 × 2 إنش)
+		  const pdf = new jsPDF({ orientation: 'landscape', unit: 'in', format: [3.5, 2] });
+		  pdf.addImage(frontImg, 'JPEG', 0, 0, 3.5, 2);
+		  pdf.addPage([3.5, 2], 'landscape');
+		  pdf.addImage(backImg, 'JPEG', 0, 0, 3.5, 2);
+		  
+		  pdf.save(`OPERIX_Card_${document.getElementById('idcard-input-name').value.replace(/\s+/g, '_')}.pdf`);
+		} catch(e) {
+		  alert('حدث خطأ أثناء التصدير: ' + e.message);
+		}
 	  }
 	</script>
   </section>
@@ -3282,22 +3348,21 @@ textarea.field { resize: none; line-height: 1.6; }
 <!-- OPS RECEIPT (off-screen) -->
 <div id="ops-receipt-capture" style="position:fixed;left:-4000px;top:0;width:440px;background:#faf9f6;font-family:'Plus Jakarta Sans',sans-serif;">
 
-  <!-- Header: white bg, both logos -->
   <div style="background:#ffffff;padding:20px 24px 16px;border-bottom:2px solid #e8e5de;display:flex;align-items:center;justify-content:space-between;">
-		<div style="display:flex;align-items:center;gap:12px;">
-		  <img src="https://raw.githubusercontent.com/MindBreakOps/MBO-HumanResourceSystem/main/mind.png" style="width:44px;height:44px;object-fit:contain;border-radius:10px;border:1.5px solid #e8e5de;" onerror="this.style.display='none'">
-		  <div>
-				<div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:#1c1a16;letter-spacing:-.01em;">Mind Break</div>
-				<div style="font-size:9px;color:#8c877e;font-weight:600;letter-spacing:.18em;text-transform:uppercase;margin-top:1px;">Café · Valet Service</div>
-		  </div>
-		</div>
-		<div style="display:flex;align-items:center;gap:10px;">
-		  <div style="text-align:right;">
-				<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#1c1a16;">OPERIX</div>
-				<div style="font-size:8px;color:#8c877e;letter-spacing:.15em;text-transform:uppercase;">Operations</div>
-		  </div>
-		  <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" style="width:36px;height:36px;object-fit:contain;border-radius:8px;border:1.5px solid #e8e5de;" onerror="this.style.display='none'">
-		</div>
+	<div style="display:flex;align-items:center;gap:12px;">
+	  <img src="https://raw.githubusercontent.com/MindBreakOps/MBO-HumanResourceSystem/main/mind.png" crossorigin="anonymous" style="width:44px;height:44px;object-fit:contain;border-radius:10px;border:1.5px solid #e8e5de;" onerror="this.style.display='none'">
+	  <div>
+		<div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:#1c1a16;letter-spacing:-.01em;">Mind Break</div>
+		<div style="font-size:9px;color:#8c877e;font-weight:600;letter-spacing:.18em;text-transform:uppercase;margin-top:1px;">Café · Valet Service</div>
+	  </div>
+	</div>
+	<div style="display:flex;align-items:center;gap:10px;">
+	  <div style="text-align:right;">
+		<div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#1c1a16;">OPERIX</div>
+		<div style="font-size:8px;color:#8c877e;letter-spacing:.15em;text-transform:uppercase;">Operations</div>
+	  </div>
+	  <img src="https://raw.githubusercontent.com/MindBreakOps/LX-Permits/main/imind.png" crossorigin="anonymous" style="width:36px;height:36px;object-fit:contain;border-radius:8px;border:1.5px solid #e8e5de;" onerror="this.style.display='none'">
+	</div>
   </div>
 
   <!-- Title band -->
@@ -5370,8 +5435,8 @@ function openWorkspace(ws){
 	  document.getElementById('idcard-workspace').classList.remove('hidden');
 	}
   else if(ws==='analytics'){
-     document.getElementById('analytics-workspace').classList.remove('hidden');
-     initAnalyticsBoard();
+	 document.getElementById('analytics-workspace').classList.remove('hidden');
+	 initAnalyticsBoard();
   }
   else if(ws==='entertainment'){
 		document.getElementById('entertainment-workspace').classList.remove('hidden');
@@ -6404,43 +6469,52 @@ async function opsSave(){
   const phone=currentTab==='ext'?(document.getElementById('f-phone')?.value||'-'):'-';
   const date=document.getElementById('f-date')?.value||new Date().toISOString().split('T')[0];
   
-  if(!name||!plate||!card) return alert('Please complete all fields');
+  if(!name || !plate || !card) return alert('الرجاء إكمال جميع الحقول الأساسية (الاسم، اللوحة، البطاقة).');
   
-  const u=window.currentUser?._ops||window.currentUser;
-  const ref=genRef();
-  const data={plateNum:plate, cardNum:card, clientName:currentTab==='mb'?'Mind Break member':name, valetName:u.name, serviceType:currentTab==='mb'?'Free':'Paid', amount:currentTab==='mb'?0:19, phone, date, status:'Parked', ref};
-  
-  const btn=document.getElementById('ops-save-btn'); btn.disabled=true; btn.innerText='Saving…';
+  const btn = document.getElementById('ops-save-btn'); 
+  btn.disabled = true; 
+  btn.innerText = 'جاري الحفظ والطباعة...';
   
   try {
-		// 1. Await the Supabase Save
-		await sbFetch('operix_invoices', {
-		  method: 'POST',
-		  body: JSON.stringify({
-				op_id:          ref,
-				date:           new Date().toISOString(),
-				plate_num:      data.plateNum,
-				client_name:    data.clientName,
-				phone:          data.phone || '',
-				amount:         data.amount || 0,
-				card_num:       String(data.cardNum),
-				valet_name:     data.valetName,
-				service_type:   data.serviceType,
-				vehicle_status: 'Parked',
-				ref:            ref
-		  })
-		});
+	const u = (window.currentUser && window.currentUser._ops) ? window.currentUser._ops : (window.currentUser || {name: 'Staff'});
+	const ref = genRef();
+	const serviceType = currentTab === 'mb' ? 'Free' : 'Paid';
+	const amount = currentTab === 'mb' ? 0 : 19;
+	const clientName = currentTab === 'mb' ? 'Mind Break member' : name;
+	
+	// 1. الحفظ في قاعدة البيانات
+	await sbFetch('operix_invoices', {
+	  method: 'POST',
+	  body: JSON.stringify({
+		op_id:          ref,
+		date:           new Date().toISOString(),
+		plate_num:      plate,
+		client_name:    clientName,
+		phone:          phone,
+		amount:         amount,
+		card_num:       String(card),
+		valet_name:     u.name || 'Staff',
+		service_type:   serviceType,
+		vehicle_status: 'Parked',
+		ref:            ref
+	  })
+	});
 
-		// 2. Generate Receipt
-		await captureReceipt({...data, staffName:u.name, opID:ref});
-		
-		alert('Operation saved! ID: '+ref);
-		switchTab(currentTab);
+	// 2. إنشاء الإيصال
+	await captureReceipt({
+	  plateNum: plate, cardNum: card, clientName: clientName, 
+	  valetName: u.name, staffName: u.name, serviceType: serviceType, 
+	  amount: amount, phone: phone, date: date, ref: ref, opID: ref
+	});
+	
+	alert('تم حفظ العملية بنجاح! رقم التذكرة: ' + ref);
+	switchTab(currentTab); // تفريغ الحقول
   } catch(e) {
-		alert('Error saving to database: ' + e.message);
+	alert('حدث خطأ أثناء الحفظ: ' + e.message);
+  } finally {
+	btn.disabled = false; 
+	btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save & Submit';
   }
-  
-  btn.disabled=false; btn.innerText='Save & Submit';
 }
 
 async function captureReceipt(d){
@@ -6508,79 +6582,105 @@ async function loadReports(){
 }
 
 
-function renderReports(rows){
-  const el=document.getElementById('reports-list');
-  el.innerHTML='';
-  if(!rows.length){
-		el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">No records found</div>';
-		return;
+// 4. تحديث دالة renderReports لتعرض السيارات "المطلوبة" ورقم OPX
+function renderReports(rows) {
+  const el = document.getElementById('reports-list');
+  el.innerHTML = '';
+  
+  if(!rows.length) {
+	el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">No records found</div>';
+	return;
   }
 
-  rows.forEach((r,i)=>{
-		const ip       = String(r.vehicleStatus||'') === 'Parked';
-		const plateStr = String(r.plateNum  || '');
-		const cardStr  = String(r.cardNum   || '');
-		const clientStr= String(r.clientName|| '');
-		const valetStr = String(r.valet || r.valetName || '');
-		const svcStr   = String(r.serviceType || '');
-		const opIDStr  = String(r.opID || '');
-		
-		window._rptData = window._rptData || {};
-		window._rptData[i] = r;
+  el.style.display = 'flex';
+  el.style.flexDirection = 'column';
 
-		const div = document.createElement('div');
-		div.className = 'inv-card';
-		div.setAttribute('data-plate', plateStr);
-		div.setAttribute('data-card',  cardStr);
-		div.setAttribute('data-valet', valetStr.toLowerCase());
-		
-		div.innerHTML = `
-		  <div style="display:flex;">
-				<div style="width:4px;background:${ip?'var(--amber)':'var(--green)'};flex-shrink:0;border-radius:4px 0 0 4px;"></div>
-				<div style="padding:13px;flex:1;">
-				  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-						<span class="badge ${ip?'badge-parked':'badge-done'}">${ip?'Parked':'Returned'}</span>
-						<span style="font-family:Fira Code,monospace;font-size:18px;font-weight:800;color:var(--text);">${plateStr||'—'}</span>
-				  </div>
-				  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">
-						<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
-						  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Card</div>
-						  <div style="font-family:Fira Code,monospace;font-size:14px;font-weight:700;color:var(--text);">#${cardStr||'—'}</div>
-						</div>
-						<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
-						  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Service</div>
-						  <div style="font-size:12px;font-weight:700;color:${svcStr==='Free'?'var(--green)':'var(--gold)'};">${svcStr==='Free'?'Free':'19 SAR'}</div>
-						</div>
-						<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
-						  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Client</div>
-						  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${clientStr||'—'}</div>
-						</div>
-						<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
-						  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Staff</div>
-						  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${valetStr||'—'}</div>
-						</div>
-				  </div>
-				  ${opIDStr?`<div style="background:var(--surface2);border-radius:7px;padding:6px 9px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;">
-						<span style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Op ID</span>
-						<span style="font-family:Fira Code,monospace;font-size:11px;font-weight:700;color:var(--text3);">${opIDStr}</span>
-				  </div>`:''}
-				  
-				  <div style="display:flex;gap:6px;flex-wrap:wrap;">
-						<button onclick="reExport(window._rptData[${i}])" class="btn-ghost" style="flex:1;padding:7px;font-size:11px;justify-content:center;border-radius:var(--r3, 6px);">
-						  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export
-						</button>
-						
-						${ip?`<button onclick="updateVehicle('${plateStr}','${cardStr}','Returned')" style="flex:1;padding:7px;background:var(--green-bg);border:1.5px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:var(--r3, 6px);cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> Return</button>`:''}
-						
-						<button onclick="deleteOperation('${plateStr}','${opIDStr}')" style="flex:1;padding:7px;background:var(--red-bg);border:1.5px solid var(--red-border);color:var(--red);font-size:11px;font-weight:700;border-radius:var(--r3, 6px);cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;">
-						  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Delete
-						</button>
-				  </div>
-				  
-				</div>
+  rows.forEach((r, i) => {
+	const status = String(r.vehicleStatus||'');
+	const isParked = status === 'Parked';
+	const isReq = status === 'Requested';
+	
+	const plateStr = String(r.plateNum  || '');
+	const cardStr  = String(r.cardNum   || '');
+	const clientStr= String(r.clientName|| '');
+	const valetStr = String(r.valet || r.valetName || '');
+	const svcStr   = String(r.serviceType || '');
+	const opIDStr  = String(r.opID || '');
+	
+	window._rptData = window._rptData || {};
+	window._rptData[i] = r;
+
+	if (isReq && !notifiedRequests.has(opIDStr)) {
+	  valetAlertSound.play().catch(e => console.log('Autoplay prevented'));
+	  notifiedRequests.add(opIDStr);
+	}
+
+	let badgeClass = 'badge-done';
+	let statusText = 'Returned';
+	let borderColor= 'var(--green)';
+	let cardExtraClass = '';
+
+	if (isReq) {
+	  badgeClass = 'badge-requested';
+	  statusText = '⚡ مطلوب للعميل';
+	  borderColor= '#f59e0b';
+	  cardExtraClass = 'card-requested';
+	} else if (isParked) {
+	  badgeClass = 'badge-parked';
+	  statusText = 'Parked';
+	  borderColor= 'var(--amber)';
+	}
+
+	const div = document.createElement('div');
+	div.className = `inv-card ${cardExtraClass}`;
+	div.setAttribute('data-plate', plateStr);
+	div.setAttribute('data-card',  cardStr);
+	div.setAttribute('data-valet', valetStr.toLowerCase());
+	
+	div.innerHTML = `
+	  <div style="display:flex;">
+		<div style="width:4px;background:${borderColor};flex-shrink:0;border-radius:4px 0 0 4px;"></div>
+		<div style="padding:13px;flex:1;">
+		  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+			<span class="badge ${badgeClass}">${statusText}</span>
+			<span style="font-family:Fira Code,monospace;font-size:18px;font-weight:800;color:var(--text);">${plateStr||'—'}</span>
 		  </div>
-		`;
-		el.appendChild(div);
+		  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Card</div>
+			  <div style="font-family:Fira Code,monospace;font-size:14px;font-weight:700;color:var(--text);">#${cardStr||'—'}</div>
+			</div>
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Service</div>
+			  <div style="font-size:12px;font-weight:700;color:${svcStr==='Free'?'var(--green)':'var(--gold)'};">${svcStr==='Free'?'Free':'19 SAR'}</div>
+			</div>
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Client</div>
+			  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${clientStr||'—'}</div>
+			</div>
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Staff</div>
+			  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${valetStr||'—'}</div>
+			</div>
+		  </div>
+		  
+		  ${opIDStr ? `<div style="background:var(--surface2);border-radius:7px;padding:6px 9px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;">
+			<span style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Op ID</span>
+			<span style="font-family:Fira Code,monospace;font-size:11px;font-weight:700;color:var(--text3);">${opIDStr}</span>
+		  </div>` : ''}
+		  
+		  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+			${isParked ? `<button onclick="updateVehicle('${plateStr}','${cardStr}','Requested')" style="flex:1;padding:7px;background:rgba(245, 158, 11, 0.1);border:1.5px solid rgba(245, 158, 11, 0.3);color:#d97706;font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg> طلب السيارة</button>` : ''}
+			
+			${(isParked || isReq) ? `<button onclick="updateVehicle('${plateStr}','${cardStr}','Returned')" style="flex:1;padding:7px;background:var(--green-bg);border:1.5px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> تم التسليم</button>` : ''}
+			
+			<button onclick="reExport(window._rptData[${i}])" class="btn-ghost" style="padding:7px;font-size:11px;justify-content:center;border-radius:6px;">Export</button>
+			<button onclick="deleteOperation('${plateStr}','${opIDStr}')" class="btn-ghost" style="color:var(--red);border-color:var(--red-border);padding:7px;font-size:11px;justify-content:center;border-radius:6px;">Del</button>
+		  </div>
+		</div>
+	  </div>
+	`;
+	el.appendChild(div);
   });
 }
 
@@ -6602,24 +6702,23 @@ async function deleteOperation(plate, opID) {
 
 function reExport(r){captureReceipt({...r,staffName:r.valet||r.valetName,phone:r.phone||'—',amount:r.amount||0,ref:r.ref||genRef()});}
 
-async function updateVehicle(plate,card,status){
-  if(!confirm('Confirm status change?'))return;
-  
-  // Update Supabase — find most recent matching record (Parked)
-  try{
-		var rows = await sbFetch(
-		  'operix_invoices?plate_num=eq.'+encodeURIComponent(plate)+'&card_num=eq.'+encodeURIComponent(card)+'&vehicle_status=eq.Parked&order=date.desc&limit=1',
-		  {method:'GET'}
-		);
-		if(Array.isArray(rows) && rows.length){
-		  await sbFetch('operix_invoices?id=eq.'+rows[0].id, {
-				method: 'PATCH',
-				headers: {'Prefer':'return=minimal'},
-				body: JSON.stringify({vehicle_status: status})
-		  });
-		}
-  }catch(e){ console.warn('Supabase vehicle update failed:', e); }
-  setTimeout(loadReports,600);
+async function updateVehicle(plate, card, status) {
+  if(!confirm('هل أنت متأكد من تغيير حالة السيارة إلى: ' + status + '؟')) return;
+  try {
+	// تحديث: جلب السيارة سواء كانت Parked أو Requested
+	var rows = await sbFetch(
+	 'operix_invoices?plate_num=eq.'+encodeURIComponent(plate)+'&card_num=eq.'+encodeURIComponent(card)+'&vehicle_status=in.(Parked,Requested)&order=date.desc&limit=1',
+	 {method:'GET'}
+	);
+	if(Array.isArray(rows) && rows.length){
+	 await sbFetch('operix_invoices?id=eq.'+rows[0].id, {
+		method: 'PATCH',
+		headers: {'Prefer':'return=minimal'},
+		body: JSON.stringify({vehicle_status: status})
+	 });
+	}
+  } catch(e) { console.warn('Supabase vehicle update failed:', e); }
+  setTimeout(loadReports, 600);
 }
 
 async function loadAttendance(){
@@ -11441,6 +11540,173 @@ function updateHeroDate() {
   if(yearEl) yearEl.innerText = now.getFullYear();
 }
 document.addEventListener('DOMContentLoaded', updateHeroDate);
+
+/* ====================================================================
+   نظام الاستماع الحي لطلبات استدعاء السيارات (Live Valet Alert System)
+   ==================================================================== */
+
+// 1. إضافة CSS مخصص لوميض كرت السيارة المطلوبة
+const alertStyles = document.createElement('style');
+alertStyles.innerHTML = `
+  @keyframes alert-pulse {
+	0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); border-color: #f59e0b; }
+	70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); border-color: #fbbf24; }
+	100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); border-color: #f59e0b; }
+  }
+  .card-requested {
+	animation: alert-pulse 1.5s infinite !important;
+	background: #fffbeb !important;
+	border-left: 5px solid #f59e0b !important;
+	order: -1; /* يجعل الكرت يقفز لأعلى القائمة تلقائياً */
+  }
+  .badge-requested {
+	background: #fef3c7;
+	color: #d97706;
+	border: 1px solid #fcd34d;
+	animation: pulse 1s infinite;
+  }
+`;
+document.head.appendChild(alertStyles);
+
+// 2. إعداد صوت التنبيه وتتبع السيارات المطلوبة لمنع تكرار الصوت
+const valetAlertSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+let notifiedRequests = new Set();
+
+// 3. التحديث التلقائي (Auto-Refresh) للوحة العمليات كل 7 ثوانٍ
+setInterval(() => {
+  const opsApp = document.getElementById('ops-app');
+  const reportsPage = document.getElementById('pg-ops-reports');
+  
+  // تحديث القائمة بصمت فقط إذا كان الموظف فاتحاً للوحة العمليات (Operations)
+  if(opsApp && !opsApp.classList.contains('hidden') && reportsPage && reportsPage.classList.contains('active')) {
+	loadReportsSilent(); 
+  }
+}, 7000);
+
+// دالة لتحديث البيانات بصمت بدون إظهار كلمة "Loading..."
+async function loadReportsSilent() {
+  try {
+	const sbRows = await sbFetch('operix_invoices?order=date.desc&limit=200', {method:'GET'});
+	if(Array.isArray(sbRows) && sbRows.length > 0) {
+	  reportsData = sbRows.map(r => ({
+		 plateNum:      r.plate_num       || '',
+		 clientName:    r.client_name     || '',
+		 phone:         r.phone           || '—',
+		 amount:        parseFloat(r.amount) || 0,
+		 cardNum:       r.card_num        || '',
+		 valet:         r.valet_name      || '',
+		 valetName:     r.valet_name      || '',
+		 serviceType:   r.service_type    || 'Free',
+		 vehicleStatus: r.vehicle_status  || 'Returned',
+		 opID:          r.op_id           || r.ref || '',
+		 date:          r.date            || '',
+		 ref:           r.op_id           || r.ref || '',
+		 _sbId:         r.id
+	  }));
+	  renderReports(reportsData);
+	}
+  } catch(e) { /* تجاهل الأخطاء الصامتة */ }
+}
+
+// 4. تحديث دالة renderReports لتعرض السيارات "المطلوبة" بشكل مميز
+function renderReports(rows) {
+  const el = document.getElementById('reports-list');
+  el.innerHTML = '';
+  
+  if(!rows.length) {
+	el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">No records found</div>';
+	return;
+  }
+
+  // استخدمنا Flexbox مع flex-direction: column للسماح باستخدام order (لرفع السيارات المطلوبة للأعلى)
+  el.style.display = 'flex';
+  el.style.flexDirection = 'column';
+
+  rows.forEach((r, i) => {
+	const status = String(r.vehicleStatus||'');
+	const isParked = status === 'Parked';
+	const isReq = status === 'Requested';
+	
+	const plateStr = String(r.plateNum  || '');
+	const cardStr  = String(r.cardNum   || '');
+	const clientStr= String(r.clientName|| '');
+	const valetStr = String(r.valet || r.valetName || '');
+	const svcStr   = String(r.serviceType || '');
+	const opIDStr  = String(r.opID || '');
+	
+	window._rptData = window._rptData || {};
+	window._rptData[i] = r;
+
+	// تشغيل الصوت إذا كانت السيارة مطلوبة ولم يتم التنبيه عنها مسبقاً
+	if (isReq && !notifiedRequests.has(opIDStr)) {
+	  valetAlertSound.play().catch(e => console.log('Autoplay prevented'));
+	  notifiedRequests.add(opIDStr);
+	}
+
+	let badgeClass = 'badge-done';
+	let statusText = 'Returned';
+	let borderColor= 'var(--green)';
+	let cardExtraClass = '';
+
+	if (isReq) {
+	  badgeClass = 'badge-requested';
+	  statusText = '⚡ مطلوب للعميل';
+	  borderColor= '#f59e0b';
+	  cardExtraClass = 'card-requested';
+	} else if (isParked) {
+	  badgeClass = 'badge-parked';
+	  statusText = 'Parked';
+	  borderColor= 'var(--amber)';
+	}
+
+	const div = document.createElement('div');
+	div.className = `inv-card ${cardExtraClass}`;
+	div.setAttribute('data-plate', plateStr);
+	div.setAttribute('data-card',  cardStr);
+	div.setAttribute('data-valet', valetStr.toLowerCase());
+	
+	div.innerHTML = `
+	  <div style="display:flex;">
+		<div style="width:4px;background:${borderColor};flex-shrink:0;border-radius:4px 0 0 4px;"></div>
+		<div style="padding:13px;flex:1;">
+		  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+			<span class="badge ${badgeClass}">${statusText}</span>
+			<span style="font-family:Fira Code,monospace;font-size:18px;font-weight:800;color:var(--text);">${plateStr||'—'}</span>
+		  </div>
+		  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Card</div>
+			  <div style="font-family:Fira Code,monospace;font-size:14px;font-weight:700;color:var(--text);">#${cardStr||'—'}</div>
+			</div>
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Service</div>
+			  <div style="font-size:12px;font-weight:700;color:${svcStr==='Free'?'var(--green)':'var(--gold)'};">${svcStr==='Free'?'Free':'19 SAR'}</div>
+			</div>
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Client</div>
+			  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${clientStr||'—'}</div>
+			</div>
+			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
+			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Staff</div>
+			  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${valetStr||'—'}</div>
+			</div>
+		  </div>
+		  
+		<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+			${isParked ? `<button onclick="updateVehicle('${plateStr}','${cardStr}','Requested')" style="flex:1;padding:7px;background:rgba(245, 158, 11, 0.1);border:1.5px solid rgba(245, 158, 11, 0.3);color:#d97706;font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg> طلب السيارة</button>` : ''}
+			
+			${(isParked || isReq) ? `<button onclick="updateVehicle('${plateStr}','${cardStr}','Returned')" style="flex:1;padding:7px;background:var(--green-bg);border:1.5px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> تم التسليم</button>` : ''}
+			
+			<button onclick="reExport(window._rptData[${i}])" class="btn-ghost" style="padding:7px;font-size:11px;justify-content:center;border-radius:6px;">Export</button>
+			<button onclick="deleteOperation('${plateStr}','${opIDStr}')" class="btn-ghost" style="color:var(--red);border-color:var(--red-border);padding:7px;font-size:11px;justify-content:center;border-radius:6px;">Del</button>
+		  </div>
+		</div>
+	  </div>
+	`;
+	el.appendChild(div);
+  });
+}
+
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -11889,7 +12155,7 @@ async function analyticsLoad(){
 	  + '&order=' + (config.dateField || 'id') + '.asc'
 	  + '&limit=5000';
 
-    var resp = await fetch(url, {
+	var resp = await fetch(url, {
 	    headers: {
 		  'apikey': SUPABASE_ANON,
 		  'Authorization': 'Bearer ' + SUPABASE_ANON,
@@ -12148,5 +12414,27 @@ function analyticsExportExcel(){
 		</div>
   </div>
 </div>
+
+<section id="universal-app-workspace" class="screen hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 9999; display: flex; flex-direction: column;">
+  
+  <div style="background: var(--surface); padding: 12px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+	<div style="display: flex; align-items: center; gap: 16px;">
+	  <button onclick="closeExternalApp()" style="background: var(--navy); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.2s;">
+		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+		Back to ERP
+	  </button>
+	  <div id="universal-app-title" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 15px; color: var(--navy);">
+		Loading...
+	  </div>
+	</div>
+	
+	<div style="font-family: 'Space Grotesk', sans-serif; font-weight: 800; color: var(--text3); font-size: 14px; letter-spacing: 1px;">
+	  OPERIX <span style="color: var(--gold);">APPS</span>
+	</div>
+  </div>
+
+  <iframe id="universal-app-frame" src="" style="flex: 1; width: 100%; height: 100%; border: none; background: var(--bg);"></iframe>
+  
+</section>
 </body>
 </html>
