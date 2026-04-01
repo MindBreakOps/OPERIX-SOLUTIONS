@@ -1930,6 +1930,22 @@ textarea.field { resize: none; line-height: 1.6; }
 	  }
 	</script>
   </section>
+	<section id="entertainment-workspace" class="screen hidden">
+  <div class="app-header">
+    <button onclick="openWorkspace(null)" class="back-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Workspaces</button>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);">Entertainment</div>
+    <button onclick="openEntJobModal()" class="btn-gold" style="padding:7px 13px;font-size:12px;">+ New Job</button>
+  </div>
+  <div style="max-width:700px;margin:0 auto;padding:14px 18px;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;">
+      <div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="kpi-ent-jobs" style="color:var(--blue);">0</div><div class="kpi-lbl">Total Jobs</div></div>
+      <div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="kpi-ent-people" style="color:var(--green);">0</div><div class="kpi-lbl">Units Sold</div></div>
+      <div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="kpi-ent-revenue" style="color:var(--gold);">SAR 0</div><div class="kpi-lbl">Revenue</div></div>
+    </div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px;">Active Jobs</div>
+    <div id="ent-job-list"></div>
+  </div>
+</section>
   <!-- TASKS WORKSPACE -->
   <section id="tasks-workspace" class="screen hidden">
 		<div class="app-header">
