@@ -1633,7 +1633,22 @@ textarea.field { resize: none; line-height: 1.6; }
 					   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
 					 </div>
 				   </div>
-				   <!-- Business Card Generatir -->
+				   <div class="workspace-card" id="ws-inventory-card" onclick="openWorkspace('inventory')" style="display: none; border-color: var(--gold-border);">
+					   <div style="display:flex;align-items:center;gap:15px;">
+						   <div style="width:50px;height:50px;border-radius:14px;background:rgba(154, 111, 40, 0.1);border:1.5px solid var(--gold-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+							   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+						   </div>
+						   <div style="flex:1;">
+							   <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;color:var(--text);">Assets & Inventory</div>
+							   <div style="font-size:11px;color:var(--text3);margin-top:2px;">Stock tracking · Equipment assignment</div>
+							   <div style="margin-top:7px;display:flex;gap:5px;">
+								   <span class="tag tag-gold">Cafe Stock</span>
+								   <span class="tag tag-blue">Valet Equip</span>
+							   </div>
+						   </div>
+						   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+					   </div>
+				   </div>				   <!-- Business Card Generatir -->
 				  <div class="workspace-card" onclick="openWorkspace('idcard')">
 					<div style="display:flex;align-items:center;gap:15px;">
 					  <div style="width:50px;height:50px;border-radius:14px;background:var(--gold-bg);border:1.5px solid var(--gold-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -2051,6 +2066,130 @@ textarea.field { resize: none; line-height: 1.6; }
 		</div>
 	</div>
 </section>
+<section id="inventory-workspace" class="screen hidden">
+	<div class="app-header">
+		<button onclick="openWorkspace(null)" class="back-btn">
+			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Workspaces
+		</button>
+		<div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);">Inventory</div>
+		<button class="btn-gold" onclick="invOpenAddModal()" style="padding:7px 13px; font-size:12px;">+ Add Item</button>
+	</div>
+
+	<div style="max-width:1200px; margin:0 auto; padding:20px; display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start;">
+		<div style="width: 240px; background: var(--glass); border: 1.5px solid var(--glass-border); border-radius: var(--r2); padding: 20px; box-shadow: var(--shadow); backdrop-filter: blur(12px); flex-shrink: 0;">
+			<div style="font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.1em;">Categories</div>
+			<div style="display:flex; flex-direction:column; gap:5px;">
+				<button class="acc-tab active" id="inv-filter-all" onclick="invFilterItems('All', this)" style="text-align:left; border:none; padding:10px 14px;">All Assets</button>
+				<button class="acc-tab" id="inv-filter-valet" onclick="invFilterItems('Valet Equipment', this)" style="text-align:left; border:none; padding:10px 14px;">Valet Equipment</button>
+				<button class="acc-tab" id="inv-filter-cafe" onclick="invFilterItems('Cafe Stock', this)" style="text-align:left; border:none; padding:10px 14px;">Cafe Stock</button>
+			</div>
+			
+			<div style="font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-top: 25px; margin-bottom: 15px; letter-spacing: 0.1em;">Alerts</div>
+			<button class="acc-tab" id="inv-filter-alerts" onclick="invFilterItems('Alerts', this)" style="text-align:left; border:none; padding:10px 14px; color: var(--red);">⚠️ Shortages Only</button>
+		</div>
+
+		<div style="flex:1; min-width: 300px;">
+			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px;">
+				<div class="card" style="display:flex; align-items:center; justify-content:space-between; padding:18px;">
+					<div>
+						<div style="font-family:var(--font-mono); font-size:26px; font-weight:800; color:var(--text);" id="inv-stat-total">0</div>
+						<div style="font-size:11px; color:var(--text3); font-weight:700; text-transform:uppercase; margin-top:4px;">Total Items</div>
+					</div>
+					<div style="width:40px; height:40px; border-radius:10px; background:var(--gold-bg); color:var(--gold); display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+				</div>
+				<div class="card" style="display:flex; align-items:center; justify-content:space-between; padding:18px;">
+					<div>
+						<div style="font-family:var(--font-mono); font-size:26px; font-weight:800; color:var(--blue);" id="inv-stat-valet">0</div>
+						<div style="font-size:11px; color:var(--text3); font-weight:700; text-transform:uppercase; margin-top:4px;">Assets in Use</div>
+					</div>
+					<div style="width:40px; height:40px; border-radius:10px; background:var(--blue-bg); color:var(--blue); display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+				</div>
+				<div class="card" style="display:flex; align-items:center; justify-content:space-between; padding:18px;">
+					<div>
+						<div style="font-family:var(--font-mono); font-size:26px; font-weight:800; color:var(--red);" id="inv-stat-alerts">0</div>
+						<div style="font-size:11px; color:var(--text3); font-weight:700; text-transform:uppercase; margin-top:4px;">Reorder Needed</div>
+					</div>
+					<div style="width:40px; height:40px; border-radius:10px; background:var(--red-bg); color:var(--red); display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+				</div>
+			</div>
+
+			<div id="inv-loading" style="text-align:center; padding:40px; color:var(--text3); font-size:13px;">Loading inventory...</div>
+			<div id="inv-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px;"></div>
+		</div>
+	</div>
+</section>
+
+<div class="modal-overlay hidden" id="inv-add-modal">
+	<div class="modal-box" style="padding:25px;">
+		<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+			<h3 style="font-family:var(--font-ui);font-weight:800;color:var(--text);font-size:18px;margin:0;">Add New Item</h3>
+			<button onclick="invCloseAddModal()" style="background:transparent;border:none;cursor:pointer;color:var(--text3);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+		</div>
+		
+		<div style="display:flex;flex-direction:column;gap:15px;">
+			<div>
+				<label class="field-label">Item Name</label>
+				<input type="text" id="inv-add-name" class="field" placeholder="e.g., Radio Walkie Talkie">
+			</div>
+			<div>
+				<label class="field-label">Category</label>
+				<select id="inv-add-category" class="field">
+					<option value="Valet Equipment">Valet Equipment</option>
+					<option value="Cafe Stock">Cafe Stock</option>
+				</select>
+			</div>
+			<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+				<div>
+					<label class="field-label">Initial Quantity</label>
+					<input type="number" id="inv-add-qty" class="field" min="0" value="0">
+				</div>
+				<div>
+					<label class="field-label">Unit</label>
+					<input type="text" id="inv-add-unit" class="field" placeholder="e.g., pcs, kg, boxes">
+				</div>
+			</div>
+			<div>
+				<label class="field-label">Low Stock Alert Threshold</label>
+				<input type="number" id="inv-add-alert" class="field" min="0" value="5">
+			</div>
+		</div>
+		
+		<button class="btn-dark" id="btn-inv-add-submit" onclick="invSubmitNewItem()" style="width:100%; padding:13px; font-size:14px; margin-top:20px;">Save Item</button>
+	</div>
+</div>
+
+<div class="modal-overlay hidden" id="inv-action-modal">
+	<div class="modal-box" style="padding:25px;">
+		<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+			<div>
+				<h3 id="inv-modal-title" style="font-family:var(--font-ui);font-weight:800;color:var(--text);font-size:18px;margin:0;">Action</h3>
+				<div id="inv-modal-subtitle" style="font-size:12px;color:var(--text3);margin-top:2px;">Item Name</div>
+			</div>
+			<button onclick="invCloseActionModal()" style="background:transparent;border:none;cursor:pointer;color:var(--text3);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+		</div>
+
+		<input type="hidden" id="inv-modal-item-id">
+		<input type="hidden" id="inv-modal-action-type">
+		<input type="hidden" id="inv-modal-current-qty">
+		
+		<div style="display:flex;flex-direction:column;gap:15px;">
+			<div>
+				<label class="field-label">Employee Name</label>
+				<input type="text" id="inv-modal-emp-name" class="field" placeholder="e.g., John Doe">
+			</div>
+			<div>
+				<label class="field-label">Quantity</label>
+				<input type="number" id="inv-modal-qty" class="field" min="1" value="1">
+			</div>
+			<div>
+				<label class="field-label">Notes (Optional)</label>
+				<input type="text" id="inv-modal-notes" class="field" placeholder="Reason for action or item condition">
+			</div>
+		</div>
+		
+		<button class="btn-gold" id="btn-inv-action-submit" onclick="invSubmitAction()" style="width:100%; padding:13px; font-size:14px; margin-top:20px;">Confirm Action</button>
+	</div>
+</div>
   <!-- TASKS WORKSPACE -->
   <section id="tasks-workspace" class="screen hidden">
 		<div class="app-header">
@@ -5726,17 +5865,29 @@ function showWorkspaceSelector(){
   document.getElementById('workspace-selector').classList.remove('hidden');
   document.getElementById('ws-username').innerText  = currentUser.name;
   document.getElementById('ws-role-hint').innerText = currentUser.role;
-  document.getElementById('ws-accounting-card').style.display = isAdmin()?'block':'none';
-  document.getElementById('ws-admin-card').style.display      = isAdmin()?'block':'none';
-  document.getElementById('ws-analytics-card').style.display  = isAdmin()?'block':'none';
+  
+  // Admin-only boards
+  document.getElementById('ws-accounting-card').style.display = isAdmin() ? 'block' : 'none';
+  document.getElementById('ws-admin-card').style.display      = isAdmin() ? 'block' : 'none';
+  document.getElementById('ws-analytics-card').style.display  = isAdmin() ? 'block' : 'none';
+  
+  // Manager or Admin boards
   var isManagerOrAdmin = currentUser && (['admin','manager','system manager'].indexOf((currentUser.role||'').toLowerCase()) !== -1);
   document.getElementById('ws-perf-card').style.display = isManagerOrAdmin ? 'block' : 'none';
+  
+  // ---> NEW INVENTORY CARD CHECK GOES HERE <---
+  const invCard = document.getElementById('ws-inventory-card');
+  if(invCard) invCard.style.display = isManagerOrAdmin ? 'block' : 'none';
+  
   refreshAllUserAvatars();
+  
   // Refresh mail unread badge on workspace card
   if(currentUser) updateMailBadges().catch(()=>{});
+  
   // Entertainment role: restricted to Entertainment, HR, Tasks only
   var isEnt    = currentUser && (currentUser.role||'').toLowerCase() === 'entertainment';
   var isArtist = currentUser && (currentUser.role||'').toLowerCase() === 'artist';
+  
   document.getElementById('workspace-selector').querySelectorAll('.workspace-card').forEach(function(card){
 	if(isEnt || isArtist) {
 	  var onclick = card.getAttribute('onclick') || '';
@@ -5746,11 +5897,13 @@ function showWorkspaceSelector(){
 	  if(!card.style.display || card.style.display === 'none') {/* keep existing visibility rules */} else { card.style.display = ''; }
 	}
   });
+  
   if(isEnt || isArtist) {
 	document.getElementById('ws-accounting-card').style.display = 'none';
 	document.getElementById('ws-admin-card').style.display = 'none';
-document.getElementById('ws-analytics-card').style.display = 'none';
+	document.getElementById('ws-analytics-card').style.display = 'none';
 	document.getElementById('ws-perf-card').style.display = 'none';
+	if(invCard) invCard.style.display = 'none'; // Ensure it stays hidden for entertainment roles
   }
 }
 
@@ -5829,6 +5982,12 @@ function openWorkspace(ws){
 		setTimeout(() => { 
 			if (typeof initMaintenanceApp === 'function') initMaintenanceApp(); 
 		}, 50);
+  }
+  // Add this right next to your other else if blocks
+  else if(ws === 'inventory') {
+	  if(!isAdmin()) { alert('Access restricted to administrators and managers only.'); return; }
+	  document.getElementById('inventory-workspace').classList.remove('hidden');
+	  initInventoryApp(); // Will trigger the data load
   }
 }
 function openProject(pid){
@@ -11973,7 +12132,247 @@ setInterval(() => {
 }, 7000);
 
 // دالة لتحديث البيانات بصمت بدون إظهار كلمة "Loading..."
+// ==========================================
+// INVENTORY WORKSPACE LOGIC
+// ==========================================
 
+let _inventoryData = [];
+let _invCurrentFilter = 'All';
+
+async function initInventoryApp() {
+	_invCurrentFilter = 'All';
+	invFilterItems('All', document.getElementById('inv-filter-all'));
+}
+
+async function fetchInventoryData() {
+	const loading = document.getElementById('inv-loading');
+	const list = document.getElementById('inv-list');
+	
+	list.style.display = 'none';
+	loading.style.display = 'block';
+	
+	try {
+		_inventoryData = await sbFetch('operix_inventory?order=category.asc', {method: 'GET'});
+		invUpdateStats();
+		invRenderItems();
+	} catch(e) {
+		loading.innerHTML = '<span style="color:var(--red);">Error loading inventory: ' + e.message + '</span>';
+	}
+}
+
+function invUpdateStats() {
+	let total = _inventoryData.length;
+	let inUse = 0;
+	let alerts = 0;
+
+	_inventoryData.forEach(item => {
+		inUse += (item.total_quantity - item.current_quantity);
+		if(item.current_quantity <= item.alert_threshold) alerts++;
+	});
+
+	const elTotal = document.getElementById('inv-stat-total');
+	const elValet = document.getElementById('inv-stat-valet');
+	const elAlerts = document.getElementById('inv-stat-alerts');
+
+	if(elTotal) elTotal.innerText = total;
+	if(elValet) elValet.innerText = inUse;
+	if(elAlerts) elAlerts.innerText = alerts;
+}
+
+function invFilterItems(filterStr, btnElement) {
+	// UI Button Updates
+	const buttons = ['inv-filter-all', 'inv-filter-valet', 'inv-filter-cafe', 'inv-filter-alerts'];
+	buttons.forEach(id => {
+		const btn = document.getElementById(id);
+		if(btn) btn.classList.remove('active');
+	});
+	if (btnElement) btnElement.classList.add('active');
+
+	_invCurrentFilter = filterStr;
+	fetchInventoryData(); // Triggers fetch and render
+}
+
+function invRenderItems() {
+	const list = document.getElementById('inv-list');
+	const loading = document.getElementById('inv-loading');
+	
+	list.innerHTML = '';
+	loading.style.display = 'none';
+	list.style.display = 'grid';
+
+	const filtered = _inventoryData.filter(item => {
+		if(_invCurrentFilter === 'All') return true;
+		if(_invCurrentFilter === 'Alerts') return item.current_quantity <= item.alert_threshold;
+		return item.category === _invCurrentFilter;
+	});
+
+	if(filtered.length === 0) {
+		list.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text3); font-size:13px;">No matching items found.</div>';
+		return;
+	}
+
+	filtered.forEach(item => {
+		const isAlert = item.current_quantity <= item.alert_threshold;
+		const isValet = item.category === 'Valet Equipment';
+		const badgeClass = isValet ? 'tag-blue' : 'tag-gold';
+		const badgeText = isValet ? 'Equipment' : 'Cafe Supplies';
+		const borderColor = isAlert ? 'var(--red)' : (isValet ? 'var(--blue)' : 'var(--gold)');
+
+		let buttonsHtml = '';
+		if(isValet) {
+			buttonsHtml = `
+				<button onclick="invOpenActionModal('${item.id}', 'Check-Out', 'Check-Out Equipment')" style="flex:1; padding:8px; background:rgba(30, 45, 64, 0.05); border:1px solid rgba(30, 45, 64, 0.1); border-radius:6px; font-weight:700; font-size:11px; color:var(--text); cursor:pointer;">Out 📤</button>
+				<button onclick="invOpenActionModal('${item.id}', 'Check-In', 'Check-In Equipment')" style="flex:1; padding:8px; background:var(--green-bg); border:1px solid var(--green-border); border-radius:6px; font-weight:700; font-size:11px; color:var(--green); cursor:pointer;">In 📥</button>
+			`;
+		} else {
+			buttonsHtml = `
+				<button onclick="invOpenActionModal('${item.id}', 'Consume', 'Deduct Daily Consumption')" style="flex:1; padding:8px; background:rgba(30, 45, 64, 0.05); border:1px solid rgba(30, 45, 64, 0.1); border-radius:6px; font-weight:700; font-size:11px; color:var(--text); cursor:pointer;">Consume ☕</button>
+				<button onclick="invOpenActionModal('${item.id}', 'Restock', 'Add New Stock')" style="flex:1; padding:8px; background:var(--green-bg); border:1px solid var(--green-border); border-radius:6px; font-weight:700; font-size:11px; color:var(--green); cursor:pointer;">Restock 📦</button>
+			`;
+		}
+
+		const itemUnit = item.unit || 'pcs';
+
+		list.innerHTML += `
+			<div class="card" style="border-left: 4px solid ${borderColor}; padding: 18px; position:relative;">
+				<button title="Delete Item" onclick="invDeleteItem('${item.id}', '${item.item_name}')" style="position:absolute; top:12px; left:12px; background:var(--red-bg); border:none; color:var(--red); padding:4px; border-radius:6px; cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+				
+				<div style="display:flex; justify-content:flex-end;"><span class="tag ${badgeClass}">${badgeText}</span></div>
+				<div style="font-family:var(--font-ui); font-size:16px; font-weight:800; color:var(--text); margin-top:8px; margin-bottom:20px; padding-left:25px;">${item.item_name}</div>
+				
+				<div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed var(--border2);">
+					<div>
+						<span style="font-family:var(--font-mono); font-size:30px; font-weight:800; color:${isAlert ? 'var(--red)' : 'var(--text)'};">${item.current_quantity}</span>
+						<span style="font-size:12px; font-weight:600; color:var(--text3); margin-left:4px;">${itemUnit}</span>
+					</div>
+					${isAlert 
+					 ? `<div style="font-size:10px; font-weight:800; color:var(--red); text-transform:uppercase; display:flex; align-items:center; gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Low Stock</div>`
+					 : `<div style="font-size:10px; font-weight:800; color:var(--green); text-transform:uppercase; display:flex; align-items:center; gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> In Stock</div>`
+					}
+				</div>
+				
+				<div style="display:flex; gap:8px;">${buttonsHtml}</div>
+			</div>
+		`;
+	});
+}
+
+// --- DELETE ITEM LOGIC ---
+async function invDeleteItem(id, name) {
+	if(!confirm(`Are you sure you want to permanently delete "${name}"?`)) return;
+	try {
+		await sbFetch(`operix_inventory?id=eq.${id}`, { method: 'DELETE' });
+		fetchInventoryData();
+	} catch(e) { alert('Error deleting item: ' + e.message); }
+}
+
+// --- ADD ITEM LOGIC ---
+function invOpenAddModal() {
+	document.getElementById('inv-add-name').value = '';
+	document.getElementById('inv-add-qty').value = '0';
+	document.getElementById('inv-add-unit').value = '';
+	document.getElementById('inv-add-alert').value = '5';
+	document.getElementById('inv-add-modal').classList.remove('hidden');
+}
+
+function invCloseAddModal() {
+	document.getElementById('inv-add-modal').classList.add('hidden');
+}
+
+async function invSubmitNewItem() {
+	const name = document.getElementById('inv-add-name').value.trim();
+	const category = document.getElementById('inv-add-category').value;
+	const qty = parseInt(document.getElementById('inv-add-qty').value) || 0;
+	const unit = document.getElementById('inv-add-unit').value.trim() || 'pcs';
+	const alertThreshold = parseInt(document.getElementById('inv-add-alert').value) || 0;
+
+	if(!name) return alert('Please enter a valid item name.');
+
+	const btn = document.getElementById('btn-inv-add-submit');
+	btn.disabled = true; btn.innerText = 'Saving...';
+
+	try {
+		await sbFetch('operix_inventory', {
+			method: 'POST',
+			body: JSON.stringify({
+				item_name: name, category: category,
+				current_quantity: qty, total_quantity: qty,
+				unit: unit, alert_threshold: alertThreshold
+			})
+		});
+		invCloseAddModal();
+		fetchInventoryData();
+	} catch(e) {
+		alert('Error adding new item: ' + e.message);
+	} finally {
+		btn.disabled = false; btn.innerText = 'Save Item';
+	}
+}
+
+// --- STOCK ACTION LOGIC (In/Out/Consume) ---
+function invOpenActionModal(id, actionType, titleStr) {
+	const item = _inventoryData.find(i => i.id === id);
+	document.getElementById('inv-modal-item-id').value = id;
+	document.getElementById('inv-modal-action-type').value = actionType;
+	document.getElementById('inv-modal-current-qty').value = item.current_quantity;
+	
+	document.getElementById('inv-modal-title').innerText = titleStr;
+	document.getElementById('inv-modal-subtitle').innerText = item.item_name;
+	
+	document.getElementById('inv-modal-emp-name').value = (window.currentUser && window.currentUser.name) ? window.currentUser.name : '';
+	document.getElementById('inv-modal-qty').value = 1;
+	document.getElementById('inv-modal-notes').value = '';
+	
+	document.getElementById('inv-action-modal').classList.remove('hidden');
+}
+
+function invCloseActionModal() {
+	document.getElementById('inv-action-modal').classList.add('hidden');
+}
+
+async function invSubmitAction() {
+	const id = document.getElementById('inv-modal-item-id').value;
+	const action = document.getElementById('inv-modal-action-type').value;
+	const currentQty = parseInt(document.getElementById('inv-modal-current-qty').value);
+	
+	const empName = document.getElementById('inv-modal-emp-name').value.trim();
+	const qtyInput = parseInt(document.getElementById('inv-modal-qty').value);
+	const notes = document.getElementById('inv-modal-notes').value;
+	
+	if(!empName || isNaN(qtyInput) || qtyInput <= 0) return alert('Please enter a valid name and quantity.');
+	
+	let newQty = currentQty;
+	if(action === 'Check-Out' || action === 'Consume') {
+		if(qtyInput > currentQty) return alert('Requested quantity exceeds available stock!');
+		newQty = currentQty - qtyInput;
+	} else if(action === 'Check-In' || action === 'Restock') {
+		newQty = currentQty + qtyInput;
+	}
+
+	const btn = document.getElementById('btn-inv-action-submit');
+	btn.disabled = true; btn.innerText = 'Processing...';
+
+	try {
+		await sbFetch(`operix_inventory?id=eq.${id}`, {
+			method: 'PATCH', body: JSON.stringify({ current_quantity: newQty })
+		});
+
+		await sbFetch('operix_asset_logs', {
+			method: 'POST',
+			body: JSON.stringify({
+				item_id: id, action_type: action,
+				quantity: qtyInput, employee_name: empName, notes: notes
+			})
+		});
+
+		invCloseActionModal();
+		fetchInventoryData();
+	} catch(e) {
+		alert('Error processing action: ' + e.message);
+	} finally {
+		btn.disabled = false; btn.innerText = 'Confirm Action';
+	}
+}
 
 </script>
 
