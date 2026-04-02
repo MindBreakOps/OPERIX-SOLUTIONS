@@ -1598,6 +1598,22 @@ textarea.field { resize: none; line-height: 1.6; }
 						   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
 						 </div>
 				   </div>
+				   <div class="workspace-card" onclick="openWorkspace('maintenance')">
+					   <div style="display:flex;align-items:center;gap:15px;">
+						   <div style="width:50px;height:50px;border-radius:14px;background:rgba(245,158,11,0.1);border:1.5px solid rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+							   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+						   </div>
+						   <div style="flex:1;">
+							   <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;color:var(--text);">Maintenance</div>
+							   <div style="font-size:11px;color:var(--text3);margin-top:2px;">Report Issues · Ticket Logs</div>
+							   <div style="margin-top:7px;display:flex;gap:5px;">
+								   <span class="tag" style="background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.2);">Reports</span>
+								   <span class="tag tag-red">Tickets</span>
+							   </div>
+						   </div>
+						   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+					   </div>
+				   </div>
 				   <!--- entertainment -->
 				   <div class="workspace-card" onclick="openWorkspace('entertainment')" style="border-color:var(--red-border);">
 					 <div style="display:flex;align-items:center;gap:15px;">
@@ -1669,6 +1685,7 @@ textarea.field { resize: none; line-height: 1.6; }
 						   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
 						 </div>
 				   </div>
+				   
 						 <!-- Tasks Board — all users -->
 						 <div class="workspace-card" id="ws-tasks-card" onclick="openWorkspace('tasks')">
 						   <div style="display:flex;align-items:center;gap:15px;">
@@ -1932,19 +1949,107 @@ textarea.field { resize: none; line-height: 1.6; }
   </section>
 	<section id="entertainment-workspace" class="screen hidden">
   <div class="app-header">
-    <button onclick="openWorkspace(null)" class="back-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Workspaces</button>
-    <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);">Entertainment</div>
-    <button onclick="openEntJobModal()" class="btn-gold" style="padding:7px 13px;font-size:12px;">+ New Job</button>
+	<button onclick="openWorkspace(null)" class="back-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Workspaces</button>
+	<div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);">Entertainment</div>
+	<button onclick="openEntJobModal()" class="btn-gold" style="padding:7px 13px;font-size:12px;">+ New Job</button>
   </div>
   <div style="max-width:700px;margin:0 auto;padding:14px 18px;">
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;">
-      <div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="kpi-ent-jobs" style="color:var(--blue);">0</div><div class="kpi-lbl">Total Jobs</div></div>
-      <div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="kpi-ent-people" style="color:var(--green);">0</div><div class="kpi-lbl">Units Sold</div></div>
-      <div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="kpi-ent-revenue" style="color:var(--gold);">SAR 0</div><div class="kpi-lbl">Revenue</div></div>
-    </div>
-    <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px;">Active Jobs</div>
-    <div id="ent-job-list"></div>
+	<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;">
+	  <div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="kpi-ent-jobs" style="color:var(--blue);">0</div><div class="kpi-lbl">Total Jobs</div></div>
+	  <div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="kpi-ent-people" style="color:var(--green);">0</div><div class="kpi-lbl">Units Sold</div></div>
+	  <div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="kpi-ent-revenue" style="color:var(--gold);">SAR 0</div><div class="kpi-lbl">Revenue</div></div>
+	</div>
+	<div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px;">Active Jobs</div>
+	<div id="ent-job-list"></div>
   </div>
+</section>
+
+<section id="maintenance-workspace" class="screen hidden">
+	<div class="app-header">
+		<button onclick="openWorkspace(null)" class="back-btn">
+			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Workspaces
+		</button>
+		<div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);">Maintenance</div>
+		<div style="width:80px;"></div>
+	</div>
+	
+	<div style="max-width:800px;margin:0 auto;padding:20px;">
+		<div style="display:flex;gap:6px;margin-bottom:20px;background:var(--glass2);border:1px solid var(--glass-border);border-radius:var(--r2);padding:4px;backdrop-filter:blur(12px);">
+			<button id="btn-maint-staff" class="acc-tab active" onclick="switchMaintRole('staff')" style="flex:1;border:none;">Report (Staff)</button>
+			<button id="btn-maint-manager" class="acc-tab" onclick="switchMaintRole('manager')" style="flex:1;border:none;">Management</button>
+		</div>
+
+		<div id="maint-view-staff">
+			<div class="card">
+				<h2 style="color: var(--text); margin-bottom: 5px; font-weight: 800; font-family:'Space Grotesk',sans-serif; font-size:18px;">Report an Issue</h2>
+				<p style="color: var(--text3); font-size: 12px; margin-bottom: 20px;">Please fill out the details accurately so the maintenance team can resolve it quickly.</p>
+				
+				<div style="margin-bottom:15px;">
+					<label class="field-label">Employee / Reporter Name</label>
+					<input type="text" id="maint-f-name" class="field" placeholder="Your name and job title">
+				</div>
+				
+				<div style="margin-bottom:15px;">
+					<label class="field-label">What is the issue? (Short Title)</label>
+					<input type="text" id="maint-f-title" class="field" placeholder="e.g., car accident , attendance problem...">
+				</div>
+
+				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom:15px;">
+					<div>
+						<label class="field-label">Category</label>
+						<select id="maint-f-category" class="field">
+							<option value="Valet Operations">Valet Operations (Keys, Vehicles, Damage)</option>
+							<option value="ANPR & Equipment">ANPR & Equipment (Scanners, Gates, Cameras)</option>
+							<option value="Staffing & HR">Staffing & HR (Attendance, Uniforms, Conduct)</option>
+							<option value="Site & Facility">Site & Facility (Parking lot, Signage, Cones)</option>
+							<option value="Customer Incident">Customer Incident / Complaint</option>
+							<option value="General Ops">Other / General Operations</option>
+						</select>
+					</div>
+					<div>
+						<label class="field-label">Priority</label>
+						<select id="maint-f-priority" class="field">
+							<option value="Normal">Normal</option>
+							<option value="Medium" selected>Medium</option>
+							<option value="High">High</option>
+							<option value="Emergency">Emergency (Work stopped)</option>
+						</select>
+					</div>
+				</div>
+
+				<div style="margin-bottom:15px;">
+					<label class="field-label">Exact Location</label>
+					<input type="text" id="maint-f-location" class="field" placeholder="e.g., Restrooms near Gate 2">
+				</div>
+
+				<div style="margin-bottom:20px;">
+					<label class="field-label">Additional Details</label>
+					<textarea id="maint-f-desc" class="field" placeholder="Describe the issue in detail..." style="min-height:100px;"></textarea>
+				</div>
+
+				<button id="btn-maint-submit" class="btn-dark" onclick="submitMaintTicket()" style="width:100%;padding:13px;font-size:14px;">Submit Report</button>
+			</div>
+		</div>
+
+		<div id="maint-view-manager" class="hidden">
+			<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+				<div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="maint-stat-open" style="color:var(--red);">0</div><div class="kpi-lbl">Open Tickets</div></div>
+				<div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="maint-stat-prog" style="color:var(--amber);">0</div><div class="kpi-lbl">In Progress</div></div>
+				<div class="kpi-card" style="text-align:center;"><div class="kpi-num" id="maint-stat-done" style="color:var(--green);">0</div><div class="kpi-lbl">Resolved</div></div>
+			</div>
+
+			<div class="card" style="padding: 20px;">
+				<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+					<h3 style="font-weight:800; color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:16px;">Tickets Log</h3>
+					<button onclick="loadMaintTickets()" style="background:var(--surface2); border:1px solid var(--border2); padding:6px; border-radius:8px; cursor:pointer; color:var(--text3);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></button>
+				</div>
+				
+				<div id="maint-tickets-list" style="display: flex; flex-direction: column; gap: 10px;">
+					<div style="text-align:center;color:var(--text3);font-size:12px;">Loading...</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
   <!-- TASKS WORKSPACE -->
   <section id="tasks-workspace" class="screen hidden">
@@ -4557,6 +4662,231 @@ function drawQR(divId, value, size=120){
   } catch(e){ console.warn('QR error', e); }
 }
 
+// ==========================================
+// MAINTENANCE WORKSPACE LOGIC
+// ==========================================
+
+function initMaintenanceApp() {
+	// 1. Use your Suite's proven global isAdmin() function
+	let isAuthorized = false;
+	
+	if (typeof isAdmin === 'function' && isAdmin()) {
+		isAuthorized = true; // Admin or System Manager
+	} else if (typeof currentUser !== 'undefined' && currentUser && (currentUser.role || '').toLowerCase() === 'manager') {
+		isAuthorized = true; // Regular Manager
+	}
+
+	// 2. Auto-fill the employee's name
+	if (typeof currentUser !== 'undefined' && currentUser && currentUser.name) {
+		const nameInput = document.getElementById('maint-f-name');
+		if (nameInput) nameInput.value = currentUser.name;
+	}
+
+	const btnManager = document.getElementById('btn-maint-manager');
+
+	// 3. Force the correct view
+	if (isAuthorized) {
+		if (btnManager) btnManager.style.display = 'block'; // Make sure the tab is visible
+		switchMaintRole('manager');
+	} else {
+		if (btnManager) btnManager.style.display = 'none'; // Lock out regular staff
+		switchMaintRole('staff');
+	}
+}
+
+function switchMaintRole(role) {
+	// Check authorization again for security
+	let isAuthorized = false;
+	if (typeof isAdmin === 'function' && isAdmin()) {
+		isAuthorized = true;
+	} else if (typeof currentUser !== 'undefined' && currentUser && (currentUser.role || '').toLowerCase() === 'manager') {
+		isAuthorized = true;
+	}
+
+	// Reject staff trying to click the manager tab
+	if (role === 'manager' && !isAuthorized) {
+		alert("Access Denied: You do not have management privileges.");
+		return;
+	}
+
+	// Reset button states safely
+	const btnStaff = document.getElementById('btn-maint-staff');
+	const btnManager = document.getElementById('btn-maint-manager');
+	const viewStaff = document.getElementById('maint-view-staff');
+	const viewManager = document.getElementById('maint-view-manager');
+
+	if (btnStaff) btnStaff.classList.remove('active');
+	if (btnManager) btnManager.classList.remove('active');
+	
+	// Switch views
+	if(role === 'staff') {
+		if (btnStaff) btnStaff.classList.add('active');
+		if (viewStaff) viewStaff.style.display = 'block';
+		if (viewManager) viewManager.style.display = 'none';
+	} else {
+		if (btnManager) btnManager.classList.add('active');
+		if (viewStaff) viewStaff.style.display = 'none';
+		if (viewManager) viewManager.style.display = 'block';
+		loadMaintTickets();
+	}
+}
+
+async function submitMaintTicket() {
+	const name = document.getElementById('maint-f-name').value.trim();
+	const title = document.getElementById('maint-f-title').value.trim();
+	const category = document.getElementById('maint-f-category').value;
+	const priority = document.getElementById('maint-f-priority').value;
+	const location = document.getElementById('maint-f-location').value.trim();
+	const desc = document.getElementById('maint-f-desc').value.trim();
+
+	if(!name || !title || !location) return alert('Please complete Name, Title, and Exact Location.');
+
+	const btn = document.getElementById('btn-maint-submit');
+	btn.disabled = true;
+	btn.innerText = 'Submitting...';
+
+	try {
+		await sbFetch('operix_maintenance_tickets', {
+			method: 'POST',
+			body: JSON.stringify({
+				title: title,
+				description: desc,
+				location: location,
+				category: category,
+				priority: priority,
+				reported_by: name,
+				status: 'Open'
+			})
+		});
+		
+		alert('Report submitted successfully! Thank you.');
+		document.getElementById('maint-f-title').value = '';
+		document.getElementById('maint-f-location').value = '';
+		document.getElementById('maint-f-desc').value = '';
+		
+	} catch(e) {
+		alert('An error occurred while submitting the report.');
+	} finally {
+		btn.disabled = false;
+		btn.innerText = 'Submit Report';
+	}
+}
+
+async function loadMaintTickets() {
+	const list = document.getElementById('maint-tickets-list');
+	list.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:12px;padding:20px;">Loading tickets...</div>';
+	
+	try {
+		const tickets = await sbFetch('operix_maintenance_tickets?order=created_at.desc', {method: 'GET'});
+		
+		let open = 0, prog = 0, done = 0;
+		tickets.forEach(t => {
+			if(t.status === 'Open') open++;
+			else if(t.status === 'In Progress') prog++;
+			else done++;
+		});
+		document.getElementById('maint-stat-open').innerText = open;
+		document.getElementById('maint-stat-prog').innerText = prog;
+		document.getElementById('maint-stat-done').innerText = done;
+
+		list.innerHTML = '';
+		if(tickets.length === 0) {
+			list.innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--text3); font-size:13px;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 10px;display:block;opacity:0.4;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>No tickets found.</div>';
+			return;
+		}
+
+		tickets.forEach(t => {
+			const dateStr = new Date(t.created_at).toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'numeric'});
+			
+			let borderLeft = 'var(--red)';
+			if(t.status === 'In Progress') borderLeft = 'var(--amber)';
+			if(t.status === 'Resolved') borderLeft = 'var(--green)';
+			
+			let badgeBg = 'rgba(156,163,175,0.1)', badgeCol = '#6b7280';
+			if(t.priority==='Emergency') {badgeBg='var(--red-bg)'; badgeCol='var(--red)';}
+			else if(t.priority==='High') {badgeBg='var(--amber-bg)'; badgeCol='var(--amber)';}
+			else if(t.priority==='Medium') {badgeBg='var(--blue-bg)'; badgeCol='var(--blue)';}
+
+			list.innerHTML += `
+				<div style="background:var(--glass2); border:1px solid var(--border2); border-left:4px solid ${borderLeft}; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:10px; margin-bottom:12px; box-shadow:var(--shadow); transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.boxShadow='var(--shadow)'; this.style.transform='none';">
+					
+					<div style="display:flex; justify-content:space-between; align-items:flex-start;">
+						<div>
+							<div style="font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:800; color:var(--text);">${t.title}</div>
+							<div style="font-size:11px; color:var(--text3); display:flex; align-items:center; gap:5px; margin-top:4px;">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+								${t.location} <span style="opacity:0.5;">|</span> ${t.category}
+							</div>
+						</div>
+						<span class="badge" style="background:${badgeBg}; color:${badgeCol}; border:1px solid ${badgeCol}33; font-size:9px; padding:3px 8px;">${t.priority}</span>
+					</div>
+					
+					<div style="font-size:13px; color:var(--text2); line-height:1.5; background:rgba(255,255,255,0.05); padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.03);">${t.description || '<span style="opacity:0.5;font-style:italic;">No additional details provided.</span>'}</div>
+					
+					<div style="border-top:1px dashed var(--border2); padding-top:12px; display:flex; justify-content:space-between; align-items:flex-end; margin-top:2px;">
+						<div style="font-size:11px; color:var(--text3); font-weight:600; display:flex; flex-direction:column; gap:5px;">
+							<div style="display:flex; align-items:center; gap:6px;">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+								<span style="color:var(--text2);">${t.reported_by}</span>
+							</div>
+							<div style="display:flex; align-items:center; gap:6px;">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+								${dateStr}
+							</div>
+						</div>
+						
+						<div style="display:flex; align-items:center; gap:8px;">
+							<select class="field" style="width:auto; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer;" onchange="updateMaintStatus('${t.id}', this.value)">
+								<option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option>
+								<option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+								<option value="Resolved" ${t.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+							</select>
+							
+							<button onclick="deleteMaintTicket('${t.id}')" style="padding:6px 10px; background:var(--red-bg); border:1px solid var(--red-border); color:var(--red); font-size:11px; font-weight:700; border-radius:8px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; display:flex; align-items:center; gap:4px; transition:all 0.15s;" onmouseover="this.style.background='var(--red)'; this.style.color='#fff';" onmouseout="this.style.background='var(--red-bg)'; this.style.color='var(--red)';">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+								Delete
+							</button>
+						</div>
+					</div>
+				</div>
+			`;
+		});
+	} catch(e) {
+		list.innerHTML = '<div style="color:var(--red); text-align:center; padding:20px; font-size:12px;">Error loading data</div>';
+	}
+}
+
+// MAKE SURE TO ADD THIS NEW FUNCTION RIGHT BELOW loadMaintTickets
+async function deleteMaintTicket(id) {
+	if (!confirm("Are you sure you want to permanently delete this ticket?")) return;
+	
+	try {
+		await sbFetch(`operix_maintenance_tickets?id=eq.${id}`, {
+			method: 'DELETE',
+			headers: { 'Prefer': 'return=minimal' }
+		});
+		
+		// Refresh the list immediately after deleting
+		loadMaintTickets();
+	} catch (e) {
+		alert("Failed to delete ticket: " + e.message);
+	}
+}
+async function updateMaintStatus(id, newStatus) {
+	try {
+		const payload = { status: newStatus };
+		if(newStatus === 'Resolved') payload.resolved_at = new Date().toISOString();
+		
+		await sbFetch(`operix_maintenance_tickets?id=eq.${id}`, {
+			method: 'PATCH',
+			body: JSON.stringify(payload)
+		});
+		loadMaintTickets(); 
+	} catch(e) {
+		alert('Error updating status');
+		loadMaintTickets();
+	}
+}
 // ═══════════════════════════════
 // LOGIN
 // ═══════════════════════════════
@@ -5431,28 +5761,21 @@ function openWorkspace(ws){
   if(ws==='studio'){
 		document.getElementById('studio-workspace').classList.remove('hidden');
 		initDocStudio();
-		return;
   }
   else if(ws==='hr'){
 		document.getElementById('workspace-selector').classList.add('hidden');
 		initHR();
-		return;
   }
   else if(ws==='mail'){
 		document.getElementById('workspace-selector').classList.add('hidden');
 		initMailBoard();
-		return;
   }
   else if(ws==='analytics'){
 	  document.getElementById('analytics-workspace').classList.remove('hidden');
 	  initAnalyticsBoard();
-	}
+  }
   else if(ws==='idcard'){
 	  document.getElementById('idcard-workspace').classList.remove('hidden');
-	}
-  else if(ws==='analytics'){
-	 document.getElementById('analytics-workspace').classList.remove('hidden');
-	 initAnalyticsBoard();
   }
   else if(ws==='entertainment'){
 		document.getElementById('entertainment-workspace').classList.remove('hidden');
@@ -5491,8 +5814,23 @@ function openWorkspace(ws){
 		  loadAdminAccounts();loadAdminStaff();loadEntAdminKPIs();
 		});
   }
+  else if(ws==='maintenance') {
+		// 1. Hide the main dashboard
+		document.getElementById('workspace-selector').classList.add('hidden');
+		
+		// 2. Show the maintenance workspace safely
+		var el = document.getElementById('maintenance-workspace');
+		if (el) {
+			el.classList.remove('hidden');
+			el.style.display = 'block'; 
+		}
+		
+		// 3. Initialize the app logic
+		setTimeout(() => { 
+			if (typeof initMaintenanceApp === 'function') initMaintenanceApp(); 
+		}, 50);
+  }
 }
-
 function openProject(pid){
   currentProject=PROJECTS[pid]||PROJECTS.mindbreak;
   hideAllApps();
@@ -6534,22 +6872,31 @@ async function opsSave(){
 }
 
 async function captureReceipt(d){
-  const ref=d.ref||genRef();
+  const ref = d.opID || d.ref || genRef();
   document.getElementById('cap-ref').innerText=ref.split('-').slice(-1)[0];
   document.getElementById('cap-card').innerText=d.cardNum;
   document.getElementById('cap-plate').innerText=d.plateNum;
   document.getElementById('cap-staff').innerText=d.staffName||d.valetName||'—';
   document.getElementById('cap-mobile').innerText=d.phone||'—';
-  document.getElementById('cap-time').innerText=new Date().toLocaleString('en-GB').replace(',',' ·');
+  
+  // FIX: Use the actual issuing date, or fallback to now if it's a brand new ticket
+  const issueDate = d.date ? new Date(d.date) : new Date();
+  document.getElementById('cap-time').innerText=issueDate.toLocaleString('en-GB').replace(',',' ·');
+  
   document.getElementById('cap-amount').innerText=d.amount??'0';
-  const opIDVal = d.opID || d.ref || genRef();
+  const opIDVal = ref;
   const qrVal = JSON.stringify({opID:opIDVal,plate:d.plateNum,card:d.cardNum,client:d.clientName,staff:d.staffName||d.valetName,amount:d.amount});
   document.getElementById('cap-barcode-num').innerText=opIDVal;
+  
   await new Promise(r=>setTimeout(r,60));
   drawQR('ops-receipt-qr', qrVal, 120);
   await new Promise(r=>setTimeout(r,600));
+  
   const canvas=await html2canvas(document.getElementById('ops-receipt-capture'),{scale:3,backgroundColor:null,logging:false,useCORS:true});
-  const a=document.createElement('a');a.download=`Receipt-${d.plateNum}-${d.cardNum}.png`;a.href=canvas.toDataURL('image/png');a.click();
+  const a=document.createElement('a');
+  a.download=`Receipt-${d.plateNum}-${d.cardNum}.png`;
+  a.href=canvas.toDataURL('image/png');
+  a.click();
 }
 
 function filterReports(){
@@ -6621,7 +6968,17 @@ function renderReports(rows) {
 	const clientStr= String(r.clientName|| '');
 	const valetStr = String(r.valet || r.valetName || '');
 	const svcStr   = String(r.serviceType || '');
-	const opIDStr  = String(r.opID || '');
+	
+	// FOOLPROOF DATA FETCHING
+	const opIDStr  = String(r.opID || r.op_id || r.ref || 'N/A');
+	
+	let dateStr = 'No Date';
+	if (r.date) {
+		const d = new Date(r.date);
+		if (!isNaN(d)) {
+			dateStr = d.toLocaleString('en-GB', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+		}
+	}
 	
 	window._rptData = window._rptData || {};
 	window._rptData[i] = r;
@@ -6656,12 +7013,24 @@ function renderReports(rows) {
 	div.innerHTML = `
 	  <div style="display:flex;">
 		<div style="width:4px;background:${borderColor};flex-shrink:0;border-radius:4px 0 0 4px;"></div>
-		<div style="padding:13px;flex:1;">
-		  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-			<span class="badge ${badgeClass}">${statusText}</span>
+		<div style="padding:14px;flex:1;">
+		  
+		  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-bottom:1px dashed var(--border2);padding-bottom:8px;">
+			<div style="font-size:10px; color:var(--text3); font-weight:600; display:flex; align-items:center; gap:4px;">
+				<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				${dateStr}
+			</div>
+			<div style="font-family:Fira Code,monospace;font-size:10px;color:var(--text4);font-weight:700;letter-spacing:0.05em;">
+				REF: <span style="color:var(--text2);">${opIDStr}</span>
+			</div>
+		  </div>
+
+		  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+			<span class="badge ${badgeClass}" style="width:fit-content;font-size:11px;padding:4px 10px;">${statusText}</span>
 			<span style="font-family:Fira Code,monospace;font-size:18px;font-weight:800;color:var(--text);">${plateStr||'—'}</span>
 		  </div>
-		  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">
+		  
+		  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
 			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
 			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Card</div>
 			  <div style="font-family:Fira Code,monospace;font-size:14px;font-weight:700;color:var(--text);">#${cardStr||'—'}</div>
@@ -6680,12 +7049,7 @@ function renderReports(rows) {
 			</div>
 		  </div>
 		  
-		  ${opIDStr ? `<div style="background:var(--surface2);border-radius:7px;padding:6px 9px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;">
-			<span style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Op ID</span>
-			<span style="font-family:Fira Code,monospace;font-size:11px;font-weight:700;color:var(--text3);">${opIDStr}</span>
-		  </div>` : ''}
-		  
-		  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+		  <div style="display:flex;gap:6px;flex-wrap:wrap;">
 			${isParked ? `<button onclick="updateVehicle('${plateStr}','${cardStr}','Requested')" style="flex:1;padding:7px;background:rgba(245, 158, 11, 0.1);border:1.5px solid rgba(245, 158, 11, 0.3);color:#d97706;font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg> طلب السيارة</button>` : ''}
 			
 			${(isParked || isReq) ? `<button onclick="updateVehicle('${plateStr}','${cardStr}','Returned')" style="flex:1;padding:7px;background:var(--green-bg);border:1.5px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> تم التسليم</button>` : ''}
@@ -6699,7 +7063,6 @@ function renderReports(rows) {
 	el.appendChild(div);
   });
 }
-
 async function deleteOperation(plate, opID) {
   if(!confirm('🚨 WARNING: Are you sure you want to permanently delete this operation?\n\nPlate: ' + plate)) return;
   
@@ -6716,7 +7079,17 @@ async function deleteOperation(plate, opID) {
   }
 }
 
-function reExport(r){captureReceipt({...r,staffName:r.valet||r.valetName,phone:r.phone||'—',amount:r.amount||0,ref:r.ref||genRef()});}
+function reExport(r) {
+	captureReceipt({
+		...r,
+		staffName: r.valet || r.valetName,
+		phone: r.phone || '—',
+		amount: r.amount || 0,
+		ref: r.opID || r.op_id || r.ref || genRef(),
+		opID: r.opID || r.op_id || r.ref,
+		date: r.date // Ensure the original issuing date is passed to the receipt
+	});
+}
 
 async function updateVehicle(plate, card, status) {
   if(!confirm('هل أنت متأكد من تغيير حالة السيارة إلى: ' + status + '؟')) return;
@@ -11600,128 +11973,7 @@ setInterval(() => {
 }, 7000);
 
 // دالة لتحديث البيانات بصمت بدون إظهار كلمة "Loading..."
-async function loadReportsSilent() {
-  try {
-	const sbRows = await sbFetch('operix_invoices?order=date.desc&limit=200', {method:'GET'});
-	if(Array.isArray(sbRows) && sbRows.length > 0) {
-	  reportsData = sbRows.map(r => ({
-		 plateNum:      r.plate_num       || '',
-		 clientName:    r.client_name     || '',
-		 phone:         r.phone           || '—',
-		 amount:        parseFloat(r.amount) || 0,
-		 cardNum:       r.card_num        || '',
-		 valet:         r.valet_name      || '',
-		 valetName:     r.valet_name      || '',
-		 serviceType:   r.service_type    || 'Free',
-		 vehicleStatus: r.vehicle_status  || 'Returned',
-		 opID:          r.op_id           || r.ref || '',
-		 date:          r.date            || '',
-		 ref:           r.op_id           || r.ref || '',
-		 _sbId:         r.id
-	  }));
-	  renderReports(reportsData);
-	}
-  } catch(e) { /* تجاهل الأخطاء الصامتة */ }
-}
 
-// 4. تحديث دالة renderReports لتعرض السيارات "المطلوبة" بشكل مميز
-function renderReports(rows) {
-  const el = document.getElementById('reports-list');
-  el.innerHTML = '';
-  
-  if(!rows.length) {
-	el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:12px;">No records found</div>';
-	return;
-  }
-
-  // استخدمنا Flexbox مع flex-direction: column للسماح باستخدام order (لرفع السيارات المطلوبة للأعلى)
-  el.style.display = 'flex';
-  el.style.flexDirection = 'column';
-
-  rows.forEach((r, i) => {
-	const status = String(r.vehicleStatus||'');
-	const isParked = status === 'Parked';
-	const isReq = status === 'Requested';
-	
-	const plateStr = String(r.plateNum  || '');
-	const cardStr  = String(r.cardNum   || '');
-	const clientStr= String(r.clientName|| '');
-	const valetStr = String(r.valet || r.valetName || '');
-	const svcStr   = String(r.serviceType || '');
-	const opIDStr  = String(r.opID || '');
-	
-	window._rptData = window._rptData || {};
-	window._rptData[i] = r;
-
-	// تشغيل الصوت إذا كانت السيارة مطلوبة ولم يتم التنبيه عنها مسبقاً
-	if (isReq && !notifiedRequests.has(opIDStr)) {
-	  valetAlertSound.play().catch(e => console.log('Autoplay prevented'));
-	  notifiedRequests.add(opIDStr);
-	}
-
-	let badgeClass = 'badge-done';
-	let statusText = 'Returned';
-	let borderColor= 'var(--green)';
-	let cardExtraClass = '';
-
-	if (isReq) {
-	  badgeClass = 'badge-requested';
-	  statusText = '⚡ مطلوب للعميل';
-	  borderColor= '#f59e0b';
-	  cardExtraClass = 'card-requested';
-	} else if (isParked) {
-	  badgeClass = 'badge-parked';
-	  statusText = 'Parked';
-	  borderColor= 'var(--amber)';
-	}
-
-	const div = document.createElement('div');
-	div.className = `inv-card ${cardExtraClass}`;
-	div.setAttribute('data-plate', plateStr);
-	div.setAttribute('data-card',  cardStr);
-	div.setAttribute('data-valet', valetStr.toLowerCase());
-	
-	div.innerHTML = `
-	  <div style="display:flex;">
-		<div style="width:4px;background:${borderColor};flex-shrink:0;border-radius:4px 0 0 4px;"></div>
-		<div style="padding:13px;flex:1;">
-		  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-			<span class="badge ${badgeClass}">${statusText}</span>
-			<span style="font-family:Fira Code,monospace;font-size:18px;font-weight:800;color:var(--text);">${plateStr||'—'}</span>
-		  </div>
-		  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">
-			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
-			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Card</div>
-			  <div style="font-family:Fira Code,monospace;font-size:14px;font-weight:700;color:var(--text);">#${cardStr||'—'}</div>
-			</div>
-			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
-			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Service</div>
-			  <div style="font-size:12px;font-weight:700;color:${svcStr==='Free'?'var(--green)':'var(--gold)'};">${svcStr==='Free'?'Free':'19 SAR'}</div>
-			</div>
-			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
-			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Client</div>
-			  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${clientStr||'—'}</div>
-			</div>
-			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
-			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Staff</div>
-			  <div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${valetStr||'—'}</div>
-			</div>
-		  </div>
-		  
-		<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
-			${isParked ? `<button onclick="updateVehicle('${plateStr}','${cardStr}','Requested')" style="flex:1;padding:7px;background:rgba(245, 158, 11, 0.1);border:1.5px solid rgba(245, 158, 11, 0.3);color:#d97706;font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg> طلب السيارة</button>` : ''}
-			
-			${(isParked || isReq) ? `<button onclick="updateVehicle('${plateStr}','${cardStr}','Returned')" style="flex:1;padding:7px;background:var(--green-bg);border:1.5px solid var(--green-border);color:var(--green);font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline;margin-right:3px;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> تم التسليم</button>` : ''}
-			
-			<button onclick="reExport(window._rptData[${i}])" class="btn-ghost" style="padding:7px;font-size:11px;justify-content:center;border-radius:6px;">Export</button>
-			<button onclick="deleteOperation('${plateStr}','${opIDStr}')" class="btn-ghost" style="color:var(--red);border-color:var(--red-border);padding:7px;font-size:11px;justify-content:center;border-radius:6px;">Del</button>
-		  </div>
-		</div>
-	  </div>
-	`;
-	el.appendChild(div);
-  });
-}
 
 </script>
 
