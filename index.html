@@ -2584,6 +2584,16 @@ textarea.field { resize: none; line-height: 1.6; }
 		<!-- STAFF INFO PANEL -->
 		<div id="admin-panel-settings" class="acc-panel" style="padding-bottom:40px;">
 		  <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:16px;">System Settings</div>
+		  <div style="background:var(--surface);border:1.5px solid var(--border2);border-radius:12px;padding:18px;margin-top:16px;">
+			  <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">
+				  External Service Fees (SAR)
+			  </div>
+			  <div style="display:flex;gap:8px;align-items:flex-end;">
+				  <input id="external-fee-input" type="number" class="field" placeholder="19">
+				  <button onclick="updateExternalFee()" class="btn-gold">Update Fee</button>
+			  </div>
+			  <div id="fee-update-msg" style="display:none;margin-top:8px;font-size:12px;"></div>
+		  </div>
 
 		  <!-- Passcode Section -->
 		  <div style="background:var(--surface);border:1.5px solid var(--border2);border-radius:12px;padding:18px;margin-bottom:16px;">
@@ -6974,7 +6984,7 @@ function switchTab(mode){
   const f=document.getElementById('ops-form-fields');
   const td=new Date().toISOString().split('T')[0];
   if(mode==='mb'){f.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;"><span class="badge badge-free">Free Service</span></div><div><label class="field-label">Member Name</label><input type="text" id="f-name" class="field" placeholder="Enter member name"></div><div><label class="field-label">Plate Number</label><input type="text" id="f-plate" class="field" style="text-align:center;font-size:17px;letter-spacing:.1em;font-family:Fira Code,monospace;" placeholder="PLATE NUMBER" oninput="this.value=this.value.toUpperCase()"></div><div><label class="field-label">Card No.</label><input type="number" id="f-card" class="field" style="text-align:center;font-size:17px;font-family:Fira Code,monospace;" placeholder="CARD NO."></div><div><label class="field-label">Date</label><input type="date" id="f-date" class="field" value="${td}"></div>`;}
-  else{f.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;"><span class="badge badge-paid">Paid · 19 SAR</span></div><div><label class="field-label">Client Name</label><input type="text" id="f-name" class="field" placeholder="Client Name"></div><div><label class="field-label">Phone</label><input type="number" id="f-phone" class="field" style="font-family:Fira Code,monospace;" placeholder="Phone Number"></div><div><label class="field-label">Plate Number</label><input type="text" id="f-plate" class="field" style="text-align:center;font-size:17px;letter-spacing:.1em;font-family:Fira Code,monospace;" placeholder="PLATE NUMBER" oninput="this.value=this.value.toUpperCase()"></div><div><label class="field-label">Card No.</label><input type="number" id="f-card" class="field" style="text-align:center;font-size:17px;font-family:Fira Code,monospace;" placeholder="CARD NO."></div><div><label class="field-label">Date</label><input type="date" id="f-date" class="field" value="${td}"></div>`;}
+  else{f.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;"><span class="badge badge-paid">Paid · 15 SAR</span></div><div><label class="field-label">Client Name</label><input type="text" id="f-name" class="field" placeholder="Client Name"></div><div><label class="field-label">Phone</label><input type="number" id="f-phone" class="field" style="font-family:Fira Code,monospace;" placeholder="Phone Number"></div><div><label class="field-label">Plate Number</label><input type="text" id="f-plate" class="field" style="text-align:center;font-size:17px;letter-spacing:.1em;font-family:Fira Code,monospace;" placeholder="PLATE NUMBER" oninput="this.value=this.value.toUpperCase()"></div><div><label class="field-label">Card No.</label><input type="number" id="f-card" class="field" style="text-align:center;font-size:17px;font-family:Fira Code,monospace;" placeholder="CARD NO."></div><div><label class="field-label">Date</label><input type="date" id="f-date" class="field" value="${td}"></div>`;}
 }
 
 async function opsSave(){
@@ -7196,7 +7206,7 @@ function renderReports(rows) {
 			</div>
 			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
 			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Service</div>
-			  <div style="font-size:12px;font-weight:700;color:${svcStr==='Free'?'var(--green)':'var(--gold)'};">${svcStr==='Free'?'Free':'19 SAR'}</div>
+			  <div style="font-size:12px;font-weight:700;color:${svcStr==='Free'?'var(--green)':'var(--gold)'};">${svcStr==='Free'?'Free':'15 SAR'}</div>
 			</div>
 			<div style="background:var(--surface2);border-radius:7px;padding:7px 9px;">
 			  <div style="font-size:8px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Client</div>
@@ -7512,15 +7522,19 @@ async function hrClockIn(){
 		  return;
 		}
   }catch(e){ console.warn('Sheet check error:', e); }
+  
   const locName = (currentShift && currentShift.locationName) ? currentShift.locationName : 'Mind Break Café';
   if(!confirm('Clock In at ' + locName + '?')) return;
+  
   const u   = currentUser._hr || currentUser;
   const now = new Date();
   hrClockedIn    = true;
   hrClockInTime  = now;
+  
   // Persist so refresh doesn't lose state
   try{ localStorage.setItem('hr_clocked_in', JSON.stringify({name:u.name, time:now.toISOString(), location:locName})); }catch(e){}
   updateClockStatus();
+  
   try{
 		const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
 		await sbFetch('operix_attendance', {
@@ -7537,7 +7551,6 @@ async function hrClockIn(){
 		});
 		hrStartSessionTimer();
 		updateClockStatus();
-		hrStartSessionTimer();
 		alert('Clocked in ✓  ' + locName + '  ' + timeStr);
 		loadHRHome(); loadAttendanceChart();
   } catch(e){ alert('Connection error — try again'); hrClockedIn=false; localStorage.removeItem('hr_clocked_in'); updateClockStatus(); }
@@ -7545,21 +7558,76 @@ async function hrClockIn(){
 
 async function hrClockOut(){
   if(!hrClockedIn){ alert('You are not clocked in yet.'); return; }
+  
   const locName = (currentShift && currentShift.locationName) ? currentShift.locationName : 'Mind Break Café';
   const now = new Date();
-  // Calculate hours worked
+  const u   = currentUser._hr || currentUser;
+
+  // 1. Calculate time difference securely (fallback to localStorage if memory was cleared by refresh)
+  let checkInDate = hrClockInTime;
+  if (!checkInDate) {
+	try {
+	  const stored = JSON.parse(localStorage.getItem('hr_clocked_in'));
+	  if (stored && stored.time) checkInDate = new Date(stored.time);
+	} catch(e){}
+  }
+
+  let diffHours = 0;
   let duration = '';
-  if(hrClockInTime){
-		const mins = Math.round((now - hrClockInTime) / 60000);
+  if(checkInDate){
+		const diffMs = now - checkInDate;
+		diffHours = diffMs / (1000 * 60 * 60); // Convert to hours
+		const mins = Math.round(diffMs / 60000);
 		const h = Math.floor(mins/60), m = mins%60;
 		duration = ' · ' + h + 'h ' + (m>0?m+'m':'') + ' worked';
   }
+
+  // 2. AUTO-PENALTY LOGIC (12 Hour Shift + 2 Hour Grace Period)
+ // 2. AUTO-PENALTY LOGIC (Dynamic Shift + 2 Hour Grace Period)
+   
+   // Pull the actual expected hours from the employee's current shift data.
+   // Note: Change '.shift_hours' to whatever your actual property/column name is in your DB.
+   // We include a fallback (e.g., 8) just to prevent the code from crashing if the DB field is empty.
+   const STANDARD_SHIFT_HOURS = (currentShift && currentShift.shift_hours) ? parseFloat(currentShift.shift_hours) : 8; 
+   
+   const MAX_ALLOWED_HOURS = STANDARD_SHIFT_HOURS + 2; // Dynamic hours + 2 hours grace
+ 
+   if (diffHours > MAX_ALLOWED_HOURS) {
+		 alert('You exceeded the 2-hour grace period for checkout!\nThe counter has stopped. Your attendance is calculated at 50% (' + (STANDARD_SHIFT_HOURS * 0.5) + ' hours).');
+		 
+		 hrClockedIn   = false;
+		 hrClockInTime = null;
+		 try{ localStorage.removeItem('hr_clocked_in'); }catch(e){}
+		 updateClockStatus();
+		 hrStopSessionTimer();
+		 
+		 try{
+			 await sbFetch('operix_attendance', {
+			   method:'POST',
+			   headers:{'Prefer':'return=minimal'},
+			   body: JSON.stringify({
+					 employee:    u.name,
+					 type:        'System-Auto-Close',
+					 project:     locName,
+					 notes:       'Forgot to checkout. 50% auto-penalty applied.',
+					 worked_hours: STANDARD_SHIFT_HOURS * 0.5, // Dynamically calculates 50% of THEIR specific shift
+					 submitted_at: new Date().toISOString()
+			   })
+			 });
+			 loadHRHome(); loadAttendanceChart();
+		 } catch(e){ alert('Connection error saving auto-close penalty.'); }
+		 
+		 return; // HALT NORMAL CHECKOUT PROCESS
+   }
+
+  // 3. NORMAL CHECKOUT (If within allowed time limits)
   if(!confirm('Clock Out from ' + locName + '?' + duration)) return;
-  const u   = currentUser._hr || currentUser;
+  
   hrClockedIn   = false;
   hrClockInTime = null;
   try{ localStorage.removeItem('hr_clocked_in'); }catch(e){}
   updateClockStatus();
+  
   try{
 		const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
 		await sbFetch('operix_attendance', {
@@ -7576,7 +7644,6 @@ async function hrClockOut(){
 		});
 		hrStopSessionTimer();
 		updateClockStatus();
-		hrStopSessionTimer();
 		alert('Clocked out ✓  ' + locName + '  ' + timeStr + duration);
 		loadHRHome(); loadAttendanceChart();
   } catch(e){ alert('Connection error — try again'); hrClockedIn=true; updateClockStatus(); }
@@ -7629,7 +7696,7 @@ async function loadHRHome(){
 				  '<div style="display:flex;align-items:center;gap:10px;">' +
 						'<div style="width:8px;height:8px;border-radius:50%;background:' + (isIn?'#16a34a':'#dc2626') + ';flex-shrink:0;"></div>' +
 						'<div>' +
-						  '<div style="font-size:13px;font-weight:600;color:#1a1a2e;">' + (isIn?'Check In':'Check Out') + '</div>' +
+						  '<div style="font-size:13px;font-weight:600;color:#1a1a2e;">' + (isIn?'Check In': r.type) + '</div>' +
 						  '<div style="font-size:11px;color:#9ca3af;">' + (r.location||'Mind Break') + '</div>' +
 						'</div>' +
 				  '</div>' +
@@ -7654,8 +7721,6 @@ function renderRecentAtt(allReqs){
   const el = document.getElementById('hr-recent-att');
   if(!el) return;
   const name = (currentUser.name||'').toLowerCase();
-  // Filter attendance type from requests (we show all recent attendance from HR sheet)
-  // Since HR GAS get_requests returns Requests sheet, show those
   const mine = (allReqs||[]).filter(r => (r.name||'').toLowerCase() === name);
   if(!mine.length){
 		el.innerHTML = '<div style="color:var(--text4);font-size:12px;text-align:center;padding:8px;">No recent records</div>';
@@ -7673,22 +7738,17 @@ function renderRecentAtt(allReqs){
 
 async function loadMyKPIs(){
   const name = (currentUser.name||'').toLowerCase();
-
-  // ── Count real check-ins from Emp-atten ──
   try{
 		const rows = await sbGetMyAttendance((currentUser.name||''));
-		// Filter to current month only
 		var now = new Date();
 		var monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 		const mine = rows.filter(function(r){
 		  if(!r.raw || !r.raw.submitted_at) return true;
 		  return new Date(r.raw.submitted_at) >= monthStart;
 		});
-		// Count unique days with a Check-In (days worked this month)
 		var workedDays = new Set(mine.filter(function(r){ return r.type==='Check-In'; }).map(function(r){ return r.date; })).size;
 		const dEl = document.getElementById('hr-kpi-days');
 		if(dEl) dEl.innerText = workedDays;
-		// Hours are calculated by loadAttendanceChart using real session pairing — don't overwrite here
   } catch(e){
 		const dEl = document.getElementById('hr-kpi-days');
 		const hEl = document.getElementById('hr-kpi-hours');
@@ -7696,7 +7756,6 @@ async function loadMyKPIs(){
 		if(hEl) hEl.innerText = '0h';
   }
 
-  // ── Salary from operix_shifts (most reliable — set by admin per employee) ──
   try{
 		var shiftName = currentUser.name || '';
 		var shiftRows = await sbFetch(
@@ -7707,7 +7766,6 @@ async function loadMyKPIs(){
 		if(Array.isArray(shiftRows) && shiftRows.length && shiftRows[0].monthly_salary){
 		  if(salEl) salEl.innerText = Number(shiftRows[0].monthly_salary||0).toLocaleString();
 		} else {
-		  // Fallback: operix_salaries fuzzy match
 		  var firstName1 = name.split(/[\s']+/)[0];
 		  var salRows1 = await sbFetch('operix_salaries?select=employee_name,amount&order=created_at.desc', {method:'GET'}).catch(function(){return[];});
 		  var mySal1 = (salRows1||[]).find(function(r){ return (r.employee_name||'').toLowerCase().includes(firstName1); });
@@ -8851,12 +8909,12 @@ function parseAttDate(dateStr, timeStr){
 		  var isAM   = /AM/i.test(tClean);
 		  var tNum   = tClean.replace(/\s*(AM|PM)/i,'').trim();
 		  var tp     = tNum.split(':');
-		  h  = parseInt(tp[0]||0);
-		  mi = parseInt(tp[1]||0);
-		  s  = parseInt(tp[2]||0);
-		  // Apply AM/PM only if explicitly present
-		  if(isPM && h !== 12) h += 12;
-		  if(isAM && h === 12) h = 0;
+		    h  = parseInt(tp[0]||0);
+			mi = parseInt(tp[1]||0);
+			s  = parseInt(tp[2]||0);
+			// Apply AM/PM only if explicitly present, and safely ignore if already in 24h format
+			if(isPM && h < 12) h += 12;  // Changed from !== 12 to < 12
+			if(isAM && h === 12) h = 0;
 		  // If no AM/PM marker and hour > 12, already 24h format — leave as is
 		}
 		return new Date(yr, mo, day, h, mi, s);
@@ -9398,31 +9456,24 @@ async function updateShiftCardSalary(){
 
 
 // Check if employee already has an unmatched Check-In today (no subsequent Check-Out)
-async function checkIfAlreadyClockedInToday(){
-  try{
-		const empName = (currentUser._hr||currentUser).name||'';
-		const mine = await sbGetMyAttendance(empName);
-
-		// Get today's date key
-		var now = new Date();
-		var todayKey = now.getDate().toString().padStart(2,'0') + '/' +
-								   (now.getMonth()+1).toString().padStart(2,'0') + '/' +
-								   now.getFullYear();
-
-		// Get today's records
-		var todayRecs = mine.filter(function(r){ return (r.date||'') === todayKey; });
-
-		// Check for unmatched check-in (Check-In with no following Check-Out today)
-		var lastCheckIn  = null;
-		var lastCheckOut = null;
-		todayRecs.forEach(function(r){
-		  if(r.type === 'Check-In')  lastCheckIn  = r;
-		  if(r.type === 'Check-Out') lastCheckOut = r;
-		});
-
-		// Already clocked in if there's a Check-In but no Check-Out today
-		return !!(lastCheckIn && !lastCheckOut);
-  }catch(e){ return false; }
+async function checkIfAlreadyClockedInToday() {
+  try {
+	const empName = (currentUser._hr || currentUser).name || '';
+	const mine = await sbGetMyAttendance(empName);
+	
+	var now = new Date();
+	var todayKey = now.getDate().toString().padStart(2,'0') + '/' + (now.getMonth()+1).toString().padStart(2,'0') + '/' + now.getFullYear();
+	
+	var todayRecs = mine.filter(r => (r.date || '') === todayKey);
+	
+	if (todayRecs.length > 0) {
+	  // Since it's newest-first, if the latest action today was a Check-In, they are clocked in.
+	  return todayRecs[0].type === 'Check-In'; 
+	}
+	return false;
+  } catch(e) {
+	return false;
+  }
 }
 
 // ═══════════════════════════════
@@ -10805,6 +10856,35 @@ async function updateAdminPasscode() {
 		document.getElementById('confirm-passcode-input').value = '';
 		showMsg('✓ Passcode updated successfully!', false);
   } catch(e) { showMsg('Error: ' + e.message, true); }
+}
+// Function to update the fee in Supabase
+async function updateExternalFee() {
+	const newVal = document.getElementById('external-fee-input').value;
+	const msg = document.getElementById('fee-update-msg');
+	
+	try {
+		await sbFetch('operix_settings?key=eq.external_service_fee', {
+			method: 'PATCH',
+			body: JSON.stringify({ value: newVal })
+		});
+		msg.innerText = "✓ Fee updated successfully!";
+		msg.style.color = "var(--green)";
+		msg.style.display = "block";
+	} catch (e) {
+		msg.innerText = "Error updating fee";
+		msg.style.color = "var(--red)";
+		msg.style.display = "block";
+	}
+}
+
+// Function to fetch the fee when needed (e.g., when generating an invoice)
+async function getExternalServiceFee() {
+	try {
+		const data = await sbFetch('operix_settings?key=eq.external_service_fee', { method: 'GET' });
+		return data.length > 0 ? parseFloat(data[0].value) : 15; // Fallback to 19
+	} catch (e) {
+		return 15; 
+	}
 }
 
 async function adminRevokeSingleDevice(id, btn) {
