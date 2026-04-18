@@ -3929,26 +3929,42 @@ const EMP_API = 'https://script.google.com/macros/s/AKfycbxAT9qZCXh94iQuF6nEj2lM
 const SUPABASE_URL  = 'https://lzobdqlbsxjlupyewdqq.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6b2JkcWxic3hqbHVweWV3ZHFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5OTY0MDQsImV4cCI6MjA4OTU3MjQwNH0.fH-bV3QiQUbk_6L-clwwdHlZTnTIYAIJeKysMhUlBIs';
 
-// Supabase REST helper
+// 1. SUPABASE AUTH HELPER
+const sbAuth = async (endpoint, body) => {
+  const url = SUPABASE_URL + '/auth/v1/' + endpoint;
+  const res = await fetch(url, { 
+	method: 'POST', 
+	headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' }, 
+	body: JSON.stringify(body) 
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error_description || data.msg || 'Login failed');
+  return data;
+};
+
+// 2. SUPABASE REST HELPER (Updated for JWT)
 const sbFetch = async (path, opts={}) => {
+  const token = localStorage.getItem('operix_jwt') || SUPABASE_ANON;
+  const authHeader = localStorage.getItem('operix_jwt') ? 'Bearer ' + token : 'Bearer ' + SUPABASE_ANON;
+
   const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
-		...opts,
-		headers: {
-		  'Content-Type': 'application/json',
-		  'apikey': SUPABASE_ANON,
-		  'Authorization': 'Bearer ' + SUPABASE_ANON,
-		  'Prefer': 'return=representation',
-		  ...(opts.headers||{})
-		}
+	...opts,
+	headers: {
+	  'Content-Type': 'application/json',
+	  'apikey': SUPABASE_ANON,
+	  'Authorization': authHeader,
+	  'Prefer': opts.prefer || (opts.method==='GET'?'count=exact':'return=representation'),
+	  ...(opts.headers||{})
+	}
   });
   if(!res.ok){
-		const e = await res.text().catch(()=>'');
-		throw new Error('Supabase ' + res.status + ': ' + e.slice(0,200));
+	const e = await res.text().catch(()=>'');
+	throw new Error('Supabase ' + res.status + ': ' + e.slice(0,200));
   }
+  if(res.status===204||opts.method==='DELETE') return null;
   const text = await res.text();
   try{ return text ? JSON.parse(text) : []; }catch{ return []; }
 };
-
 
 // ── Attendance helpers ───────────────────────────────────────
 // Normalise a Supabase operix_attendance row to the legacy
@@ -5489,74 +5505,82 @@ async function handleLogin(){
   btn.innerText = 'Checking credentials…';
 
   try {
-		const rows = await sbFetch(
-		  'accounts?email=eq.' + encodeURIComponent(email) + '&password=eq.' + encodeURIComponent(pass) + '&select=id,name,email,role,job,phone,photo,otp_email&limit=1',
-		  { method: 'GET' }
-		);
+	// 1. Authenticate using the REST API (Padlock Vault)
+	const authData = await sbAuth('token?grant_type=password', { email: email, password: pass });
+	
+	// 2. Save the secure JWT token to the browser
+	localStorage.setItem('operix_jwt', authData.access_token);
 
-		if(!Array.isArray(rows) || rows.length === 0){
-		  alert('Wrong email or password.');
-		  btn.disabled = false; btn.innerText = 'Sign In';
-		  return;
-		}
+	// 3. Fetch their OPERIX profile securely (without sending password in URL)
+	const rows = await sbFetch(
+	  'accounts?email=eq.' + encodeURIComponent(email) + '&select=id,name,email,role,job,phone,photo,otp_email&limit=1',
+	  { method: 'GET' }
+	);
 
-		const acc = rows[0];
+	if(!Array.isArray(rows) || rows.length === 0){
+	  throw new Error('Account profile not found in OPERIX.');
+	}
 
-		if((acc.role||'').toLowerCase() === 'pending'){
-		  alert('Your account is pending admin approval.\nPlease contact your administrator to activate your account.');
-		  btn.disabled = false; btn.innerText = 'Sign In';
-		  return;
-		}
+	const acc = rows[0];
 
-		// Store pending login data
-		_pendingLoginData = acc;
+	if((acc.role||'').toLowerCase() === 'pending'){
+	  throw new Error('Your account is pending admin approval.\nPlease contact your administrator to activate your account.');
+	}
 
-		// ── Device + 2FA Check ──────────────────────────────────────
-		const isLocalFile = window.location.protocol === 'file:';
-		const hasOTPEmail = acc.otp_email && acc.otp_email.trim();
+	// Store pending login data
+	_pendingLoginData = acc;
 
-		// Local file dev mode — skip all security
-		if (isLocalFile) {
-		  btn.disabled = false; btn.innerText = 'Sign In';
-		  completeLogin(acc, email);
-		  return;
-		}
+	// ── Device + 2FA Check ──────────────────────────────────────
+	const isLocalFile = window.location.protocol === 'file:';
+	const hasOTPEmail = acc.otp_email && acc.otp_email.trim();
 
-		// No OTP email set — block login
-		if (!hasOTPEmail) {
-		  alert('Two-step verification is not configured for your account.\n\nPlease contact your administrator.');
-		  btn.disabled = false; btn.innerText = 'Sign In';
-		  return;
-		}
+	// Local file dev mode — skip all security
+	if (isLocalFile) {
+	  btn.disabled = false; btn.innerText = 'Sign In';
+	  completeLogin(acc, email);
+	  return;
+	}
 
-		btn.innerText = 'Checking device…';
+	// No OTP email set — block login
+	if (!hasOTPEmail) {
+	  alert('Two-step verification is not configured for your account.\n\nPlease contact your administrator.');
+	  btn.disabled = false; btn.innerText = 'Sign In';
+	  return;
+	}
 
-		// Check if this is a trusted device
-		var trusted = await isTrustedDevice(acc.email);
-		if (trusted) {
-		  // Known device — login directly, no OTP needed
-		  btn.disabled = false; btn.innerText = 'Sign In';
-		  document.getElementById('login-page').classList.add('hidden');
-		  completeLogin(acc, email);
-		  return;
-		}
+	btn.innerText = 'Checking device…';
 
-		// New device — check if security questions are set
-		btn.disabled = false; btn.innerText = 'Sign In';
-		document.getElementById('login-page').classList.add('hidden');
-		var hasSQ = await hasSecurityQuestions(acc.email);
-		if (!hasSQ) {
-		  // First time ever — set security questions first
-		  document.getElementById('sec-questions-page').classList.remove('hidden');
-		} else {
-		  // Known user, new device — verify security questions first
-		  await showNewDevicePage();
-		}
+	// Check if this is a trusted device
+	var trusted = await isTrustedDevice(acc.email);
+	if (trusted) {
+	  // Known device — login directly, no OTP needed
+	  btn.disabled = false; btn.innerText = 'Sign In';
+	  document.getElementById('login-page').classList.add('hidden');
+	  completeLogin(acc, email);
+	  return;
+	}
+
+	// New device — check if security questions are set
+	btn.disabled = false; btn.innerText = 'Sign In';
+	document.getElementById('login-page').classList.add('hidden');
+	var hasSQ = await hasSecurityQuestions(acc.email);
+	if (!hasSQ) {
+	  // First time ever — set security questions first
+	  document.getElementById('sec-questions-page').classList.remove('hidden');
+	} else {
+	  // Known user, new device — verify security questions first
+	  await showNewDevicePage();
+	}
 
   } catch(e){
-		alert('Connection error. Please check your internet and try again.');
-		console.error('Login error:', e);
-		btn.disabled = false; btn.innerText = 'Sign In';
+	// If it fails, wipe the token
+	localStorage.removeItem('operix_jwt');
+	
+	var msg = e.message.includes('Invalid login credentials') ? 'Wrong email or password.' : e.message;
+	alert(msg);
+	console.error('Login error:', e);
+	btn.disabled = false; 
+	btn.innerText = 'Sign In';
   }
 }
 
@@ -5803,6 +5827,7 @@ async function resendOTP() {
 function backToLogin() {
   if(_otpTimerInterval) clearInterval(_otpTimerInterval);
   _pendingLoginData = null;
+  localStorage.removeItem('operix_jwt'); // <-- ADD THIS LINE
   document.getElementById('otp-page').classList.add('hidden');
   document.getElementById('otp-setup-page').classList.add('hidden');
   document.getElementById('login-page').classList.remove('hidden');
@@ -8909,7 +8934,7 @@ function parseAttDate(dateStr, timeStr){
 		  var isAM   = /AM/i.test(tClean);
 		  var tNum   = tClean.replace(/\s*(AM|PM)/i,'').trim();
 		  var tp     = tNum.split(':');
-		    h  = parseInt(tp[0]||0);
+			h  = parseInt(tp[0]||0);
 			mi = parseInt(tp[1]||0);
 			s  = parseInt(tp[2]||0);
 			// Apply AM/PM only if explicitly present, and safely ignore if already in 24h format
